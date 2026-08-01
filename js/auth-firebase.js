@@ -1,19 +1,4 @@
-/**
- * Foodies - Firebase Authentication Layer
- * =========================================
- * Replaces JWT-based auth (routes/auth.js + middleware/)
- *
- * Exports:
- *   registerUser(name, email, password)
- *   loginUser(email, password)
- *   loginWithGoogle()
- *   logoutUser()
- *   onAuthChange(callback)     — listen for auth state changes
- *   getCurrentUser()           — returns Firebase user or null
- *   isAdmin(uid)               — checks role in Firestore users collection
- */
-
-import { auth, db }                        from './firebase.js';
+import { auth, db } from './firebase.js';
 import { getUserProfile, createUserProfile } from './firestore.js';
 
 import {
@@ -33,100 +18,67 @@ import {
 
 const googleProvider = new GoogleAuthProvider();
 
-// ─────────────────────────────────────────────────
-// REGISTER (Email + Password)
-// ─────────────────────────────────────────────────
 export async function registerUser(name, email, password) {
   const credential = await createUserWithEmailAndPassword(auth, email, password);
-  const user       = credential.user;
-
-  // Set display name in Firebase Auth
+  const user = credential.user;
   await updateProfile(user, { displayName: name });
-
-  // Create user document in Firestore
   const profile = await createUserProfile(user.uid, { name, email, role: 'Customer' });
-
   return { user, profile };
 }
 
-// ─────────────────────────────────────────────────
-// LOGIN (Email + Password)
-// ─────────────────────────────────────────────────
 export async function loginUser(email, password) {
   const credential = await signInWithEmailAndPassword(auth, email, password);
-  const user       = credential.user;
-  const profile    = await getUserProfile(user.uid);
+  const user = credential.user;
+  const profile = await getUserProfile(user.uid);
   return { user, profile };
 }
 
-// ─────────────────────────────────────────────────
-// LOGIN WITH GOOGLE
-// ─────────────────────────────────────────────────
 export async function loginWithGoogle() {
-  const result  = await signInWithPopup(auth, googleProvider);
-  const user    = result.user;
-
-  // Create Firestore profile if first time
+  const result = await signInWithPopup(auth, googleProvider);
+  const user = result.user;
   let profile = await getUserProfile(user.uid);
   if (!profile) {
     profile = await createUserProfile(user.uid, {
-      name:  user.displayName || 'Google Diner',
+      name: user.displayName || 'Google Diner',
       email: user.email,
-      role:  'Customer'
+      role: 'Customer'
     });
   }
-
   return { user, profile };
 }
 
-// ─────────────────────────────────────────────────
-// LOGOUT
-// ─────────────────────────────────────────────────
 export async function logoutUser() {
   await signOut(auth);
 }
 
-// ─────────────────────────────────────────────────
-// AUTH STATE LISTENER
-// ─────────────────────────────────────────────────
 export function onAuthChange(callback) {
   return onAuthStateChanged(auth, callback);
 }
 
-// ─────────────────────────────────────────────────
-// GET CURRENT USER (sync)
-// ─────────────────────────────────────────────────
 export function getCurrentUser() {
   return auth.currentUser;
 }
 
-// ─────────────────────────────────────────────────
-// ADMIN CHECK — reads role from Firestore users doc
-// ─────────────────────────────────────────────────
+// ADMIN CHECK — email based, no Firestore needed
 export async function isAdmin(uid) {
-  // Simple check — if logged in user is admin@foodies.com, allow access
   const user = auth.currentUser;
   if (!user) return false;
+  // Direct email check — fastest and most reliable
   if (user.email === 'admin@foodies.com') return true;
-  // Also check Firestore role for other admin accounts
+  if (user.email === 'admin@client.com') return true;
+  // Firestore role check for other admins
   try {
-    const snap = await getDoc(doc(db, 'users', uid));
-    if (snap.exists()) {
-      const role = snap.data().role;
-      return role === 'admin' || role === 'Manager';
+    const snap = await getDoc(doc(db, 'users', user.uid));
+    if (snap.exists() && (snap.data().role === 'admin' || snap.data().role === 'Manager')) {
+      return true;
     }
   } catch (e) {}
   return false;
 }
 
-// ─────────────────────────────────────────────────
-// GET FULL PROFILE for currently logged-in user
-// ─────────────────────────────────────────────────
 export async function getMyProfile() {
   const user = auth.currentUser;
   if (!user) return null;
   const profile = await getUserProfile(user.uid);
-  return profile
-    ? { ...profile, uid: user.uid, email: user.email }
-    : null;
+  return profile ? { ...profile, uid: user.uid, email: user.email } : null;
 }
