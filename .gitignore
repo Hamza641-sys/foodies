@@ -1,0 +1,18 @@
+# Dependencies
+node_modules/
+
+# Firebase local files (never commit)
+.firebase/
+firebase-debug.log
+firestore-debug.log
+
+# Environment / secrets
+.env
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/

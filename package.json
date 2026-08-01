@@ -1,0 +1,12 @@
+{
+  "name": "foodies-firebase",
+  "version": "2.0.0",
+  "description": "Foodies Restaurant - Firebase Hosting + Firestore + Auth",
+  "scripts": {
+    "deploy": "firebase deploy --only hosting",
+    "serve":  "firebase serve --only hosting"
+  },
+  "devDependencies": {
+    "firebase-tools": "^13.0.0"
+  }
+}

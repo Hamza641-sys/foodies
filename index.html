@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Foodies | Best Quality Delicious Food & Good Mood</title>
+  <meta name="description" content="Order the best quality food online or book a table at Foodies. Burgers, steaks, pizza, biryani, sushi and more.">
+
+  <meta property="og:title" content="Foodies | Best Quality Delicious Food">
+  <meta property="og:description" content="Best quality delicious food delivered to your door or served at your table.">
+  <meta property="og:image" content="assets/hero-bg.png">
+  <meta property="og:type" content="website">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Restaurant",
+    "name": "Foodies",
+    "image": "assets/hero-bg.png",
+    "priceRange": "$$",
+    "telephone": "+1-800-FOODIES",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "42 Food Street",
+      "addressLocality": "New York",
+      "postalCode": "10001",
+      "addressCountry": "US"
+    }
+  }
+  </script>
+
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+  <!-- ================================================
+       NAVBAR
+       ================================================ -->
+  <nav class="navbar">
+    <a href="#home" class="logo">
+      <div class="logo-icon"><i class="fas fa-utensils"></i></div>
+      <span>Foodies</span>
+    </a>
+
+    <ul class="nav-links">
+      <li><a href="#home" class="active">Home</a></li>
+      <li><a href="#menu">Menu</a></li>
+      <li><a href="#chefs">Chefs</a></li>
+      <li><a href="#gallery">Gallery</a></li>
+      <li><a href="#reservation">Reservation</a></li>
+      <li><a href="#dashboard">Dashboard</a></li>
+      <li><a href="#admin" id="adminNavLink">Admin Panel</a></li>
+    </ul>
+
+    <div class="nav-icons">
+      <button class="nav-btn" onclick="app.toggleTheme()" title="Toggle Theme">
+        <i class="fas fa-moon"></i>
+      </button>
+      <button class="nav-btn" id="langToggleBtn" onclick="app.toggleLanguage()" style="font-size:.8rem;font-weight:700;">EN</button>
+      <a href="#dashboard" onclick="app.setDashboardTab('wishlist')" class="nav-btn" title="Wishlist">
+        <i class="far fa-heart"></i>
+        <span class="badge-count wishlist-badge" style="display:none;">0</span>
+      </a>
+      <button class="nav-btn" onclick="app.toggleCartDrawer(true)" title="Cart">
+        <i class="fas fa-shopping-cart"></i>
+        <span class="badge-count cart-badge" style="display:none;">0</span>
+      </button>
+      <a href="#reservation" class="nav-book-btn">Book a Table</a>
+    </div>
+  </nav>
+
+  <!-- ================================================
+       MAIN SPA CONTAINER
+       ================================================ -->
+  <main id="app">
+
+    <!-- ── A. HOME PAGE ────────────────────────────── -->
+    <section id="home-page" class="page-section active">
+
+      <!-- HERO -->
+      <div class="hero-section">
+        <!-- Hero Slideshow -->
+        <div class="hero-slideshow">
+          <div class="hero-slide active" style="background-image:url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1600&q=90')"></div>
+          <div class="hero-slide" style="background-image:url('https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=1600&q=90')"></div>
+          <div class="hero-slide" style="background-image:url('https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=1600&q=90')"></div>
+          <div class="hero-slide" style="background-image:url('https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=1600&q=90')"></div>
+          <div class="hero-slide" style="background-image:url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1600&q=90')"></div>
+        </div>
+        <div class="hero-overlay"></div>
+
+        <!-- Slide indicator dots -->
+        <div class="hero-dots">
+          <span class="hero-dot active" onclick="heroGoTo(0)"></span>
+          <span class="hero-dot" onclick="heroGoTo(1)"></span>
+          <span class="hero-dot" onclick="heroGoTo(2)"></span>
+          <span class="hero-dot" onclick="heroGoTo(3)"></span>
+          <span class="hero-dot" onclick="heroGoTo(4)"></span>
+        </div>
+        <div class="hero-content">
+          <span class="hero-tagline">Best Quality</span>
+          <h1 class="hero-title">Delicious Food<br>Good Mood</h1>
+          <p class="hero-desc">Experience the finest flavors crafted with premium ingredients. From sizzling steaks to aromatic biryanis — every bite tells a story.</p>
+          <div class="hero-buttons">
+            <a href="#menu" id="heroCtaMenuBtn" class="btn-gold">Order Now &nbsp;<i class="fas fa-arrow-right"></i></a>
+            <a href="#reservation" id="heroCtaBookBtn" class="btn-outline">Book a Table</a>
+          </div>
+          <div class="hero-stats">
+            <div class="hero-stat-item">
+              <span class="hero-stat-num">50+</span>
+              <span class="hero-stat-label">Menu Items</span>
+            </div>
+            <div class="hero-stat-item">
+              <span class="hero-stat-num">4.9★</span>
+              <span class="hero-stat-label">Avg Rating</span>
+            </div>
+            <div class="hero-stat-item">
+              <span class="hero-stat-num">20k+</span>
+              <span class="hero-stat-label">Happy Diners</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- WHY CHOOSE US -->
+      <div class="home-section-container" style="background:var(--bg-secondary);">
+        <div class="section-header">
+          <span class="section-subtitle">Why Choose Us</span>
+          <h2 class="section-title">We Are Different</h2>
+          <span class="section-title-underline"></span>
+        </div>
+        <div class="features-grid">
+          <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-star"></i></div>
+            <h4>Premium Quality</h4>
+            <p>Every dish is crafted with the finest ingredients sourced fresh daily from trusted suppliers.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-bolt"></i></div>
+            <h4>Fast Delivery</h4>
+            <p>Hot food delivered to your doorstep in 30 minutes or less — guaranteed fresh every time.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-leaf"></i></div>
+            <h4>Fresh Ingredients</h4>
+            <p>We use only seasonal fresh ingredients with no preservatives and natural flavors.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-concierge-bell"></i></div>
+            <h4>Expert Chefs</h4>
+            <p>Our team of award-winning chefs bring decades of culinary expertise to every plate.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- OUR POPULAR DISHES -->
+      <div class="home-section-container">
+        <div class="section-header">
+          <span class="section-subtitle">Most Ordered</span>
+          <h2 class="section-title">Our Popular Dishes</h2>
+          <span class="section-title-underline"></span>
+        </div>
+        <div class="dishes-grid" id="chefRecommendationsGrid">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+
+      <!-- LIMITED OFFERS -->
+      <div class="home-section-container" style="background:var(--bg-secondary);">
+        <div class="section-header">
+          <span class="section-subtitle">Exclusive Deals</span>
+          <h2 class="section-title">Limited Time Offers</h2>
+          <span class="section-title-underline"></span>
+        </div>
+        <div class="offers-row">
+          <div class="offer-banner">
+            <span class="offer-tag">Happy Hour</span>
+            <h3>Golden Afternoon Tea</h3>
+            <p>15% off all Desserts &amp; Specialty Coffees every afternoon.</p>
+            <div class="offer-bottom">
+              <span class="offer-code">HAPPYHOUR</span>
+              <a href="#menu" class="btn-outline" style="padding:8px 18px;font-size:.75rem;">Order Now</a>
+            </div>
+          </div>
+          <div class="offer-banner">
+            <span class="offer-tag">Weekend Deal</span>
+            <h3>Weekend Biryani Feast</h3>
+            <p>Free Mango Lassi with every Biryani or Karahi order this weekend.</p>
+            <div class="offer-bottom">
+              <span class="offer-code">WEEKEND15</span>
+              <a href="#menu" class="btn-outline" style="padding:8px 18px;font-size:.75rem;">Order Now</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SIGNATURE FAVORITES -->
+      <div class="home-section-container">
+        <div class="section-header">
+          <span class="section-subtitle">Chef's Picks</span>
+          <h2 class="section-title">Signature Favorites</h2>
+          <span class="section-title-underline"></span>
+        </div>
+        <div class="dishes-grid" id="featuredDishesGrid">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+
+      <!-- GALLERY PREVIEW -->
+      <div class="home-section-container" style="background:var(--bg-secondary);">
+        <div class="section-header">
+          <span class="section-subtitle">Visual Delights</span>
+          <h2 class="section-title">Food Gallery</h2>
+          <span class="section-title-underline"></span>
+        </div>
+        <div class="gallery-grid" id="homeGalleryPreview">
+          <!-- Rendered dynamically (first 6 items) -->
+        </div>
+        <div style="text-align:center;margin-top:36px;">
+          <a href="#gallery" class="btn-outline">View Full Gallery <i class="fas fa-arrow-right"></i></a>
+        </div>
+      </div>
+
+      <!-- CUSTOMER REVIEWS -->
+      <div class="home-section-container">
+        <div class="section-header">
+          <span class="section-subtitle">What People Say</span>
+          <h2 class="section-title">Customer Reviews</h2>
+          <span class="section-title-underline"></span>
+        </div>
+        <div style="max-width:820px;margin:0 auto;" id="homeReviewsGrid">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+
+    </section><!-- end home-page -->
+
+
+    <!-- ── B. MENU PAGE ────────────────────────────── -->
+    <section id="menu-page" class="page-section">
+      <div class="home-section-container">
+        <div class="section-header">
+          <span class="section-subtitle">Gourmet Selection</span>
+          <h2 class="section-title">Explore Our Menu</h2>
+          <span class="section-title-underline"></span>
+        </div>
+
+        <!-- Search -->
+        <div class="glass" style="max-width:580px;margin:0 auto 36px;padding:14px 20px;border-radius:var(--border-radius-xl);display:flex;align-items:center;gap:14px;">
+          <i class="fas fa-search" style="color:var(--primary);font-size:1rem;"></i>
+          <input type="text" id="menuSearchInput" placeholder="Search dishes, ingredients, tags..." style="flex-grow:1;font-size:.95rem;background:none;border:none;color:var(--text-color);" />
+        </div>
+
+        <!-- Category Slider -->
+        <div class="category-slider" id="menuCategoriesSlider"></div>
+
+        <!-- Dishes Grid -->
+        <div class="dishes-grid" id="menuDishesGrid"></div>
+      </div>
+    </section>
+
+
+    <!-- ── C. CHEFS / ABOUT PAGE ───────────────────── -->
+    <section id="chefs-page" class="page-section">
+      <div class="home-section-container">
+        <div class="section-header">
+          <span class="section-subtitle">Meet The Team</span>
+          <h2 class="section-title">Our Master Chefs</h2>
+          <span class="section-title-underline"></span>
+        </div>
+        <div class="chefs-grid" id="chefsGrid"></div>
+      </div>
+    </section>
+
+
+    <!-- ── D. GALLERY PAGE ────────────────────────── -->
+    <section id="gallery-page" class="page-section">
+      <div class="home-section-container">
+        <div class="section-header">
+          <span class="section-subtitle">Visual Delights</span>
+          <h2 class="section-title">Restaurant Gallery</h2>
+          <span class="section-title-underline"></span>
+        </div>
+
+        <div class="gallery-filter-buttons">
+          <button class="btn-outline active" onclick="app.setGalleryFilter('all')">All</button>
+          <button class="btn-outline" onclick="app.setGalleryFilter('food')">Dishes</button>
+          <button class="btn-outline" onclick="app.setGalleryFilter('interior')">Interior</button>
+          <button class="btn-outline" onclick="app.setGalleryFilter('kitchen')">Kitchen</button>
+        </div>
+
+        <!-- 360° hero banner -->
+        <div class="glass" style="margin-bottom:44px;border-radius:var(--border-radius-lg);overflow:hidden;position:relative;height:320px;">
+          <img src="assets/hero-bg.png" style="width:100%;height:100%;object-fit:cover;filter:brightness(.55);" alt="Restaurant interior" />
+          <div style="position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;background:rgba(0,0,0,.25);">
+            <i class="fas fa-street-view" style="font-size:2.8rem;color:var(--primary);margin-bottom:14px;animation:floatChatBubble 2.5s infinite ease-in-out;"></i>
+            <h3 style="font-size:1.7rem;font-weight:800;margin-bottom:6px;">Simulated 360° Dining View</h3>
+            <p style="font-size:.85rem;color:rgba(255,255,255,.65);">Explore our VIP dining rooms interactively</p>
+          </div>
+        </div>
+
+        <div class="gallery-grid" id="galleryGrid"></div>
+      </div>
+    </section>
+
+
+    <!-- ── E. RESERVATION PAGE ───────────────────── -->
+    <section id="reservation-page" class="page-section">
+      <div class="home-section-container">
+        <div class="section-header">
+          <span class="section-subtitle">Reserve a Seat</span>
+          <h2 class="section-title">Book Your Table</h2>
+          <span class="section-title-underline"></span>
+        </div>
+        <div class="reservation-container glass">
+          <div class="res-info">
+            <span class="section-subtitle" style="text-align:left;">VIP Dining</span>
+            <h2>Secure Your Private Table</h2>
+            <p>For special dietary requests or custom menus, reserve at least 24 hours in advance. Our staff will ensure an unforgettable experience.</p>
+            <div class="res-hours-card glass">
+              <h4 style="color:var(--primary);margin-bottom:14px;font-weight:700;">OPENING HOURS</h4>
+              <div class="res-hours-row"><span>Monday – Thursday</span><span>12:00 PM – 11:00 PM</span></div>
+              <div class="res-hours-row"><span>Friday – Sunday</span><span>12:00 PM – 11:30 PM</span></div>
+              <div class="res-hours-row" style="color:var(--primary);"><span>VIP Lounge</span><span>24/7 (By Reservation)</span></div>
+            </div>
+          </div>
+          <form class="res-form" id="reservationForm">
+            <div class="form-group-full">
+              <input type="text" id="resName" class="form-input" placeholder="Your Full Name" required />
+            </div>
+            <div><input type="date" id="resDate" class="form-input" required /></div>
+            <div><input type="time" id="resTime" class="form-input" required /></div>
+            <div>
+              <select id="resGuests" class="form-input" required>
+                <option value="1">1 Guest</option>
+                <option value="2" selected>2 Guests</option>
+                <option value="4">4 Guests</option>
+                <option value="6">6 Guests</option>
+                <option value="8">8+ Guests (VIP Room)</option>
+              </select>
+            </div>
+            <div>
+              <select id="resTableType" class="form-input" required>
+                <option value="Indoor">Indoor Salon</option>
+                <option value="Outdoor">Outdoor Terrace</option>
+                <option value="VIP">VIP Table</option>
+                <option value="Private">Private Room</option>
+              </select>
+            </div>
+            <div class="form-group-full">
+              <textarea id="resRequest" class="form-input" rows="4" placeholder="Special dietary requests, allergies, anniversary notes..."></textarea>
+            </div>
+            <div class="form-group-full">
+              <button type="submit" class="btn-gold" style="width:100%;justify-content:center;">Book Table <i class="fas fa-calendar-check"></i></button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ── F. CHECKOUT PAGE ───────────────────────── -->
+    <section id="checkout-page" class="page-section">
+      <div class="checkout-layout">
+        <form class="checkout-card glass" id="checkoutForm">
+          <h2>Secure Checkout</h2>
+          <div style="margin-bottom:24px;">
+            <h4 style="color:var(--primary);margin-bottom:14px;border-bottom:1px solid var(--glass-border);padding-bottom:6px;">Delivery Address</h4>
+            <div class="res-form" style="grid-template-columns:1fr 1fr;">
+              <div class="form-group-full">
+                <input type="text" id="chkName" class="form-input" placeholder="Customer Name" required />
+              </div>
+              <div style="grid-column:span 2;">
+                <input type="text" id="chkAddress" class="form-input" placeholder="Street Address" required />
+              </div>
+              <div>
+                <select id="chkZip" class="form-input" required>
+                  <option value="10001">Downtown Core ($5.00)</option>
+                  <option value="10002">Westminster Heights ($8.00)</option>
+                  <option value="10003">Embassy District ($10.00)</option>
+                  <option value="10004">Royal Estates VIP ($12.00)</option>
+                </select>
+              </div>
+              <div><input type="text" id="chkPhone" class="form-input" placeholder="Phone Number" required /></div>
+            </div>
+          </div>
+          <div>
+            <h4 style="color:var(--primary);margin-bottom:14px;border-bottom:1px solid var(--glass-border);padding-bottom:6px;">Payment Method</h4>
+            <div class="payment-selector">
+              <div class="payment-option active" data-pay="card">
+                <i class="far fa-credit-card" style="font-size:1.3rem;color:var(--primary);"></i>
+                <div style="font-size:.72rem;font-weight:700;margin-top:5px;">Card</div>
+              </div>
+              <div class="payment-option" data-pay="paypal">
+                <i class="fab fa-paypal" style="font-size:1.3rem;color:#003087;"></i>
+                <div style="font-size:.72rem;font-weight:700;margin-top:5px;">PayPal</div>
+              </div>
+              <div class="payment-option" data-pay="jazzcash">
+                <div style="font-size:.95rem;font-weight:800;color:#c0392b;">JC</div>
+                <div style="font-size:.72rem;font-weight:700;margin-top:5px;">JazzCash</div>
+              </div>
+              <div class="payment-option" data-pay="easypaisa">
+                <div style="font-size:.95rem;font-weight:800;color:#27ae60;">EP</div>
+                <div style="font-size:.72rem;font-weight:700;margin-top:5px;">EasyPaisa</div>
+              </div>
+            </div>
+            <div id="cardDetailsContainer" class="res-form" style="grid-template-columns:1fr 1fr;">
+              <div class="form-group-full"><input type="text" class="form-input" placeholder="Card Number" /></div>
+              <div><input type="text" class="form-input" placeholder="MM/YY" /></div>
+              <div><input type="text" class="form-input" placeholder="CVC" /></div>
+            </div>
+          </div>
+          <button type="submit" class="btn-gold" style="width:100%;justify-content:center;margin-top:28px;">
+            Complete Order <i class="fas fa-lock"></i>
+          </button>
+        </form>
+        <div class="checkout-card glass order-summary-box">
+          <h2>Order Summary</h2>
+          <div id="checkoutSummaryContainer"></div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ── G. ORDER TRACKING PAGE ─────────────────── -->
+    <section id="tracking-page" class="page-section">
+      <div id="trackingPageContainer"></div>
+    </section>
+
+
+    <!-- ── H. CUSTOMER DASHBOARD ─────────────────── -->
+    <section id="dashboard-page" class="page-section">
+      <div class="dashboard-layout">
+        <div class="dashboard-sidebar glass">
+          <div class="dashboard-user-card">
+            <div class="dashboard-avatar" id="dbUserAvatarLetter">G</div>
+            <h3 id="dbProfName">Guest Diner</h3>
+            <p id="dbProfEmail">hello@foodies.com</p>
+          </div>
+          <ul class="dashboard-menu">
+            <li class="dashboard-menu-item active" onclick="app.setDashboardTab('profile')"><i class="fas fa-user-circle"></i> Profile</li>
+            <li class="dashboard-menu-item" onclick="app.setDashboardTab('orders')"><i class="fas fa-concierge-bell"></i> Orders</li>
+            <li class="dashboard-menu-item" onclick="app.setDashboardTab('reservations')"><i class="fas fa-calendar-alt"></i> Reservations</li>
+            <li class="dashboard-menu-item" onclick="app.setDashboardTab('wishlist')"><i class="fas fa-heart"></i> Wishlist</li>
+          </ul>
+        </div>
+        <div class="dashboard-content-area">
+          <div class="dashboard-content-panel active" id="dbPanel-profile">
+            <div class="glass" style="padding:36px;border-radius:var(--border-radius-lg);">
+              <h2 style="font-family:var(--font-body);font-weight:800;margin-bottom:20px;">Account Overview</h2>
+              <div class="dashboard-metrics-grid">
+                <div class="dashboard-metric-card glass">
+                  <p style="font-size:.78rem;text-transform:uppercase;color:var(--text-muted);margin-bottom:5px;">Reward Points</p>
+                  <span id="dbProfPoints">450</span>
+                </div>
+                <div class="dashboard-metric-card glass">
+                  <p style="font-size:.78rem;text-transform:uppercase;color:var(--text-muted);margin-bottom:5px;">Membership</p>
+                  <span style="color:var(--primary);font-size:1.3rem;">Gold VIP</span>
+                </div>
+              </div>
+              <p><strong>Default Address:</strong> <span id="dbProfAddress">42 Food Street, New York</span></p>
+              <p style="color:var(--primary);margin-top:10px;font-size:.88rem;">Collect 500 points to unlock a free dessert on your next order!</p>
+            </div>
+          </div>
+          <div class="dashboard-content-panel" id="dbPanel-orders">
+            <div class="glass" style="padding:36px;border-radius:var(--border-radius-lg);">
+              <h2 style="font-family:var(--font-body);font-weight:800;margin-bottom:20px;">Past Orders</h2>
+              <div class="dashboard-orders-list" id="dbOrdersContainer"></div>
+            </div>
+          </div>
+          <div class="dashboard-content-panel" id="dbPanel-reservations">
+            <div class="glass" style="padding:36px;border-radius:var(--border-radius-lg);">
+              <h2 style="font-family:var(--font-body);font-weight:800;margin-bottom:20px;">My Reservations</h2>
+              <div class="dashboard-res-list" id="dbReservationsContainer"></div>
+            </div>
+          </div>
+          <div class="dashboard-content-panel" id="dbPanel-wishlist">
+            <div class="glass" style="padding:36px;border-radius:var(--border-radius-lg);">
+              <h2 style="font-family:var(--font-body);font-weight:800;margin-bottom:20px;">My Wishlist</h2>
+              <div id="dbWishlistContainer"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ── I. ADMIN PANEL ─────────────────────────── -->
+    <section id="admin-page" class="page-section">
+      <!-- Admin Login Screen -->
+      <div id="adminLoginCard" class="glass" style="display: none; max-width: 450px; margin: 80px auto; padding: 40px; border-radius: var(--border-radius-lg); text-align: center;">
+        <div class="logo-icon" style="font-size: 3rem; color: var(--primary); margin-bottom: 20px;"><i class="fas fa-user-shield"></i></div>
+        <h2 style="font-family: var(--font-body); font-weight: 800; margin-bottom: 8px; color: var(--primary); text-transform: uppercase;">Foodies Admin</h2>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 24px;">Authorized Staff Access Only</p>
+        
+        <form id="adminLoginForm" onsubmit="window.AdminController.handleLogin(event)">
+          <div class="form-group-full" style="margin-bottom: 16px;">
+            <input type="email" id="adminLoginEmail" class="form-input" placeholder="Admin Email" required style="width: 100%;" />
+          </div>
+          <div class="form-group-full" style="margin-bottom: 24px;">
+            <input type="password" id="adminLoginPassword" class="form-input" placeholder="Password" required style="width: 100%;" />
+          </div>
+          <button type="submit" class="btn-gold" style="width: 100%; justify-content: center; padding: 12px;">
+            Secure Login &nbsp;<i class="fas fa-lock"></i>
+          </button>
+        </form>
+        
+        <div style="margin-top: 20px; font-size: 0.75rem; color: var(--text-muted);">
+          <p>Default Credentials:</p>
+          <p style="color: var(--primary); font-weight: 700; margin-top: 4px;">admin@client.com / admin123</p>
+        </div>
+      </div>
+
+      <div class="admin-layout" id="adminPanelLayout">
+        <div class="admin-sidebar glass">
+          <h3 style="font-family:var(--font-body);font-size:1rem;font-weight:800;text-align:center;margin-bottom:22px;color:var(--primary);">FOODIES BACKOFFICE</h3>
+          <ul class="admin-menu">
+            <li class="admin-menu-item active" onclick="app.setAdminTab('dashboard')">Overview</li>
+            <li class="admin-menu-item" onclick="app.setAdminTab('orders')">Orders</li>
+            <li class="admin-menu-item" onclick="app.setAdminTab('menu')">Menu Management</li>
+            <li class="admin-menu-item" onclick="app.setAdminTab('users')">Users List</li>
+            <li class="admin-menu-item" onclick="app.setAdminTab('reservations')">Reservations</li>
+            <li class="admin-menu-item" onclick="app.setAdminTab('kitchen')">Kitchen Screen</li>
+            <li class="admin-menu-item" onclick="app.setAdminTab('staff')">Staff Rights</li>
+          </ul>
+        </div>
+        <div class="admin-content-area">
+          <div class="admin-panel-content active" id="adminPanel-dashboard">
+            <div class="dashboard-metrics-grid">
+              <div class="dashboard-metric-card glass">
+                <p style="font-size:.72rem;text-transform:uppercase;">Total Sales</p>
+                <span id="adminStatRevenue">$0.00</span>
+              </div>
+              <div class="dashboard-metric-card glass">
+                <p style="font-size:.72rem;text-transform:uppercase;">Total Orders</p>
+                <span id="adminStatOrders">0</span>
+              </div>
+              <div class="dashboard-metric-card glass">
+                <p style="font-size:.72rem;text-transform:uppercase;">Total Menu Items</p>
+                <span id="adminStatMenuItems">0</span>
+              </div>
+            </div>
+            <div class="admin-charts-container">
+              <div class="chart-card glass">
+                <h3>Revenue Analytics ($)</h3>
+                <div class="svg-chart-wrapper" id="revenueChartBox"></div>
+              </div>
+              <div class="chart-card glass">
+                <h3>Customer Traffic</h3>
+                <div class="svg-chart-wrapper" id="visitorsChartBox"></div>
+              </div>
+            </div>
+          </div>
+          <div class="admin-panel-content" id="adminPanel-orders">
+            <div class="glass" style="padding:28px;border-radius:var(--border-radius-lg);overflow-x:auto;">
+              <h3 style="font-weight:800;margin-bottom:16px;">Order Logs</h3>
+              <table class="admin-table">
+                <thead><tr><th>Order ID</th><th>Customer</th><th>Dishes</th><th>Total</th><th>Status</th><th>Time</th></tr></thead>
+                <tbody id="adminOrdersTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="admin-panel-content" id="adminPanel-menu">
+            <div class="glass" style="padding:28px;border-radius:var(--border-radius-lg);">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
+                <h3 style="font-weight:800;margin:0;">Menu Items</h3>
+                <button class="btn-gold" style="padding:8px 16px;font-size:.8rem;" onclick="window.AdminController.showAddDishModal()">
+                  <i class="fas fa-plus"></i> Add New Item
+                </button>
+              </div>
+              <div style="overflow-x:auto;">
+                <table class="admin-table">
+                  <thead>
+                    <tr>
+                      <th>Image</th>
+                      <th>ID</th>
+                      <th>Name</th>
+                      <th>Category</th>
+                      <th>Price</th>
+                      <th>Discount</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="adminMenuTableBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="admin-panel-content" id="adminPanel-users">
+            <div class="glass" style="padding:28px;border-radius:var(--border-radius-lg);overflow-x:auto;">
+              <h3 style="font-weight:800;margin-bottom:16px;">Registered Users</h3>
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>VIP Status</th>
+                    <th>Points</th>
+                    <th>Registered At</th>
+                  </tr>
+                </thead>
+                <tbody id="adminUsersTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="admin-panel-content" id="adminPanel-reservations">
+            <div class="glass" style="padding:28px;border-radius:var(--border-radius-lg);overflow-x:auto;">
+              <h3 style="font-weight:800;margin-bottom:16px;">Reservation Queue</h3>
+              <table class="admin-table">
+                <thead><tr><th>Res ID</th><th>Name</th><th>Date</th><th>Time</th><th>Guests</th><th>Zone</th><th>Action</th></tr></thead>
+                <tbody id="adminReservationsTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="admin-panel-content" id="adminPanel-kitchen">
+            <div class="glass" style="padding:28px;border-radius:var(--border-radius-lg);">
+              <h3 style="font-weight:800;margin-bottom:16px;">Live Kitchen Queue</h3>
+              <div class="kitchen-queue-grid" id="kitchenQueueGrid"></div>
+            </div>
+          </div>
+          <div class="admin-panel-content" id="adminPanel-staff">
+            <div class="glass" style="padding:28px;border-radius:var(--border-radius-lg);">
+              <h3 style="font-weight:800;margin-bottom:16px;">Staff Roles &amp; Permissions</h3>
+              <div class="kitchen-queue-grid" id="adminStaffPermissionsGrid" style="margin-top:18px;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Add/Edit Dish Modal -->
+      <div class="modal-overlay" id="dishAdminModal" onclick="window.AdminController.closeDishModal()" style="display:none; z-index:3500;">
+        <div class="modal-card glass" onclick="event.stopPropagation()" style="max-width: 650px; overflow-y: auto; max-height: 90vh;">
+          <i class="fas fa-times close-modal-btn" onclick="window.AdminController.closeDishModal()"></i>
+          <h2 id="dishAdminModalTitle" style="color: var(--primary); margin-bottom: 20px; font-weight: 800;">Add Menu Item</h2>
+          <form id="dishAdminForm">
+            <input type="hidden" id="dishAdminMode" value="add" />
+            
+            <div class="res-form" style="grid-template-columns: 1fr 1fr; gap: 14px; text-align: left; margin-bottom: 0;">
+              <div>
+                <label style="font-size: .8rem; color: var(--primary); font-weight: 700; display: block; margin-bottom: 4px;">Item ID *</label>
+                <input type="text" id="dishAdminId" class="form-input" placeholder="e.g. chicken-burger" required />
+              </div>
+              <div>
+                <label style="font-size: .8rem; color: var(--primary); font-weight: 700; display: block; margin-bottom: 4px;">Name *</label>
+                <input type="text" id="dishAdminName" class="form-input" placeholder="e.g. Gourmet Chicken Burger" required />
+              </div>
+              <div>
+                <label style="font-size: .8rem; color: var(--primary); font-weight: 700; display: block; margin-bottom: 4px;">Category *</label>
+                <select id="dishAdminCategory" class="form-input" required>
+                  <option value="fastfood">Fast Food</option>
+                  <option value="desi">Desi / Asian</option>
+                  <option value="steaks">Steaks / BBQ</option>
+                  <option value="pizza">Pizza & Pasta</option>
+                  <option value="desserts">Desserts</option>
+                  <option value="drinks">Drinks</option>
+                </select>
+              </div>
+              <div>
+                <label style="font-size: .8rem; color: var(--primary); font-weight: 700; display: block; margin-bottom: 4px;">Price ($) *</label>
+                <input type="number" step="0.01" id="dishAdminPrice" class="form-input" placeholder="e.g. 12.99" required />
+              </div>
+              <div>
+                <label style="font-size: .8rem; color: var(--primary); font-weight: 700; display: block; margin-bottom: 4px;">Discount (%)</label>
+                <input type="number" id="dishAdminDiscount" class="form-input" placeholder="e.g. 10" value="0" />
+              </div>
+              <div>
+                <label style="font-size: .8rem; color: var(--primary); font-weight: 700; display: block; margin-bottom: 4px;">Image URL *</label>
+                <input type="text" id="dishAdminImage" class="form-input" placeholder="https://unsplash.com/..." required />
+              </div>
+              <div>
+                <label style="font-size: .8rem; color: var(--primary); font-weight: 700; display: block; margin-bottom: 4px;">Serving Size</label>
+                <input type="text" id="dishAdminServing" class="form-input" placeholder="e.g. 1 Person" value="1 Person" />
+              </div>
+              <div>
+                <label style="font-size: .8rem; color: var(--primary); font-weight: 700; display: block; margin-bottom: 4px;">Cooking Time</label>
+                <input type="text" id="dishAdminTime" class="form-input" placeholder="e.g. 15 mins" value="15 mins" />
+              </div>
+              <div>
+                <label style="font-size: .8rem; color: var(--primary); font-weight: 700; display: block; margin-bottom: 4px;">Calories (kcal)</label>
+                <input type="number" id="dishAdminCalories" class="form-input" placeholder="e.g. 450" value="0" />
+              </div>
+              <div>
+                <label style="font-size: .8rem; color: var(--primary); font-weight: 700; display: block; margin-bottom: 4px;">Spicy Level (0-3)</label>
+                <select id="dishAdminSpicy" class="form-input">
+                  <option value="0">Not Spicy</option>
+                  <option value="1">Mild</option>
+                  <option value="2">Medium</option>
+                  <option value="3">Hot</option>
+                </select>
+              </div>
+              <div style="grid-column: span 2;">
+                <label style="font-size: .8rem; color: var(--primary); font-weight: 700; display: block; margin-bottom: 4px;">Ingredients (comma-separated)</label>
+                <input type="text" id="dishAdminIngredients" class="form-input" placeholder="e.g. beef patty, cheddar, lettuce, special sauce" />
+              </div>
+              <div style="grid-column: span 2;">
+                <label style="font-size: .8rem; color: var(--primary); font-weight: 700; display: block; margin-bottom: 4px;">Description *</label>
+                <textarea id="dishAdminDesc" class="form-input" rows="3" placeholder="Description of the dish..." required></textarea>
+              </div>
+              <div style="grid-column: span 2; display: flex; gap: 20px; margin-top: 10px;">
+                <label style="display:flex; align-items:center; gap:8px; font-size:.85rem; cursor:pointer;">
+                  <input type="checkbox" id="dishAdminBestSeller" /> Best Seller
+                </label>
+                <label style="display:flex; align-items:center; gap:8px; font-size:.85rem; cursor:pointer;">
+                  <input type="checkbox" id="dishAdminFeatured" /> Featured Pick
+                </label>
+                <label style="display:flex; align-items:center; gap:8px; font-size:.85rem; cursor:pointer;">
+                  <input type="checkbox" id="dishAdminRecommended" /> Chef Recommended
+                </label>
+              </div>
+            </div>
+            
+            <div style="margin-top: 28px; display: flex; gap: 14px; justify-content: flex-end;">
+              <button type="button" class="btn-outline" onclick="window.AdminController.closeDishModal()" style="padding: 10px 20px; background: transparent;">Cancel</button>
+              <button type="submit" class="btn-gold" style="padding: 10px 24px;">Save Item</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+  </main><!-- end #app -->
+
+
+  <!-- ================================================
+       FOOTER
+       ================================================ -->
+  <footer class="footer">
+    <div class="footer-grid">
+      <div class="footer-col">
+        <div class="logo" style="margin-bottom:18px;">
+          <div class="logo-icon"><i class="fas fa-utensils"></i></div>
+          <span style="font-size:1.4rem;font-weight:800;">Foodies</span>
+        </div>
+        <p>Best quality food delivered to your door or served at your table. Fresh ingredients, expert chefs, unforgettable flavors.</p>
+        <div class="footer-social" style="display:flex;gap:12px;margin-top:16px;">
+          <i class="fab fa-facebook-f"></i>
+          <i class="fab fa-instagram"></i>
+          <i class="fab fa-whatsapp"></i>
+          <i class="fab fa-twitter"></i>
+          <i class="fab fa-youtube"></i>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h3>Menu</h3>
+        <ul class="footer-links">
+          <li><a href="#menu">Burgers &amp; Fast Food</a></li>
+          <li><a href="#menu">Steaks &amp; BBQ</a></li>
+          <li><a href="#menu">Pizza &amp; Pasta</a></li>
+          <li><a href="#menu">Desi &amp; Asian</a></li>
+          <li><a href="#menu">Desserts &amp; Drinks</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h3>Quick Links</h3>
+        <ul class="footer-links">
+          <li><a href="#home">Home</a></li>
+          <li><a href="#menu">Menu</a></li>
+          <li><a href="#gallery">Gallery</a></li>
+          <li><a href="#reservation">Book a Table</a></li>
+          <li><a href="#dashboard">My Orders</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h3>Contact Us</h3>
+        <p><i class="fas fa-map-marker-alt" style="color:var(--primary);margin-right:8px;"></i> 42 Food Street, New York</p>
+        <p><i class="fas fa-phone" style="color:var(--primary);margin-right:8px;"></i> +1-800-FOODIES</p>
+        <p><i class="fas fa-envelope" style="color:var(--primary);margin-right:8px;"></i> hello@foodies.com</p>
+        <h3 style="margin-top:20px;">Hours</h3>
+        <p><strong>Mon – Thu:</strong> 12:00 PM – 11:00 PM</p>
+        <p><strong>Fri – Sun:</strong> 12:00 PM – 11:30 PM</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 Foodies. All Rights Reserved. Made with <i class="fas fa-heart" style="color:var(--primary);"></i> for food lovers.</p>
+    </div>
+  </footer>
+
+
+  <!-- ================================================
+       CART DRAWER
+       ================================================ -->
+  <div class="cart-drawer glass" id="cartDrawer">
+    <div class="cart-header">
+      <h2>Your Cart</h2>
+      <i class="fas fa-times close-cart-btn" onclick="app.toggleCartDrawer(false)"></i>
+    </div>
+    <div class="cart-items-container" id="cartItemsContainer"></div>
+    <div class="cart-footer">
+      <div class="coupon-input-group">
+        <input type="text" id="cartCouponInput" class="coupon-input" placeholder="ENTER COUPON CODE" />
+        <button class="btn-apply-coupon" onclick="app.applyCoupon()">Apply</button>
+      </div>
+      <div class="cart-summary-row"><span>Subtotal</span><span id="cartSubtotalValue">$0.00</span></div>
+      <div class="cart-summary-row"><span>Delivery Fee</span><span>$5.00</span></div>
+      <div class="cart-summary-total">Total: <span id="cartTotalValue" style="float:right;">$0.00</span></div>
+      <a href="#checkout" class="btn-gold" style="width:100%;justify-content:center;margin-top:18px;">
+        Checkout <i class="fas fa-arrow-right"></i>
+      </a>
+    </div>
+  </div>
+
+
+  <!-- ================================================
+       DISH QUICK VIEW MODAL
+       ================================================ -->
+  <div class="modal-overlay" id="dishDetailModal" onclick="app.closeDishDetail()">
+    <div class="modal-card glass" onclick="event.stopPropagation()">
+      <i class="fas fa-times close-modal-btn" onclick="app.closeDishDetail()"></i>
+      <div class="dish-details-layout">
+        <div class="dish-media">
+          <div class="dish-main-image"><img src="" alt="Dish Detail" /></div>
+          <div class="dish-specs">
+            <div class="spec-box glass"><span id="modalSpecCalories">0</span>Cal</div>
+            <div class="spec-box glass"><span id="modalSpecSpicy">Mild</span>Spice</div>
+            <div class="spec-box glass"><span id="modalSpecTime">10 min</span>Prep</div>
+          </div>
+        </div>
+        <div class="dish-details-content">
+          <h2>Dish Name</h2>
+          <div class="rating-row" style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+            <div style="color:var(--warning);"><i class="fas fa-star"></i> 4.9</div>
+            <span style="font-size:.78rem;color:var(--text-muted);">(verified reviews)</span>
+          </div>
+          <p class="desc">Description...</p>
+          <h4>Ingredients</h4>
+          <div class="ingredients-list"></div>
+          <h4>Nutrition</h4>
+          <div class="nutrition-grid"></div>
+          <div class="purchase-row" style="margin-top:18px;">
+            <div class="qty-selector">
+              <span class="qty-btn" onclick="app.adjustModalQty(-1)">−</span>
+              <span class="qty-val">1</span>
+              <span class="qty-btn" onclick="app.adjustModalQty(1)">+</span>
+            </div>
+            <div class="dish-price" style="margin-right:16px;">
+              <span class="price-value">$0.00</span>
+            </div>
+            <button class="btn-gold" id="modalAddToCartBtn">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ================================================
+       FLOATING AI CHATBOT
+       ================================================ -->
+  <div class="chatbot-bubble" onclick="app.toggleChatbot(true)">
+    <i class="fas fa-robot"></i>
+  </div>
+  <div class="chatbot-panel glass" id="chatbotPanel">
+    <div class="chatbot-header">
+      <h3><i class="fas fa-magic" style="color:var(--primary);"></i> Foodies AI Concierge</h3>
+      <i class="fas fa-times" style="cursor:pointer;" onclick="app.toggleChatbot(false)"></i>
+    </div>
+    <div class="chatbot-body" id="chatbotBody"></div>
+    <div class="chatbot-footer">
+      <input type="text" id="chatbotInputMsg" class="chatbot-input" placeholder="Ask: suggest a steak, best burger..." />
+      <button class="chatbot-send-btn" id="chatbotSendBtn"><i class="fas fa-paper-plane"></i></button>
+    </div>
+  </div>
+
+
+  <!-- Hero Slideshow Script -->
+  <script>
+    (function() {
+      let current = 0;
+      const slides = document.querySelectorAll('.hero-slide');
+      const dots   = document.querySelectorAll('.hero-dot');
+      const total  = slides.length;
+
+      function heroGoTo(index) {
+        slides[current].classList.remove('active');
+        dots[current].classList.remove('active');
+        current = (index + total) % total;
+        slides[current].classList.add('active');
+        dots[current].classList.add('active');
+      }
+
+      // Make heroGoTo global for dot onclick
+      window.heroGoTo = heroGoTo;
+
+      // Auto-advance every 4 seconds
+      setInterval(function() {
+        heroGoTo(current + 1);
+      }, 4000);
+    })();
+  </script>
+
+  <!-- Static data fallback (runs before Firebase loads) -->
+  <script src="js/data.js"></script>
+
+  <!-- UI Engine (no imports needed) -->
+  <script src="js/ui.js"></script>
+
+  <!-- AI Chatbot (client-side, no Firebase needed) -->
+  <script src="js/chatbot.js"></script>
+
+  <!--
+    Firebase SDK + App modules loaded as ES modules.
+    IMPORTANT: After copying your firebaseConfig into js/firebase.js,
+    these will connect to your Firebase project automatically.
+  -->
+  <script type="module" src="js/admin.js"></script>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
