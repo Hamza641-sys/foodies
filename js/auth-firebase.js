@@ -104,23 +104,19 @@ export function getCurrentUser() {
 // ADMIN CHECK — reads role from Firestore users doc
 // ─────────────────────────────────────────────────
 export async function isAdmin(uid) {
-  if (!uid) return false;
+  // Simple check — if logged in user is admin@foodies.com, allow access
+  const user = auth.currentUser;
+  if (!user) return false;
+  if (user.email === 'admin@foodies.com') return true;
+  // Also check Firestore role for other admin accounts
   try {
-    // First try Firestore role check
     const snap = await getDoc(doc(db, 'users', uid));
     if (snap.exists()) {
       const role = snap.data().role;
-      if (role === 'admin' || role === 'Manager') return true;
+      return role === 'admin' || role === 'Manager';
     }
-    // Fallback: check by email if Firestore doc missing
-    const user = auth.currentUser;
-    if (user && user.email === 'admin@foodies.com') return true;
-    return false;
-  } catch (e) {
-    // Fallback on any error
-    const user = auth.currentUser;
-    return user ? user.email === 'admin@foodies.com' : false;
-  }
+  } catch (e) {}
+  return false;
 }
 
 // ─────────────────────────────────────────────────

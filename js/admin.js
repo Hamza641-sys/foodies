@@ -56,7 +56,10 @@ class AdminController {
       const { loginUser } = await import('./auth-firebase.js');
       const { user, profile } = await loginUser(emailEl.value.trim(), passEl.value);
 
-      const adminOk = await isAdmin(user.uid);
+      // Direct email check — no Firestore needed
+      const adminEmails = ['admin@foodies.com', 'admin@client.com'];
+      const adminOk = adminEmails.includes(user.email) || await isAdmin(user.uid);
+      
       if (!adminOk) {
         this.showToast('Access Denied. Admin privilege required.', 'danger');
         const { logoutUser } = await import('./auth-firebase.js');
