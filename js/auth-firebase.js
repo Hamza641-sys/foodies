@@ -104,13 +104,22 @@ export function getCurrentUser() {
 // ADMIN CHECK — reads role from Firestore users doc
 // ─────────────────────────────────────────────────
 export async function isAdmin(uid) {
-  if (!uid) return false;
+  if (!uid) {
+    console.warn('isAdmin: no uid provided');
+    return false;
+  }
   try {
+    console.log('isAdmin: checking uid:', uid);
     const snap = await getDoc(doc(db, 'users', uid));
-    if (!snap.exists()) return false;
+    if (!snap.exists()) {
+      console.warn('isAdmin: user document not found for uid:', uid);
+      return false;
+    }
     const role = snap.data().role;
+    console.log('isAdmin: role found =', role);
     return role === 'admin' || role === 'Manager';
   } catch (e) {
+    console.error('isAdmin: Firestore read failed:', e.code, e.message);
     return false;
   }
 }
