@@ -753,14 +753,18 @@ class FoodiesApp {
   }
 
   /* ── ADMIN PANEL ─────────────────────────────── */
-  async _renderAdmin() {
+  async _renderAdmin(skipAuthCheck = false) {
     document.querySelectorAll('.admin-panel-content').forEach(p => p.classList.remove('active'));
     document.getElementById(`adminPanel-${this.state.activeAdminTab}`)?.classList.add('active');
     document.querySelectorAll('.admin-sidebar .admin-menu-item').forEach(btn => {
       btn.classList.toggle('active', btn.getAttribute('onclick')?.includes(this.state.activeAdminTab));
     });
 
-    const adminOk = this.state.firebaseUser && await isAdmin(this.state.firebaseUser.uid);
+    // skipAuthCheck = true means admin.js already verified — no need to re-check
+    let adminOk = skipAuthCheck;
+    if (!adminOk) {
+      adminOk = this.state.firebaseUser && await isAdmin(this.state.firebaseUser.uid);
+    }
 
     if (!adminOk) {
       document.getElementById('adminPanelLayout').style.display = 'none';
@@ -855,7 +859,7 @@ class FoodiesApp {
     }
   }
 
-  setAdminTab(name) { this.state.activeAdminTab = name; this._renderAdmin(); }
+  setAdminTab(name) { this.state.activeAdminTab = name; this._renderAdmin(false); }
 
   async adminUpdateOrderStatus(orderId, newStatus) {
     try {

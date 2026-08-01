@@ -67,13 +67,13 @@ class AdminController {
       this.showToast(`Welcome, ${profile?.name || user.email}!`, 'success');
       if (e.target) e.target.reset();
 
-      // Update app state directly so _renderAdmin works immediately
+      // Update app state and open panel directly — skip re-auth check
       if (window.app) {
-        window.app.state.firebaseUser  = user;
-        window.app.state.currentUser   = profile
+        window.app.state.firebaseUser = user;
+        window.app.state.currentUser  = profile
           ? { ...profile, uid: user.uid, email: user.email }
           : { uid: user.uid, name: user.displayName || 'Admin', email: user.email, role: 'admin' };
-        await window.app._renderAdmin();
+        await window.app._renderAdmin(true); // true = skipAuthCheck
       }
     } catch (err) {
       const msg = err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password'
