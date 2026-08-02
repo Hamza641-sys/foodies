@@ -23,6 +23,8 @@ import {
   logoutUser, onAuthChange, getCurrentUser, isAdmin, getMyProfile
 } from './auth-firebase.js';
 
+import { COMBOS_DATA } from './combos.js';
+
 class FoodiesApp {
   constructor() {
     this.state = {
@@ -303,10 +305,10 @@ class FoodiesApp {
     // ── COMBOS SECTION ────────────────────────────
     const combosGrid = document.getElementById('homeCombosGrid');
     if (combosGrid) {
-      const combos = (window.COMBOS || []).filter(c => c.popular).slice(0, 6);
+      const combos = COMBOS_DATA.filter(c => c.popular).slice(0, 6);
       combosGrid.innerHTML = combos.length
         ? combos.map(c => window.UIEngine.renderComboCard(c)).join('')
-        : `<div style="color:var(--text-muted);text-align:center;padding:30px;">No combos available.</div>`;
+        : '<div style="color:var(--text-muted);text-align:center;padding:30px;">No combos available.</div>';
     }
 
     // ── BEST SELLERS SECTION ──────────────────────
@@ -389,7 +391,7 @@ class FoodiesApp {
 
     // ── Combos layout ─────────────────────────────
     if (this.state.activeCategory === 'combos') {
-      const combos = window.COMBOS || [];
+      const combos = COMBOS_DATA;
       gridEl.style.gridTemplateColumns = 'repeat(auto-fill, minmax(340px, 1fr))';
       gridEl.innerHTML = `
         <div style="grid-column:1/-1;">
@@ -404,11 +406,7 @@ class FoodiesApp {
             </div>
           </div>
         </div>
-        ${combos.length ? combos.map(c => window.UIEngine.renderComboCard(c)).join('') :
-          `<div style="grid-column:1/-1;text-align:center;padding:50px;color:var(--text-muted);">
-            <i class="fas fa-gift" style="font-size:2rem;margin-bottom:12px;display:block;color:var(--primary);"></i>
-            No combos available.
-          </div>`}`;
+        ${combos.map(c => window.UIEngine.renderComboCard(c)).join('')}`;
       return;
     }
 
@@ -573,7 +571,7 @@ class FoodiesApp {
 
   // Add entire combo to cart
   addComboToCart(comboId) {
-    const combo = (window.COMBOS || []).find(c => c.id === comboId);
+    const combo = COMBOS_DATA.find(c => c.id === comboId);
     if (!combo) return;
 
     // Add each item in the combo to cart
