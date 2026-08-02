@@ -225,6 +225,15 @@ class FoodiesApp {
     const featGrid = document.getElementById('featuredDishesGrid');
     if (featGrid) featGrid.innerHTML = dishes.filter(d => d.featured).slice(0, 3).map(d => window.UIEngine.renderDishCard(d)).join('');
 
+    // ── COMBOS SECTION ────────────────────────────
+    const combosGrid = document.getElementById('homeCombosGrid');
+    if (combosGrid) {
+      const combos = window.COMBOS || [];
+      combosGrid.innerHTML = combos.length
+        ? combos.filter(c => c.popular).map(c => window.UIEngine.renderComboCard(c)).join('')
+        : '<div style="color:var(--text-muted);text-align:center;padding:30px;">No combos available.</div>';
+    }
+
     // ── BEST SELLERS SECTION ──────────────────────
     const bsGrid = document.getElementById('bestSellersGrid');
     if (bsGrid) {
@@ -280,6 +289,7 @@ class FoodiesApp {
     if (catsEl && window.MENU_CATEGORIES) {
       let html = `
         <div class="category-card glass ${this.state.activeCategory==='all'?'active':''}" onclick="app.setMenuCategory('all')"><span class="cat-icon">🍽️</span><span class="cat-name">All</span></div>
+        <div class="category-card glass ${this.state.activeCategory==='combos'?'active':''}" onclick="app.setMenuCategory('combos')"><span class="cat-icon">🎁</span><span class="cat-name">Combos</span></div>
         <div class="category-card glass ${this.state.activeCategory==='bestsellers'?'active':''}" onclick="app.setMenuCategory('bestsellers')"><span class="cat-icon">🔥</span><span class="cat-name">Best Sellers</span></div>
         <div class="category-card glass ${this.state.activeCategory==='deals'?'active':''}" onclick="app.setMenuCategory('deals')"><span class="cat-icon">🏷️</span><span class="cat-name">On Sale</span></div>`;
       html += window.MENU_CATEGORIES.map(c => `
@@ -293,7 +303,29 @@ class FoodiesApp {
     let dishes = allDishes;
     if      (this.state.activeCategory === 'bestsellers') dishes = allDishes.filter(d => d.bestSeller);
     else if (this.state.activeCategory === 'deals')       dishes = allDishes.filter(d => d.discount > 0);
+    else if (this.state.activeCategory === 'combos')      dishes = [];
     else if (this.state.activeCategory !== 'all')         dishes = allDishes.filter(d => d.category === this.state.activeCategory);
+
+    // ── Combos layout ─────────────────────────────
+    if (this.state.activeCategory === 'combos') {
+      const combos = window.COMBOS || [];
+      gridEl.style.gridTemplateColumns = 'repeat(auto-fill, minmax(340px, 1fr))';
+      gridEl.innerHTML = `
+        <div style="grid-column:1/-1;">
+          <div class="deals-header-row" style="margin-bottom:28px;">
+            <div class="section-header" style="margin-bottom:0;text-align:left;">
+              <span class="section-subtitle">Save More Together</span>
+              <h2 class="section-title">🎁 Combo Deals</h2>
+              <span class="section-title-underline"></span>
+            </div>
+            <div class="deals-savings-banner glass">
+              🎁 <strong>${combos.length} combos available</strong> — Bundle & save big!
+            </div>
+          </div>
+        </div>
+        ${combos.map(c => window.UIEngine.renderComboCard(c)).join('')}`;
+      return;
+    }
 
     if (this.state.searchQuery) {
       const q = this.state.searchQuery.toLowerCase();
@@ -450,6 +482,40 @@ class FoodiesApp {
     this._updateBadges();
     this._renderCartDrawer();
     this.showToast('Item removed', 'info');
+  }
+
+  // Add entire combo to cart
+  addComboToCart(comboId) {
+    const combo = (window.COMBOS || []).find(c => c.id === comboId);
+    if (!combo) return;
+
+    // Add each item in the combo to cart
+    combo.items.forEach(item => {
+      const dish = (window.DISHES || []).find(d => d.id === item.dishId);
+      if (!dish) return;
+      const existing = this.state.cart.find(i => i.id === item.dishId);
+      if (existing) {
+        existing.qty += item.qty;
+      } else {
+        // Use combo discounted price per item
+        const comboItemPrice = combo.comboPrice / combo.items.reduce((t, i) => t + i.qty, 0);
+        this.state.cart.push({
+          id:    dish.id,
+          name:  dish.name,
+          price: parseFloat(comboItemPrice.toFixed(2)),
+          image: dish.image,
+          qty:   item.qty,
+          isCombo: true,
+          comboName: combo.name
+        });
+      }
+    });
+
+    this._save('foodies_cart', this.state.cart);
+    this._updateBadges();
+    this._renderCartDrawer();
+    this.toggleCartDrawer(true);
+    this.showToast(`🎉 ${combo.name} added! Save $${combo.saves}`, 'success');
   }
 
   _updateBadges() {

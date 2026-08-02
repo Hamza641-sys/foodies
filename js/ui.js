@@ -152,8 +152,58 @@ class UIEngine {
       </div>`;
   }
 
-  /** Reviews panel */
-  renderReviews(reviews) {
+  /**
+   * Combo Deal Card — for Combos section
+   */
+  renderComboCard(combo) {
+    const discountPct = Math.round((combo.saves / combo.originalPrice) * 100);
+    const itemsList   = combo.items.map(i => `
+      <span class="combo-item-tag">
+        ${i.qty > 1 ? `<strong>${i.qty}×</strong> ` : ''}${i.name}
+      </span>`).join('');
+
+    return `
+      <div class="combo-card glass">
+        <div class="combo-img-wrap">
+          <img src="${combo.image}" alt="${combo.name}" loading="lazy"
+               onerror="this.src='assets/hero-bg.png'" />
+          <div class="combo-tag-badge" style="background:${combo.badgeColor};">
+            ${combo.tagIcon} ${combo.badge}
+          </div>
+          <div class="combo-discount-pill">-${discountPct}% OFF</div>
+        </div>
+
+        <div class="combo-body">
+          <div class="combo-header-row">
+            <div>
+              <span class="combo-category-tag">${combo.tagIcon} ${combo.tag}</span>
+              <h3 class="combo-title">${combo.name}</h3>
+            </div>
+          </div>
+
+          <p class="combo-desc">${combo.description}</p>
+
+          <div class="combo-items-list">${itemsList}</div>
+
+          <div class="combo-meta-row">
+            <span><i class="fas fa-users"></i> ${combo.servings}</span>
+            <span><i class="fas fa-clock"></i> ${combo.cookingTime}</span>
+          </div>
+
+          <div class="combo-footer">
+            <div class="combo-price-block">
+              <span class="combo-new-price">$${combo.comboPrice.toFixed(2)}</span>
+              <span class="combo-old-price">$${combo.originalPrice.toFixed(2)}</span>
+              <span class="combo-save-badge">Save $${combo.saves}</span>
+            </div>
+            <button class="btn-gold combo-add-btn"
+                    onclick="app.addComboToCart('${combo.id}')">
+              <i class="fas fa-shopping-cart"></i> Add Deal
+            </button>
+          </div>
+        </div>
+      </div>`;
+  }
     return reviews.map(rev => `
       <div class="glass" style="padding:28px;border-radius:var(--border-radius-md);margin-bottom:18px;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">

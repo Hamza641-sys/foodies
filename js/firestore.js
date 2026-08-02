@@ -547,3 +547,26 @@ export async function submitContact(data) {
   });
   return ref.id;
 }
+
+// ─────────────────────────────────────────────────
+// COMBOS
+// ─────────────────────────────────────────────────
+export async function getCombos() {
+  // Combos are static data from data.js — no Firestore needed
+  // But seed to Firestore if needed for admin management later
+  return window.COMBOS || [];
+}
+
+export async function seedCombosIfEmpty() {
+  try {
+    const snap = await getDocs(collection(db, 'combos'));
+    if (!snap.empty) return;
+    const batch = writeBatch(db);
+    (window.COMBOS || []).forEach(combo => {
+      batch.set(doc(db, 'combos', combo.id), combo);
+    });
+    await batch.commit();
+  } catch (e) {
+    console.warn('Combo seeding skipped:', e.message);
+  }
+}
