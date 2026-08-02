@@ -280,8 +280,8 @@ class FoodiesApp {
     if (catsEl && window.MENU_CATEGORIES) {
       let html = `
         <div class="category-card glass ${this.state.activeCategory==='all'?'active':''}" onclick="app.setMenuCategory('all')"><span class="cat-icon">🍽️</span><span class="cat-name">All</span></div>
-        <div class="category-card glass ${this.state.activeCategory==='bestsellers'?'active':''}" onclick="app.setMenuCategory('bestsellers')" style="${this.state.activeCategory==='bestsellers'?'border-color:#f59e0b;':''};"><span class="cat-icon">🔥</span><span class="cat-name">Best Sellers</span></div>
-        <div class="category-card glass ${this.state.activeCategory==='deals'?'active':''}" onclick="app.setMenuCategory('deals')" style="${this.state.activeCategory==='deals'?'border-color:#ef4444;':''}"><span class="cat-icon">🏷️</span><span class="cat-name">On Sale</span></div>`;
+        <div class="category-card glass ${this.state.activeCategory==='bestsellers'?'active':''}" onclick="app.setMenuCategory('bestsellers')"><span class="cat-icon">🔥</span><span class="cat-name">Best Sellers</span></div>
+        <div class="category-card glass ${this.state.activeCategory==='deals'?'active':''}" onclick="app.setMenuCategory('deals')"><span class="cat-icon">🏷️</span><span class="cat-name">On Sale</span></div>`;
       html += window.MENU_CATEGORIES.map(c => `
         <div class="category-card glass ${this.state.activeCategory===c.id?'active':''}" onclick="app.setMenuCategory('${c.id}')">
           <span class="cat-icon">${c.icon}</span><span class="cat-name">${c.name}</span>
@@ -304,18 +304,69 @@ class FoodiesApp {
       );
     }
 
-    const emptyMsg = {
-      bestsellers: '🔥 No best sellers found.',
-      deals:       '🏷️ No active deals right now. Check back soon!'
-    };
+    // ── Best Sellers layout — home jaisa ──────────
+    if (this.state.activeCategory === 'bestsellers') {
+      gridEl.innerHTML = `
+        <div class="menu-section-header" style="grid-column:1/-1;">
+          <div class="deals-header-row">
+            <div class="section-header" style="margin-bottom:0;text-align:left;">
+              <span class="section-subtitle">Most Ordered</span>
+              <h2 class="section-title">🔥 Best Sellers</h2>
+              <span class="section-title-underline"></span>
+            </div>
+            <div class="deals-savings-banner glass">
+              🔥 <strong>${dishes.length} best seller dishes</strong> — Most loved by our customers!
+            </div>
+          </div>
+        </div>
+        ${dishes.length
+          ? dishes.map((d, i) => window.UIEngine.renderBestSellerCard(d, i + 1)).join('')
+          : `<div style="grid-column:1/-1;text-align:center;padding:50px;color:var(--text-muted);">
+               <i class="fas fa-fire" style="font-size:2rem;margin-bottom:12px;display:block;color:#f59e0b;"></i>
+               No best sellers yet.
+             </div>`
+        }`;
+      gridEl.style.gridTemplateColumns = 'repeat(auto-fill, minmax(280px, 1fr))';
+      return;
+    }
 
+    // ── Deals layout — home jaisa ─────────────────
+    if (this.state.activeCategory === 'deals') {
+      const maxDiscount = dishes.length ? Math.max(...dishes.map(d => d.discount)) : 0;
+      gridEl.innerHTML = `
+        <div class="menu-section-header" style="grid-column:1/-1;">
+          <div class="deals-header-row">
+            <div class="section-header" style="margin-bottom:0;text-align:left;">
+              <span class="section-subtitle">Limited Time</span>
+              <h2 class="section-title">🏷️ Today's Deals</h2>
+              <span class="section-title-underline"></span>
+            </div>
+            <div class="deals-savings-banner glass" id="dealsSavingsBanner">
+              🔥 <strong>${dishes.length} items on sale</strong> — Up to
+              <span style="color:var(--primary);font-size:1.2rem;font-weight:900;">${maxDiscount}% OFF</span> today only!
+            </div>
+          </div>
+        </div>
+        ${dishes.length
+          ? dishes.map(d => window.UIEngine.renderDealCard(d)).join('')
+          : `<div style="grid-column:1/-1;text-align:center;padding:50px;color:var(--text-muted);">
+               <i class="fas fa-tag" style="font-size:2rem;margin-bottom:12px;display:block;color:#ef4444;"></i>
+               No active deals right now. Check back soon!
+             </div>`
+        }`;
+      gridEl.style.gridTemplateColumns = 'repeat(auto-fill, minmax(220px, 1fr))';
+      return;
+    }
+
+    // ── Normal dish grid ──────────────────────────
+    gridEl.style.gridTemplateColumns = '';
     gridEl.innerHTML = window.UIEngine.getMenuSkeletons(4);
     setTimeout(() => {
       gridEl.innerHTML = dishes.length
         ? dishes.map(d => window.UIEngine.renderDishCard(d)).join('')
         : `<div style="grid-column:1/-1;text-align:center;padding:50px;color:var(--text-muted);">
              <i class="fas fa-search" style="font-size:2rem;margin-bottom:12px;display:block;"></i>
-             ${emptyMsg[this.state.activeCategory] || 'No dishes match your search.'}
+             No dishes match your search.
            </div>`;
     }, 380);
   }
