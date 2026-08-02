@@ -61,7 +61,7 @@ class FoodiesApp {
   }
 
   async onDOMReady() {
-    // Listen for Firebase auth state changes
+    // Pehle Firebase auth listen karo
     onAuthChange(async (fbUser) => {
       this.state.firebaseUser = fbUser;
       if (fbUser) {
@@ -78,11 +78,15 @@ class FoodiesApp {
         this.state.reservations  = [];
       }
       this._updateBadges();
-      this._route();
     });
 
+    // Pehle data.js ka data globally available hai — usse use karo
+    // Phir Firestore se fresh data load karo
     await this.loadApiData();
     await seedFirestoreIfEmpty();
+
+    // Ab route karo jab data ready ho
+    this._route();
     this._updateBadges();
     this._initChatbot();
 
@@ -416,12 +420,14 @@ class FoodiesApp {
   setMenuCategory(id) { this.state.activeCategory = id; this._renderMenu(); }
 
   /* ── CHEFS & GALLERY ─────────────────────────── */
-  _renderChefs() {
+  async _renderChefs() {
+    if (!window.CHEFS || !window.CHEFS.length) await this.loadApiData();
     const grid = document.getElementById('chefsGrid');
     if (grid) grid.innerHTML = window.UIEngine.renderChefs(window.CHEFS || []);
   }
 
-  _renderGallery(filter) {
+  async _renderGallery(filter) {
+    if (!window.GALLERY_ITEMS || !window.GALLERY_ITEMS.length) await this.loadApiData();
     filter = filter || this.state.galleryFilter || 'all';
     this.state.galleryFilter = filter;
     const grid = document.getElementById('galleryGrid');
