@@ -844,9 +844,6 @@ const COMBOS = [
     servings: '3-4 Persons',
     cookingTime: '40 mins',
     popular: true
-  },
-  {
-    id: 'combo-party-platter',
     name: 'Party Platter',
     tag: 'Party',
     tagIcon: '🎉',
@@ -866,7 +863,7 @@ const COMBOS = [
     saves: 75,
     servings: '6-8 Persons',
     cookingTime: '40 mins',
-    popular: false
+    popular: true
   },
   {
     id: 'combo-bbq-night',
@@ -888,7 +885,7 @@ const COMBOS = [
     saves: 30,
     servings: '2-3 Persons',
     cookingTime: '35 mins',
-    popular: false
+    popular: true
   },
   {
     id: 'combo-student-deal',
