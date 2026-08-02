@@ -204,6 +204,9 @@ class UIEngine {
         </div>
       </div>`;
   }
+
+  /** Reviews panel */
+  renderReviews(reviews) {
     return reviews.map(rev => `
       <div class="glass" style="padding:28px;border-radius:var(--border-radius-md);margin-bottom:18px;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
