@@ -216,10 +216,44 @@ class FoodiesApp {
   /* ── HOME PAGE ───────────────────────────────── */
   _renderHome() {
     const dishes = window.DISHES || [];
+
+    // Popular dishes (recommended)
     const recGrid = document.getElementById('chefRecommendationsGrid');
     if (recGrid) recGrid.innerHTML = dishes.filter(d => d.recommended).slice(0, 3).map(d => window.UIEngine.renderDishCard(d)).join('');
+
+    // Signature favorites (featured)
     const featGrid = document.getElementById('featuredDishesGrid');
     if (featGrid) featGrid.innerHTML = dishes.filter(d => d.featured).slice(0, 3).map(d => window.UIEngine.renderDishCard(d)).join('');
+
+    // ── BEST SELLERS SECTION ──────────────────────
+    const bsGrid = document.getElementById('bestSellersGrid');
+    if (bsGrid) {
+      const bestSellers = dishes.filter(d => d.bestSeller).slice(0, 6);
+      bsGrid.innerHTML = bestSellers.length
+        ? bestSellers.map((d, i) => window.UIEngine.renderBestSellerCard(d, i + 1)).join('')
+        : '<div style="color:var(--text-muted);text-align:center;padding:30px;">No best sellers yet.</div>';
+    }
+
+    // ── DEALS & DISCOUNTS SECTION ─────────────────
+    const dealsGrid = document.getElementById('dealsGrid');
+    if (dealsGrid) {
+      const deals = dishes.filter(d => d.discount > 0);
+      dealsGrid.innerHTML = deals.length
+        ? deals.map(d => window.UIEngine.renderDealCard(d)).join('')
+        : '<div style="color:var(--text-muted);text-align:center;padding:30px;">No active deals right now.</div>';
+    }
+
+    // ── DEALS COUNTER (total savings banner) ─────
+    const dealsBanner = document.getElementById('dealsSavingsBanner');
+    if (dealsBanner) {
+      const deals = dishes.filter(d => d.discount > 0);
+      const maxDiscount = deals.length ? Math.max(...deals.map(d => d.discount)) : 0;
+      dealsBanner.innerHTML = deals.length
+        ? `🔥 <strong>${deals.length} items on sale</strong> — Up to <span style="color:var(--primary);font-size:1.3rem;font-weight:900;">${maxDiscount}% OFF</span> today only!`
+        : '';
+    }
+
+    // Home gallery preview (first 6)
     const homeGallery = document.getElementById('homeGalleryPreview');
     if (homeGallery) {
       homeGallery.innerHTML = (window.GALLERY_ITEMS || []).slice(0, 6).map(item => `
@@ -228,6 +262,8 @@ class FoodiesApp {
           <div class="gallery-item-overlay"><p style="color:#fff;font-size:.82rem;font-weight:600;">${item.caption}</p></div>
         </div>`).join('');
     }
+
+    // Reviews
     const reviewsGrid = document.getElementById('homeReviewsGrid');
     if (reviewsGrid) reviewsGrid.innerHTML = window.UIEngine.renderReviews(window.REVIEWS || []);
   }

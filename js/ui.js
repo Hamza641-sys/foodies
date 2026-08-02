@@ -39,28 +39,34 @@ class UIEngine {
   }
 
   /**
-   * Single Dish Card — matches Foodies screenshot style
+   * Single Dish Card — with improved Best Seller & Discount badges
    */
   renderDishCard(dish) {
-    const isWishlisted = window.app && window.app.state.wishlist.includes(dish.id) ? 'active' : '';
-    const finalPrice   = dish.price * (1 - dish.discount / 100);
-    const discountBadge = dish.discount > 0
-      ? `<div class="dish-badge">-${dish.discount}%</div>` : '';
+    const isWishlisted  = window.app && window.app.state.wishlist.includes(dish.id) ? 'active' : '';
+    const finalPrice    = dish.price * (1 - dish.discount / 100);
+
+    // Badge logic — discount takes priority, then best seller
+    let badge = '';
+    if (dish.discount > 0) {
+      badge = `<div class="dish-badge badge-discount">-${dish.discount}% OFF</div>`;
+    } else if (dish.bestSeller) {
+      badge = `<div class="dish-badge badge-bestseller">🔥 Best Seller</div>`;
+    } else if (dish.recommended) {
+      badge = `<div class="dish-badge badge-recommended">⭐ Chef's Pick</div>`;
+    }
+
     const originalPrice = dish.discount > 0
       ? `<span class="price-original">$${dish.price.toFixed(2)}</span>` : '';
-    const bestBadge = dish.bestSeller && !dish.discount
-      ? `<div class="dish-badge" style="background:var(--success);">Best Seller</div>` : '';
 
     return `
       <div class="dish-card glass" data-dish-id="${dish.id}">
         <div class="dish-image-container" onclick="app.showDishDetail('${dish.id}')">
-          <img src="${dish.image}" alt="${dish.name}" loading="lazy" />
-          ${discountBadge}${bestBadge}
+          <img src="${dish.image}" alt="${dish.name}" loading="lazy" onerror="this.src='assets/hero-bg.png'" />
+          ${badge}
           <div class="dish-card-icon"><i class="fas fa-utensils"></i></div>
           <i class="fas fa-heart dish-wishlist-btn ${isWishlisted}"
              onclick="event.stopPropagation(); app.toggleWishlist('${dish.id}')"></i>
         </div>
-
         <div class="dish-card-body" onclick="app.showDishDetail('${dish.id}')">
           <div class="dish-info">
             <h3>${dish.name}</h3>
@@ -75,18 +81,74 @@ class UIEngine {
             </span>
           </div>
         </div>
-
         <div class="dish-footer">
           <div class="dish-price">
             <span class="price-value">$${finalPrice.toFixed(2)}</span>
             ${originalPrice}
           </div>
-          <button class="btn-add-cart"
-                  title="Add to cart"
+          <button class="btn-add-cart" title="Add to cart"
                   onclick="event.stopPropagation(); app.addToCart('${dish.id}')">
             <i class="fas fa-shopping-cart"></i>
           </button>
         </div>
+      </div>`;
+  }
+
+  /**
+   * Deal Card — for Deals/Discount section
+   */
+  renderDealCard(dish) {
+    const finalPrice = dish.price * (1 - dish.discount / 100);
+    const savings    = (dish.price - finalPrice).toFixed(2);
+    return `
+      <div class="deal-card glass" data-dish-id="${dish.id}">
+        <div class="deal-img-wrap" onclick="app.showDishDetail('${dish.id}')">
+          <img src="${dish.image}" alt="${dish.name}" loading="lazy" onerror="this.src='assets/hero-bg.png'" />
+          <div class="deal-discount-circle">-${dish.discount}%</div>
+        </div>
+        <div class="deal-info">
+          <h4 onclick="app.showDishDetail('${dish.id}')">${dish.name}</h4>
+          <div class="deal-price-row">
+            <span class="deal-new-price">$${finalPrice.toFixed(2)}</span>
+            <span class="deal-old-price">$${dish.price.toFixed(2)}</span>
+            <span class="deal-save-tag">Save $${savings}</span>
+          </div>
+          <button class="btn-gold" style="width:100%;justify-content:center;margin-top:10px;padding:9px;"
+                  onclick="app.addToCart('${dish.id}')">
+            <i class="fas fa-shopping-cart"></i> Add to Cart
+          </button>
+        </div>
+      </div>`;
+  }
+
+  /**
+   * Best Seller Card — horizontal card with rank badge
+   */
+  renderBestSellerCard(dish, rank) {
+    const finalPrice = dish.price * (1 - dish.discount / 100);
+    const discountBadge = dish.discount > 0
+      ? `<span class="bs-discount-tag">-${dish.discount}%</span>` : '';
+    return `
+      <div class="bestseller-card glass">
+        <div class="bs-rank">#${rank}</div>
+        <img src="${dish.image}" alt="${dish.name}" loading="lazy"
+             onerror="this.src='assets/hero-bg.png'"
+             onclick="app.showDishDetail('${dish.id}')" />
+        <div class="bs-info">
+          <h4 onclick="app.showDishDetail('${dish.id}')">${dish.name}</h4>
+          <div style="font-size:.75rem;color:var(--text-muted);margin-bottom:6px;">
+            <span style="color:var(--warning);">${this._stars(dish.rating)}</span>
+            ${dish.rating.toFixed(1)} (${dish.reviewsCount})
+          </div>
+          <div class="bs-price-row">
+            <span class="price-value">$${finalPrice.toFixed(2)}</span>
+            ${discountBadge}
+          </div>
+        </div>
+        <button class="btn-add-cart" title="Add to cart"
+                onclick="app.addToCart('${dish.id}')">
+          <i class="fas fa-shopping-cart"></i>
+        </button>
       </div>`;
   }
 
