@@ -128,11 +128,11 @@ class FoodiesApp {
       if (coupons.length) window.COUPONS        = coupons;
       if (zones.length)   window.DELIVERY_ZONES = zones;
 
-      // COMBOS always from data.js
-      if (typeof COMBOS !== 'undefined') window.COMBOS = COMBOS;
+      // COMBOS always from data.js — window.COMBOS set hota hai data.js load pe
+      // Force refresh from global scope
+      window.COMBOS = window.COMBOS && window.COMBOS.length ? window.COMBOS : [];
     } catch (e) {
       console.warn('Firestore load failed, using data.js fallback:', e.message);
-      if (typeof COMBOS !== 'undefined') window.COMBOS = COMBOS;
     }
   }
 
@@ -303,13 +303,10 @@ class FoodiesApp {
     // ── COMBOS SECTION ────────────────────────────
     const combosGrid = document.getElementById('homeCombosGrid');
     if (combosGrid) {
-      const combos = window.COMBOS || (typeof COMBOS !== 'undefined' ? COMBOS : []);
-      // Ensure window.COMBOS is always set
-      if (!window.COMBOS && combos.length) window.COMBOS = combos;
-      const popular = combos.filter(c => c.popular).slice(0, 6);
-      combosGrid.innerHTML = popular.length
-        ? popular.map(c => window.UIEngine.renderComboCard(c)).join('')
-        : '<div style="color:var(--text-muted);text-align:center;padding:30px;">No combos available.</div>';
+      const combos = (window.COMBOS || []).filter(c => c.popular).slice(0, 6);
+      combosGrid.innerHTML = combos.length
+        ? combos.map(c => window.UIEngine.renderComboCard(c)).join('')
+        : `<div style="color:var(--text-muted);text-align:center;padding:30px;">No combos available.</div>`;
     }
 
     // ── BEST SELLERS SECTION ──────────────────────
@@ -407,7 +404,11 @@ class FoodiesApp {
             </div>
           </div>
         </div>
-        ${combos.map(c => window.UIEngine.renderComboCard(c)).join('')}`;
+        ${combos.length ? combos.map(c => window.UIEngine.renderComboCard(c)).join('') :
+          `<div style="grid-column:1/-1;text-align:center;padding:50px;color:var(--text-muted);">
+            <i class="fas fa-gift" style="font-size:2rem;margin-bottom:12px;display:block;color:var(--primary);"></i>
+            No combos available.
+          </div>`}`;
       return;
     }
 

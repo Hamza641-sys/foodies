@@ -1117,6 +1117,18 @@
 
   <!-- Static data fallback (runs before Firebase loads) -->
   <script src="js/data.js"></script>
+  <script>
+    // Ensure all global data is available for ES modules
+    window.COMBOS         = window.COMBOS         || [];
+    window.DISHES         = window.DISHES         || [];
+    window.MENU_CATEGORIES= window.MENU_CATEGORIES|| [];
+    window.CHEFS          = window.CHEFS          || [];
+    window.GALLERY_ITEMS  = window.GALLERY_ITEMS  || [];
+    window.REVIEWS        = window.REVIEWS        || [];
+    window.OFFERS         = window.OFFERS         || [];
+    window.COUPONS        = window.COUPONS        || [];
+    window.DELIVERY_ZONES = window.DELIVERY_ZONES || [];
+  </script>
 
   <!-- UI Engine (no imports needed) -->
   <script src="js/ui.js"></script>
