@@ -906,30 +906,87 @@ class FoodiesApp {
       if (!text) return;
       this._appendChat(text, 'user');
       input.value = '';
+
+      // Show typing indicator
+      const typingId = 'typing-' + Date.now();
+      const body = document.getElementById('chatbotBody');
+      const typing = document.createElement('div');
+      typing.id = typingId;
+      typing.className = 'chat-msg chat-msg-bot';
+      typing.innerHTML = '<span style="opacity:.5;">typing...</span>';
+      body?.appendChild(typing);
+      body.scrollTop = body.scrollHeight;
+
       try {
         const reply = await window.AIChatbot.processMessage(text);
+        // Remove typing indicator
+        document.getElementById(typingId)?.remove();
+
         this._appendChat(reply.text, 'bot');
-        if (reply.dishes) {
-          const body = document.getElementById('chatbotBody');
+
+        // Show dish cards with Add to Cart buttons
+        if (reply.dishes && reply.dishes.length) {
           const wrap = document.createElement('div');
           wrap.style.cssText = 'display:flex;flex-direction:column;gap:8px;margin-top:8px;';
           reply.dishes.forEach(dish => {
-            const b = document.createElement('button');
-            b.className = 'btn-outline';
-            b.style.cssText = 'padding:6px 14px;font-size:.75rem;background:transparent;text-align:left;';
-            b.innerHTML = `<i class="fas fa-plus"></i> ${dish.name} — $${dish.price}`;
-            b.onclick = () => this.addToCart(dish.id);
-            wrap.appendChild(b);
+            const price = (dish.price * (1 - (dish.discount || 0) / 100)).toFixed(2);
+            const card  = document.createElement('div');
+            card.className = 'glass';
+            card.style.cssText = 'padding:10px 14px;border-radius:12px;display:flex;align-items:center;gap:10px;';
+            card.innerHTML = `
+              <img src="${dish.image}" style="width:48px;height:48px;border-radius:8px;object-fit:cover;" onerror="this.src='assets/hero-bg.png'" />
+              <div style="flex:1;min-width:0;">
+                <div style="font-weight:700;font-size:.85rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${dish.name}</div>
+                <div style="font-size:.75rem;color:var(--text-muted);">$${price} • ⭐${dish.rating} • ⏱️${dish.cookingTime}</div>
+              </div>
+              <button class="btn-gold" style="padding:6px 12px;font-size:.72rem;white-space:nowrap;flex-shrink:0;"
+                onclick="app.addToCartFromChat('${dish.id}', '${dish.name.replace(/'/g, "\\'")}')">
+                🛒 Add
+              </button>`;
+            wrap.appendChild(card);
           });
-          body.appendChild(wrap);
+          body?.appendChild(wrap);
           body.scrollTop = body.scrollHeight;
         }
+
+        // Show action button (link)
+        if (reply.action) {
+          const wrap = document.createElement('div');
+          wrap.style.cssText = 'margin-top:8px;';
+          wrap.innerHTML = `<a href="${reply.action.href}" class="btn-gold" style="padding:8px 16px;font-size:.8rem;display:inline-block;text-decoration:none;" onclick="app.toggleChatbot(false)">${reply.action.label}</a>`;
+          body?.appendChild(wrap);
+          body.scrollTop = body.scrollHeight;
+        }
+
+        // Show checkout button
+        if (reply.showCheckoutBtn) {
+          const wrap = document.createElement('div');
+          wrap.style.cssText = 'margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;';
+          wrap.innerHTML = `
+            <a href="#checkout" class="btn-gold" style="padding:8px 16px;font-size:.8rem;display:inline-block;text-decoration:none;" onclick="app.toggleChatbot(false)">✅ Go to Checkout</a>
+            <button class="btn-outline" style="padding:8px 16px;font-size:.8rem;background:transparent;" onclick="app.toggleCartDrawer(true);app.toggleChatbot(false);">🛒 View Cart</button>`;
+          body?.appendChild(wrap);
+          body.scrollTop = body.scrollHeight;
+        }
+
       } catch (err) {
-        this._appendChat("Sorry, I'm having trouble right now. Please try again.", 'bot');
+        document.getElementById(typingId)?.remove();
+        this._appendChat("Sorry, something went wrong. Please try again! 😊", 'bot');
       }
     };
     btn.onclick      = send;
     input.onkeypress = e => { if (e.key === 'Enter') send(); };
+  }
+
+  // Called when dish added to cart via chatbot
+  addToCartFromChat(dishId, dishName) {
+    this.addToCart(dishId, 1);
+    // Open chatbot if closed and notify
+    const panel = document.getElementById('chatbotPanel');
+    if (panel && !panel.classList.contains('active')) {
+      this.toggleChatbot(true);
+    }
+    window.AIChatbot.notifyCartAdded(dishName);
   }
 
   toggleChatbot(open) {

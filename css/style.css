@@ -733,3 +733,26 @@ img { max-width:100%; height:auto; display:block; }
   .section-title { font-size:1.8rem; }
   .footer-grid { grid-template-columns:1fr; }
 }
+
+/* ==========================================
+   CHATBOT QUICK BUTTONS & ORDER FLOW
+   ========================================== */
+.chatbot-quick-btn {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  color: var(--text-color);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: .75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  backdrop-filter: blur(8px);
+  white-space: nowrap;
+}
+.chatbot-quick-btn:hover {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+  transform: translateY(-1px);
+}
