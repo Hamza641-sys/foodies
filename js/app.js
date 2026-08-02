@@ -273,25 +273,114 @@ class FoodiesApp {
     const catsEl = document.getElementById('menuCategoriesSlider');
     const gridEl = document.getElementById('menuDishesGrid');
     if (!gridEl) return;
+
+    const allDishes = window.DISHES || [];
+
+    // ── Category filter tabs ──────────────────────
     if (catsEl && window.MENU_CATEGORIES) {
-      let html = `<div class="category-card glass ${this.state.activeCategory==='all'?'active':''}" onclick="app.setMenuCategory('all')"><span class="cat-icon">🍽️</span><span class="cat-name">All</span></div>`;
+      // Special filter tabs: All, Best Sellers, On Sale
+      let html = `
+        <div class="category-card glass ${this.state.activeCategory==='all'?'active':''}"
+             onclick="app.setMenuCategory('all')">
+          <span class="cat-icon">🍽️</span><span class="cat-name">All</span>
+        </div>
+        <div class="category-card glass menu-special-tab ${this.state.activeCategory==='bestsellers'?'active':''}"
+             onclick="app.setMenuCategory('bestsellers')" style="border-color:#f59e0b;">
+          <span class="cat-icon">🔥</span><span class="cat-name">Best Sellers</span>
+        </div>
+        <div class="category-card glass menu-special-tab ${this.state.activeCategory==='deals'?'active':''}"
+             onclick="app.setMenuCategory('deals')" style="border-color:#ef4444;">
+          <span class="cat-icon">🏷️</span><span class="cat-name">On Sale</span>
+        </div>`;
       html += window.MENU_CATEGORIES.map(c => `
-        <div class="category-card glass ${this.state.activeCategory===c.id?'active':''}" onclick="app.setMenuCategory('${c.id}')">
+        <div class="category-card glass ${this.state.activeCategory===c.id?'active':''}"
+             onclick="app.setMenuCategory('${c.id}')">
           <span class="cat-icon">${c.icon}</span><span class="cat-name">${c.name}</span>
         </div>`).join('');
       catsEl.innerHTML = html;
     }
-    let dishes = window.DISHES || [];
-    if (this.state.activeCategory !== 'all') dishes = dishes.filter(d => d.category === this.state.activeCategory);
+
+    // ── Filter dishes ─────────────────────────────
+    let dishes = allDishes;
+    if      (this.state.activeCategory === 'bestsellers') dishes = allDishes.filter(d => d.bestSeller);
+    else if (this.state.activeCategory === 'deals')       dishes = allDishes.filter(d => d.discount > 0);
+    else if (this.state.activeCategory !== 'all')         dishes = allDishes.filter(d => d.category === this.state.activeCategory);
+
     if (this.state.searchQuery) {
       const q = this.state.searchQuery.toLowerCase();
-      dishes = dishes.filter(d => d.name.toLowerCase().includes(q) || d.description.toLowerCase().includes(q) || (d.ingredients||[]).some(i => i.toLowerCase().includes(q)));
+      dishes = dishes.filter(d =>
+        d.name.toLowerCase().includes(q) ||
+        d.description.toLowerCase().includes(q) ||
+        (d.ingredients||[]).some(i => i.toLowerCase().includes(q))
+      );
     }
+
+    // ── Show inline Best Sellers + Deals banners when "All" is selected ──
+    const menuTopBanners = document.getElementById('menuTopBanners');
+    if (menuTopBanners) {
+      if (this.state.activeCategory === 'all' && !this.state.searchQuery) {
+        const bestSellers = allDishes.filter(d => d.bestSeller);
+        const deals       = allDishes.filter(d => d.discount > 0);
+        const maxDiscount = deals.length ? Math.max(...deals.map(d => d.discount)) : 0;
+
+        menuTopBanners.innerHTML = `
+          <!-- Best Sellers Mini Strip -->
+          <div class="menu-section-label">
+            <span class="menu-section-icon">🔥</span>
+            <div>
+              <h3 class="menu-section-title">Best Sellers</h3>
+              <p class="menu-section-sub">Most ordered by our customers</p>
+            </div>
+            <button class="btn-outline menu-see-all-btn" onclick="app.setMenuCategory('bestsellers')">
+              See All <i class="fas fa-arrow-right"></i>
+            </button>
+          </div>
+          <div class="menu-strip-grid">
+            ${bestSellers.slice(0, 4).map(d => window.UIEngine.renderDishCard(d)).join('')}
+          </div>
+
+          <!-- Deals Mini Strip -->
+          <div class="menu-section-label" style="margin-top:40px;">
+            <span class="menu-section-icon deals-icon">🏷️</span>
+            <div>
+              <h3 class="menu-section-title">Today's Deals</h3>
+              <p class="menu-section-sub">Up to <strong style="color:var(--primary);">${maxDiscount}% OFF</strong> — Limited time!</p>
+            </div>
+            <button class="btn-outline menu-see-all-btn" onclick="app.setMenuCategory('deals')" style="border-color:#ef4444;color:#ef4444;">
+              See All <i class="fas fa-arrow-right"></i>
+            </button>
+          </div>
+          <div class="menu-strip-grid">
+            ${deals.slice(0, 4).map(d => window.UIEngine.renderDishCard(d)).join('')}
+          </div>
+
+          <!-- All Dishes divider -->
+          <div class="menu-section-label" style="margin-top:40px;">
+            <span class="menu-section-icon">🍽️</span>
+            <div>
+              <h3 class="menu-section-title">All Dishes</h3>
+              <p class="menu-section-sub">Browse our complete menu</p>
+            </div>
+          </div>`;
+      } else {
+        menuTopBanners.innerHTML = '';
+      }
+    }
+
+    // ── Special empty states ──────────────────────
+    const emptyMessages = {
+      bestsellers: '🔥 No best sellers marked yet.',
+      deals:       '🏷️ No active deals right now. Check back soon!'
+    };
+
     gridEl.innerHTML = window.UIEngine.getMenuSkeletons(4);
     setTimeout(() => {
       gridEl.innerHTML = dishes.length
         ? dishes.map(d => window.UIEngine.renderDishCard(d)).join('')
-        : `<div style="grid-column:1/-1;text-align:center;padding:50px;color:var(--text-muted);"><i class="fas fa-search" style="font-size:2rem;margin-bottom:12px;display:block;"></i>No dishes match your search.</div>`;
+        : `<div style="grid-column:1/-1;text-align:center;padding:50px;color:var(--text-muted);">
+             <i class="fas fa-search" style="font-size:2rem;margin-bottom:12px;display:block;"></i>
+             ${emptyMessages[this.state.activeCategory] || 'No dishes match your search.'}
+           </div>`;
     }, 380);
   }
 

@@ -981,3 +981,89 @@ img { max-width:100%; height:auto; display:block; }
     white-space: normal;
   }
 }
+
+/* ==========================================
+   MENU PAGE - BEST SELLERS & DEALS STRIPS
+   ========================================== */
+
+/* Special category tab styling */
+.menu-special-tab {
+  border: 1.5px solid var(--glass-border);
+  position: relative;
+}
+.menu-special-tab.active {
+  background: linear-gradient(135deg, rgba(245,158,11,.2), rgba(239,68,68,.1));
+}
+
+/* Section label row */
+.menu-section-label {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 20px;
+  padding: 16px 20px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--border-radius-md);
+  backdrop-filter: blur(10px);
+}
+.menu-section-icon {
+  font-size: 1.8rem;
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(var(--primary-rgb), .12);
+  border-radius: 12px;
+}
+.deals-icon {
+  background: rgba(239,68,68,.12);
+}
+.menu-section-title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  margin: 0 0 3px 0;
+  font-family: var(--font-body);
+}
+.menu-section-sub {
+  font-size: .78rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+.menu-see-all-btn {
+  margin-left: auto;
+  padding: 7px 16px;
+  font-size: .78rem;
+  background: transparent;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Mini strip grid — 4 cards horizontal scroll on mobile */
+.menu-strip-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 8px;
+}
+
+@media (max-width: 1100px) {
+  .menu-strip-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 600px) {
+  .menu-strip-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  .menu-section-label {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .menu-see-all-btn {
+    margin-left: 0;
+  }
+}
