@@ -847,6 +847,12 @@ class FoodiesApp {
                 ${this.state.authMode === 'login' ? 'Register here' : 'Login here'}
               </a>
             </p>
+            ${this.state.authMode === 'login' ? `
+            <p style="font-size:.82rem;text-align:center;margin-top:10px;">
+              <a href="javascript:void(0)" onclick="app.forgotPassword()" style="color:var(--text-muted);">
+                <i class="fas fa-key"></i> Forgot Password?
+              </a>
+            </p>` : ''}
           </div>`;
       } else {
         const u = this.state.currentUser;
@@ -928,7 +934,6 @@ class FoodiesApp {
         await loginUser(email, password);
         this.showToast('Welcome back!', 'success');
       }
-      // onAuthChange listener will update state automatically
     } catch (err) {
       const msg = err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password'
         ? 'Invalid email or password'
@@ -945,6 +950,40 @@ class FoodiesApp {
       this.showToast('Signed in with Google!', 'success');
     } catch (err) {
       this.showToast('Google sign-in failed: ' + err.message, 'danger');
+    }
+  }
+
+  async forgotPassword() {
+    const email = document.getElementById('authEmail')?.value?.trim();
+    if (!email) {
+      this.showToast('Please enter your email address first', 'warning');
+      return;
+    }
+    try {
+      const { sendPasswordResetEmail } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js');
+      const { auth } = await import('./firebase.js');
+      await sendPasswordResetEmail(auth, email);
+      this.showToast(`Password reset email sent to ${email}`, 'success');
+    } catch (err) {
+      this.showToast('Failed to send reset email: ' + err.message, 'danger');
+    }
+  }
+
+  async submitContactForm(e) {
+    e.preventDefault();
+    const data = {
+      name:    document.getElementById('contactName').value,
+      email:   document.getElementById('contactEmail').value,
+      phone:   document.getElementById('contactPhone').value,
+      subject: document.getElementById('contactSubject').value,
+      message: document.getElementById('contactMessage').value
+    };
+    try {
+      await submitContact(data);
+      this.showToast('Message sent! We will get back to you soon.', 'success');
+      e.target.reset();
+    } catch (err) {
+      this.showToast('Failed to send message: ' + err.message, 'danger');
     }
   }
 
