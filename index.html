@@ -45,7 +45,60 @@
 
     <ul class="nav-links">
       <li><a href="#home" class="active">Home</a></li>
-      <li><a href="#menu">Menu</a></li>
+      <li class="nav-dropdown-wrap">
+        <a href="#menu" class="nav-dropdown-trigger">
+          Menu <i class="fas fa-chevron-down nav-chevron"></i>
+        </a>
+        <div class="nav-mega-dropdown glass">
+          <div class="mega-col mega-special">
+            <div class="mega-special-item" onclick="app.setMenuCategory('all');window.location.hash='#menu'">
+              <span class="mega-special-icon">🍽️</span>
+              <div>
+                <div class="mega-special-title">All Menu</div>
+                <div class="mega-special-sub">Browse complete menu</div>
+              </div>
+            </div>
+            <div class="mega-special-item bestseller-item" onclick="app.setMenuCategory('bestsellers');window.location.hash='#menu'">
+              <span class="mega-special-icon">🔥</span>
+              <div>
+                <div class="mega-special-title">Best Sellers</div>
+                <div class="mega-special-sub">Most ordered dishes</div>
+              </div>
+              <span class="mega-badge mega-badge-fire">HOT</span>
+            </div>
+            <div class="mega-special-item deals-item" onclick="app.setMenuCategory('deals');window.location.hash='#menu'">
+              <span class="mega-special-icon">🏷️</span>
+              <div>
+                <div class="mega-special-title">Today's Deals</div>
+                <div class="mega-special-sub">Up to 15% OFF</div>
+              </div>
+              <span class="mega-badge mega-badge-deal">SALE</span>
+            </div>
+          </div>
+          <div class="mega-divider"></div>
+          <div class="mega-col mega-categories">
+            <div class="mega-cat-title">Categories</div>
+            <div class="mega-cat-grid" id="megaMenuCatGrid">
+              <div class="mega-cat-item" onclick="app.setMenuCategory('burger');window.location.hash='#menu'">🍔 Burger</div>
+              <div class="mega-cat-item" onclick="app.setMenuCategory('pizza');window.location.hash='#menu'">🍕 Pizza</div>
+              <div class="mega-cat-item" onclick="app.setMenuCategory('desi');window.location.hash='#menu'">🍛 Desi</div>
+              <div class="mega-cat-item" onclick="app.setMenuCategory('steak');window.location.hash='#menu'">🥩 Steak</div>
+              <div class="mega-cat-item" onclick="app.setMenuCategory('bbq');window.location.hash='#menu'">🍗 BBQ</div>
+              <div class="mega-cat-item" onclick="app.setMenuCategory('pasta');window.location.hash='#menu'">🍝 Pasta</div>
+              <div class="mega-cat-item" onclick="app.setMenuCategory('japanese');window.location.hash='#menu'">🍣 Japanese</div>
+              <div class="mega-cat-item" onclick="app.setMenuCategory('chinese');window.location.hash='#menu'">🍜 Chinese</div>
+              <div class="mega-cat-item" onclick="app.setMenuCategory('fastfood');window.location.hash='#menu'">🍟 Fast Food</div>
+              <div class="mega-cat-item" onclick="app.setMenuCategory('desserts');window.location.hash='#menu'">🍰 Desserts</div>
+              <div class="mega-cat-item" onclick="app.setMenuCategory('drinks');window.location.hash='#menu'">🥤 Drinks</div>
+              <div class="mega-cat-item" onclick="app.setMenuCategory('coffee');window.location.hash='#menu'">☕ Coffee</div>
+              <div class="mega-cat-item" onclick="app.setMenuCategory('breakfast');window.location.hash='#menu'">🥐 Breakfast</div>
+              <div class="mega-cat-item" onclick="app.setMenuCategory('salad');window.location.hash='#menu'">🥗 Salad</div>
+              <div class="mega-cat-item" onclick="app.setMenuCategory('sandwich');window.location.hash='#menu'">🥪 Sandwich</div>
+              <div class="mega-cat-item" onclick="app.setMenuCategory('icecream');window.location.hash='#menu'">🍦 Ice Cream</div>
+            </div>
+          </div>
+        </div>
+      </li>
       <li><a href="#chefs">Chefs</a></li>
       <li><a href="#gallery">Gallery</a></li>
       <li><a href="#reservation">Reservation</a></li>
@@ -289,9 +342,6 @@
 
         <!-- Category Slider -->
         <div class="category-slider" id="menuCategoriesSlider"></div>
-
-        <!-- Menu Top Banners (Best Sellers + Deals strips) -->
-        <div id="menuTopBanners"></div>
 
         <!-- Dishes Grid -->
         <div class="dishes-grid" id="menuDishesGrid"></div>

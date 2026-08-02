@@ -270,37 +270,26 @@ class FoodiesApp {
 
   /* ── MENU PAGE ───────────────────────────────── */
   _renderMenu() {
-    const catsEl = document.getElementById('menuCategoriesSlider');
-    const gridEl = document.getElementById('menuDishesGrid');
+    const catsEl  = document.getElementById('menuCategoriesSlider');
+    const gridEl  = document.getElementById('menuDishesGrid');
     if (!gridEl) return;
 
     const allDishes = window.DISHES || [];
 
-    // ── Category filter tabs ──────────────────────
+    // Category pills
     if (catsEl && window.MENU_CATEGORIES) {
-      // Special filter tabs: All, Best Sellers, On Sale
       let html = `
-        <div class="category-card glass ${this.state.activeCategory==='all'?'active':''}"
-             onclick="app.setMenuCategory('all')">
-          <span class="cat-icon">🍽️</span><span class="cat-name">All</span>
-        </div>
-        <div class="category-card glass menu-special-tab ${this.state.activeCategory==='bestsellers'?'active':''}"
-             onclick="app.setMenuCategory('bestsellers')" style="border-color:#f59e0b;">
-          <span class="cat-icon">🔥</span><span class="cat-name">Best Sellers</span>
-        </div>
-        <div class="category-card glass menu-special-tab ${this.state.activeCategory==='deals'?'active':''}"
-             onclick="app.setMenuCategory('deals')" style="border-color:#ef4444;">
-          <span class="cat-icon">🏷️</span><span class="cat-name">On Sale</span>
-        </div>`;
+        <div class="category-card glass ${this.state.activeCategory==='all'?'active':''}" onclick="app.setMenuCategory('all')"><span class="cat-icon">🍽️</span><span class="cat-name">All</span></div>
+        <div class="category-card glass ${this.state.activeCategory==='bestsellers'?'active':''}" onclick="app.setMenuCategory('bestsellers')" style="${this.state.activeCategory==='bestsellers'?'border-color:#f59e0b;':''};"><span class="cat-icon">🔥</span><span class="cat-name">Best Sellers</span></div>
+        <div class="category-card glass ${this.state.activeCategory==='deals'?'active':''}" onclick="app.setMenuCategory('deals')" style="${this.state.activeCategory==='deals'?'border-color:#ef4444;':''}"><span class="cat-icon">🏷️</span><span class="cat-name">On Sale</span></div>`;
       html += window.MENU_CATEGORIES.map(c => `
-        <div class="category-card glass ${this.state.activeCategory===c.id?'active':''}"
-             onclick="app.setMenuCategory('${c.id}')">
+        <div class="category-card glass ${this.state.activeCategory===c.id?'active':''}" onclick="app.setMenuCategory('${c.id}')">
           <span class="cat-icon">${c.icon}</span><span class="cat-name">${c.name}</span>
         </div>`).join('');
       catsEl.innerHTML = html;
     }
 
-    // ── Filter dishes ─────────────────────────────
+    // Filter
     let dishes = allDishes;
     if      (this.state.activeCategory === 'bestsellers') dishes = allDishes.filter(d => d.bestSeller);
     else if (this.state.activeCategory === 'deals')       dishes = allDishes.filter(d => d.discount > 0);
@@ -315,61 +304,8 @@ class FoodiesApp {
       );
     }
 
-    // ── Show inline Best Sellers + Deals banners when "All" is selected ──
-    const menuTopBanners = document.getElementById('menuTopBanners');
-    if (menuTopBanners) {
-      if (this.state.activeCategory === 'all' && !this.state.searchQuery) {
-        const bestSellers = allDishes.filter(d => d.bestSeller);
-        const deals       = allDishes.filter(d => d.discount > 0);
-        const maxDiscount = deals.length ? Math.max(...deals.map(d => d.discount)) : 0;
-
-        menuTopBanners.innerHTML = `
-          <!-- Best Sellers Mini Strip -->
-          <div class="menu-section-label">
-            <span class="menu-section-icon">🔥</span>
-            <div>
-              <h3 class="menu-section-title">Best Sellers</h3>
-              <p class="menu-section-sub">Most ordered by our customers</p>
-            </div>
-            <button class="btn-outline menu-see-all-btn" onclick="app.setMenuCategory('bestsellers')">
-              See All <i class="fas fa-arrow-right"></i>
-            </button>
-          </div>
-          <div class="menu-strip-grid">
-            ${bestSellers.slice(0, 4).map(d => window.UIEngine.renderDishCard(d)).join('')}
-          </div>
-
-          <!-- Deals Mini Strip -->
-          <div class="menu-section-label" style="margin-top:40px;">
-            <span class="menu-section-icon deals-icon">🏷️</span>
-            <div>
-              <h3 class="menu-section-title">Today's Deals</h3>
-              <p class="menu-section-sub">Up to <strong style="color:var(--primary);">${maxDiscount}% OFF</strong> — Limited time!</p>
-            </div>
-            <button class="btn-outline menu-see-all-btn" onclick="app.setMenuCategory('deals')" style="border-color:#ef4444;color:#ef4444;">
-              See All <i class="fas fa-arrow-right"></i>
-            </button>
-          </div>
-          <div class="menu-strip-grid">
-            ${deals.slice(0, 4).map(d => window.UIEngine.renderDishCard(d)).join('')}
-          </div>
-
-          <!-- All Dishes divider -->
-          <div class="menu-section-label" style="margin-top:40px;">
-            <span class="menu-section-icon">🍽️</span>
-            <div>
-              <h3 class="menu-section-title">All Dishes</h3>
-              <p class="menu-section-sub">Browse our complete menu</p>
-            </div>
-          </div>`;
-      } else {
-        menuTopBanners.innerHTML = '';
-      }
-    }
-
-    // ── Special empty states ──────────────────────
-    const emptyMessages = {
-      bestsellers: '🔥 No best sellers marked yet.',
+    const emptyMsg = {
+      bestsellers: '🔥 No best sellers found.',
       deals:       '🏷️ No active deals right now. Check back soon!'
     };
 
@@ -379,7 +315,7 @@ class FoodiesApp {
         ? dishes.map(d => window.UIEngine.renderDishCard(d)).join('')
         : `<div style="grid-column:1/-1;text-align:center;padding:50px;color:var(--text-muted);">
              <i class="fas fa-search" style="font-size:2rem;margin-bottom:12px;display:block;"></i>
-             ${emptyMessages[this.state.activeCategory] || 'No dishes match your search.'}
+             ${emptyMsg[this.state.activeCategory] || 'No dishes match your search.'}
            </div>`;
     }, 380);
   }
