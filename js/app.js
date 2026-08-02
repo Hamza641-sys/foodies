@@ -214,7 +214,11 @@ class FoodiesApp {
   }
 
   /* ── HOME PAGE ───────────────────────────────── */
-  _renderHome() {
+  async _renderHome() {
+    // Agar data nahi hai toh pehle load karo
+    if (!window.DISHES || !window.DISHES.length) {
+      await this.loadApiData();
+    }
     const dishes = window.DISHES || [];
 
     // Popular dishes (recommended)
@@ -278,10 +282,16 @@ class FoodiesApp {
   }
 
   /* ── MENU PAGE ───────────────────────────────── */
-  _renderMenu() {
+  async _renderMenu() {
     const catsEl  = document.getElementById('menuCategoriesSlider');
     const gridEl  = document.getElementById('menuDishesGrid');
     if (!gridEl) return;
+
+    // Agar dishes load nahi hui toh pehle load karo
+    if (!window.DISHES || !window.DISHES.length) {
+      gridEl.innerHTML = window.UIEngine.getMenuSkeletons(8);
+      await this.loadApiData();
+    }
 
     const allDishes = window.DISHES || [];
 
