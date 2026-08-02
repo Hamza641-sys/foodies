@@ -307,19 +307,31 @@ export async function getOrderById(orderId) {
 }
 
 export async function getOrdersByUser(uid) {
+  // Simple where query — no composite index needed
+  // Sort client-side to avoid Firestore index requirement
   const q = query(
     collection(db, 'orders'),
-    where('userId', '==', uid),
-    orderBy('createdAt', 'desc')
+    where('userId', '==', uid)
   );
   const snap = await getDocs(q);
-  return snap.docs.map(d => d.data());
+  const orders = snap.docs.map(d => d.data());
+  // Sort by createdAt descending (newest first)
+  return orders.sort((a, b) => {
+    const ta = a.createdAt?.toMillis?.() || 0;
+    const tb = b.createdAt?.toMillis?.() || 0;
+    return tb - ta;
+  });
 }
 
 export async function getAllOrders() {
-  const q = query(collection(db, 'orders'), orderBy('createdAt', 'desc'));
-  const snap = await getDocs(q);
-  return snap.docs.map(d => d.data());
+  // Get all orders, sort client-side — no index needed
+  const snap = await getDocs(collection(db, 'orders'));
+  const orders = snap.docs.map(d => d.data());
+  return orders.sort((a, b) => {
+    const ta = a.createdAt?.toMillis?.() || 0;
+    const tb = b.createdAt?.toMillis?.() || 0;
+    return tb - ta;
+  });
 }
 
 export async function updateOrderStatus(orderId, status) {
@@ -362,19 +374,29 @@ export async function createReservation(data, currentUser) {
 }
 
 export async function getReservationsByUser(uid) {
+  // Simple where query — sort client-side
   const q = query(
     collection(db, 'reservations'),
-    where('userId', '==', uid),
-    orderBy('createdAt', 'desc')
+    where('userId', '==', uid)
   );
   const snap = await getDocs(q);
-  return snap.docs.map(d => d.data());
+  const reservations = snap.docs.map(d => d.data());
+  return reservations.sort((a, b) => {
+    const ta = a.createdAt?.toMillis?.() || 0;
+    const tb = b.createdAt?.toMillis?.() || 0;
+    return tb - ta;
+  });
 }
 
 export async function getAllReservations() {
-  const q = query(collection(db, 'reservations'), orderBy('createdAt', 'desc'));
-  const snap = await getDocs(q);
-  return snap.docs.map(d => d.data());
+  // Get all, sort client-side
+  const snap = await getDocs(collection(db, 'reservations'));
+  const reservations = snap.docs.map(d => d.data());
+  return reservations.sort((a, b) => {
+    const ta = a.createdAt?.toMillis?.() || 0;
+    const tb = b.createdAt?.toMillis?.() || 0;
+    return tb - ta;
+  });
 }
 
 export async function updateReservationStatus(resId, status) {
@@ -503,14 +525,16 @@ export async function advanceOrderStatus(orderId) {
 }
 
 export async function getKitchenOrders() {
-  const q = query(
-    collection(db, 'orders'),
-    where('status', '!=', 'Delivered'),
-    orderBy('status'),
-    orderBy('createdAt', 'asc')
-  );
-  const snap = await getDocs(q);
-  return snap.docs.map(d => d.data());
+  // Get all orders, filter and sort client-side — no composite index needed
+  const snap = await getDocs(collection(db, 'orders'));
+  const orders = snap.docs.map(d => d.data());
+  return orders
+    .filter(o => o.status !== 'Delivered')
+    .sort((a, b) => {
+      const ta = a.createdAt?.toMillis?.() || 0;
+      const tb = b.createdAt?.toMillis?.() || 0;
+      return ta - tb; // oldest first for kitchen
+    });
 }
 
 // ─────────────────────────────────────────────────
