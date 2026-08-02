@@ -101,23 +101,39 @@ class FoodiesApp {
 
   /* ── LOAD DATA FROM FIRESTORE ─────────────────── */
   async loadApiData() {
+    // data.js ka data pehle se globally available hai (window.DISHES etc.)
+    // Firestore se load karo aur data.js se merge karo
     try {
       const [cats, dishes, chefs, gallery, reviews, offers, coupons, zones] = await Promise.all([
         getCategories(), getDishes(), getChefs(), getGallery(),
         getReviews(), getOffers(), getCoupons(), getDeliveryZones()
       ]);
-      if (cats.length)    window.MENU_CATEGORIES = cats;
-      if (dishes.length)  window.DISHES          = dishes;
-      if (chefs.length)   window.CHEFS           = chefs;
-      if (gallery.length) window.GALLERY_ITEMS   = gallery;
-      if (reviews.length) window.REVIEWS         = reviews;
-      if (offers.length)  window.OFFERS          = offers;
-      if (coupons.length) window.COUPONS         = coupons;
-      if (zones.length)   window.DELIVERY_ZONES  = zones;
+
+      // Categories — Firestore mein nayi categories bhi hon toh merge karo
+      const localCats   = window.MENU_CATEGORIES || [];
+      const mergedCats  = [...localCats];
+      cats.forEach(fc => { if (!mergedCats.find(lc => lc.id === fc.id)) mergedCats.push(fc); });
+      window.MENU_CATEGORIES = mergedCats;
+
+      // Dishes — data.js + Firestore merge (data.js takes priority for new dishes)
+      const localDishes  = window.DISHES || [];
+      const mergedDishes = [...localDishes];
+      dishes.forEach(fd => { if (!mergedDishes.find(ld => ld.id === fd.id)) mergedDishes.push(fd); });
+      window.DISHES = mergedDishes;
+
+      if (chefs.length)   window.CHEFS          = chefs;
+      if (gallery.length) window.GALLERY_ITEMS  = gallery;
+      if (reviews.length) window.REVIEWS        = reviews;
+      if (offers.length)  window.OFFERS         = offers;
+      if (coupons.length) window.COUPONS        = coupons;
+      if (zones.length)   window.DELIVERY_ZONES = zones;
     } catch (e) {
       console.warn('Firestore load failed, using data.js fallback:', e.message);
+      // data.js data already available as fallback
     }
   }
+
+  async _reseedDishes() {}
 
   async loadUserHistory() {
     if (!this.state.firebaseUser) return;
