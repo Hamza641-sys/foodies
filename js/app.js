@@ -127,9 +127,12 @@ class FoodiesApp {
       if (offers.length)  window.OFFERS         = offers;
       if (coupons.length) window.COUPONS        = coupons;
       if (zones.length)   window.DELIVERY_ZONES = zones;
+
+      // COMBOS always from data.js
+      if (typeof COMBOS !== 'undefined') window.COMBOS = COMBOS;
     } catch (e) {
       console.warn('Firestore load failed, using data.js fallback:', e.message);
-      // data.js data already available as fallback
+      if (typeof COMBOS !== 'undefined') window.COMBOS = COMBOS;
     }
   }
 
@@ -300,9 +303,12 @@ class FoodiesApp {
     // ── COMBOS SECTION ────────────────────────────
     const combosGrid = document.getElementById('homeCombosGrid');
     if (combosGrid) {
-      const combos = window.COMBOS || [];
-      combosGrid.innerHTML = combos.length
-        ? combos.filter(c => c.popular).map(c => window.UIEngine.renderComboCard(c)).join('')
+      const combos = window.COMBOS || (typeof COMBOS !== 'undefined' ? COMBOS : []);
+      // Ensure window.COMBOS is always set
+      if (!window.COMBOS && combos.length) window.COMBOS = combos;
+      const popular = combos.filter(c => c.popular).slice(0, 6);
+      combosGrid.innerHTML = popular.length
+        ? popular.map(c => window.UIEngine.renderComboCard(c)).join('')
         : '<div style="color:var(--text-muted);text-align:center;padding:30px;">No combos available.</div>';
     }
 
