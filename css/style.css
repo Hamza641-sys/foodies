@@ -1730,3 +1730,62 @@ body.light-theme .nav-mega-dropdown {
 @media (max-width: 768px) {
   .contact-layout { grid-template-columns: 1fr; }
 }
+
+/* ==========================================
+   LANGUAGE DROPDOWN
+   ========================================== */
+#langToggleBtn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  width: auto !important;
+  padding: 0 10px !important;
+  border-radius: 20px !important;
+  font-size: .78rem;
+  font-weight: 700;
+  position: relative;
+}
+
+.lang-dropdown {
+  position: fixed;
+  top: 72px;
+  right: auto;
+  min-width: 180px;
+  border-radius: var(--border-radius-md);
+  padding: 8px 0;
+  z-index: 9999;
+  background: var(--bg-secondary);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 16px 40px rgba(0,0,0,.3);
+  display: none;
+  flex-direction: column;
+  max-height: 380px;
+  overflow-y: auto;
+}
+.lang-dropdown.open { display: flex; }
+
+.lang-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  cursor: pointer;
+  font-size: .88rem;
+  font-weight: 500;
+  color: var(--text-color);
+  transition: var(--transition-fast);
+  white-space: nowrap;
+}
+.lang-dropdown-item:hover {
+  background: rgba(var(--primary-rgb), .1);
+  color: var(--primary);
+}
+.lang-dropdown-item span {
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+/* Scrollbar for lang dropdown */
+.lang-dropdown::-webkit-scrollbar { width: 4px; }
+.lang-dropdown::-webkit-scrollbar-track { background: transparent; }
+.lang-dropdown::-webkit-scrollbar-thumb { background: var(--glass-border); border-radius: 2px; }

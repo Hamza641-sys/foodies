@@ -57,7 +57,26 @@
       <button class="nav-btn" onclick="app.toggleTheme()" title="Toggle Theme">
         <i class="fas fa-moon"></i>
       </button>
-      <button class="nav-btn" id="langToggleBtn" onclick="app.toggleLanguage()" style="font-size:.8rem;font-weight:700;">EN</button>
+      <button class="nav-btn" id="langToggleBtn" onclick="app.toggleLanguageDropdown()" style="font-size:.8rem;font-weight:700;width:auto;padding:0 10px;border-radius:20px;gap:4px;">
+        <span id="langCurrentFlag">🇬🇧</span>
+        <span id="langCurrentCode">EN</span>
+        <i class="fas fa-chevron-down" style="font-size:.6rem;"></i>
+      </button>
+      <!-- Language Dropdown -->
+      <div class="lang-dropdown glass" id="langDropdown">
+        <div class="lang-dropdown-item" onclick="app.setLanguage('EN','🇬🇧')"><span>🇬🇧</span> English</div>
+        <div class="lang-dropdown-item" onclick="app.setLanguage('UR','🇵🇰')"><span>🇵🇰</span> اردو</div>
+        <div class="lang-dropdown-item" onclick="app.setLanguage('AR','🇸🇦')"><span>🇸🇦</span> العربية</div>
+        <div class="lang-dropdown-item" onclick="app.setLanguage('FR','🇫🇷')"><span>🇫🇷</span> Français</div>
+        <div class="lang-dropdown-item" onclick="app.setLanguage('ES','🇪🇸')"><span>🇪🇸</span> Español</div>
+        <div class="lang-dropdown-item" onclick="app.setLanguage('TR','🇹🇷')"><span>🇹🇷</span> Türkçe</div>
+        <div class="lang-dropdown-item" onclick="app.setLanguage('ZH','🇨🇳')"><span>🇨🇳</span> 中文</div>
+        <div class="lang-dropdown-item" onclick="app.setLanguage('HI','🇮🇳')"><span>🇮🇳</span> हिंदी</div>
+        <div class="lang-dropdown-item" onclick="app.setLanguage('RU','🇷🇺')"><span>🇷🇺</span> Русский</div>
+        <div class="lang-dropdown-item" onclick="app.setLanguage('DE','🇩🇪')"><span>🇩🇪</span> Deutsch</div>
+        <div class="lang-dropdown-item" onclick="app.setLanguage('JA','🇯🇵')"><span>🇯🇵</span> 日本語</div>
+        <div class="lang-dropdown-item" onclick="app.setLanguage('KO','🇰🇷')"><span>🇰🇷</span> 한국어</div>
+      </div>
       <a href="#dashboard" onclick="app.setDashboardTab('wishlist')" class="nav-btn" title="Wishlist">
         <i class="far fa-heart"></i>
         <span class="badge-count wishlist-badge" style="display:none;">0</span>

@@ -192,27 +192,75 @@ class FoodiesApp {
     this.showToast(`Switched to ${this.state.activeTheme} mode`, 'info');
   }
 
-  toggleLanguage() {
-    this.state.activeLanguage = this.state.activeLanguage === 'EN' ? 'UR' : 'EN';
-    this._save('foodies_lang', this.state.activeLanguage);
-    const btn = document.getElementById('langToggleBtn');
-    if (btn) btn.innerText = this.state.activeLanguage;
-    const t = {
-      EN: { tagline:'Best Quality', title:'Delicious Food\nGood Mood', cta:'Order Now', book:'Book a Table' },
-      UR: { tagline:'بہترین معیار', title:'لذیذ کھانا\nاچھا موڈ', cta:'ابھی آرڈر کریں', book:'ٹیبل بک کریں' }
-    }[this.state.activeLanguage];
-    const elems = {
-      tag: document.querySelector('.hero-tagline'),
-      title: document.querySelector('.hero-title'),
-      cta: document.getElementById('heroCtaMenuBtn'),
-      book: document.getElementById('heroCtaBookBtn')
+  toggleLanguageDropdown() {
+    const dropdown = document.getElementById('langDropdown');
+    if (dropdown) dropdown.classList.toggle('open');
+    // Close on outside click
+    const close = (e) => {
+      if (!e.target.closest('#langDropdown') && !e.target.closest('#langToggleBtn')) {
+        dropdown?.classList.remove('open');
+        document.removeEventListener('click', close);
+      }
     };
-    if (elems.tag)   elems.tag.innerText   = t.tagline;
-    if (elems.title) elems.title.innerText = t.title;
-    if (elems.cta)   elems.cta.innerText   = t.cta;
-    if (elems.book)  elems.book.innerText  = t.book;
-    this.showToast(`Language: ${this.state.activeLanguage === 'EN' ? 'English' : 'اردو'}`, 'info');
+    setTimeout(() => document.addEventListener('click', close), 10);
   }
+
+  setLanguage(code, flag) {
+    this.state.activeLanguage = code;
+    this._save('foodies_lang', code);
+    this._save('foodies_lang_flag', flag);
+
+    // Update navbar button
+    const flagEl = document.getElementById('langCurrentFlag');
+    const codeEl = document.getElementById('langCurrentCode');
+    if (flagEl) flagEl.innerText = flag;
+    if (codeEl) codeEl.innerText = code;
+
+    // Close dropdown
+    document.getElementById('langDropdown')?.classList.remove('open');
+
+    // All language translations
+    const translations = {
+      EN: { tagline:'Best Quality',     title:'Delicious Food\nGood Mood',       cta:'Order Now',       book:'Book a Table',  nav_menu:'Menu', nav_chefs:'Chefs', nav_gallery:'Gallery', nav_res:'Reservation', nav_dash:'Dashboard' },
+      UR: { tagline:'بہترین معیار',      title:'لذیذ کھانا\nاچھا موڈ',            cta:'ابھی آرڈر کریں', book:'ٹیبل بک کریں', nav_menu:'مینو', nav_chefs:'شیف', nav_gallery:'گیلری', nav_res:'ریزرویشن', nav_dash:'ڈیش بورڈ' },
+      AR: { tagline:'أفضل جودة',         title:'طعام لذيذ\nمزاج جيد',            cta:'اطلب الآن',       book:'احجز طاولة',    nav_menu:'القائمة', nav_chefs:'الطهاة', nav_gallery:'المعرض', nav_res:'حجز', nav_dash:'لوحة التحكم' },
+      FR: { tagline:'Meilleure qualité', title:'Délicieuse Nourriture\nBon Mood', cta:'Commander',       book:'Réserver',      nav_menu:'Menu', nav_chefs:'Chefs', nav_gallery:'Galerie', nav_res:'Réservation', nav_dash:'Tableau de bord' },
+      ES: { tagline:'Mejor calidad',     title:'Comida Deliciosa\nBuen Humor',    cta:'Pedir ahora',     book:'Reservar mesa', nav_menu:'Menú', nav_chefs:'Chefs', nav_gallery:'Galería', nav_res:'Reservación', nav_dash:'Panel' },
+      TR: { tagline:'En İyi Kalite',     title:'Lezzetli Yemek\nİyi Mood',        cta:'Sipariş Ver',     book:'Masa Rezerve',  nav_menu:'Menü', nav_chefs:'Şefler', nav_gallery:'Galeri', nav_res:'Rezervasyon', nav_dash:'Panel' },
+      ZH: { tagline:'最佳品质',           title:'美味食物\n好心情',                  cta:'立即订购',         book:'预订餐桌',        nav_menu:'菜单', nav_chefs:'厨师', nav_gallery:'画廊', nav_res:'预订', nav_dash:'仪表板' },
+      HI: { tagline:'सर्वश्रेष्ठ गुणवत्ता', title:'स्वादिष्ट खाना\nअच्छा मूड',  cta:'अभी ऑर्डर करें', book:'टेबल बुक करें', nav_menu:'मेनू', nav_chefs:'शेफ', nav_gallery:'गैलरी', nav_res:'आरक्षण', nav_dash:'डैशबोर्ड' },
+      RU: { tagline:'Лучшее качество',   title:'Вкусная еда\nХорошее настроение', cta:'Заказать',        book:'Забронировать', nav_menu:'Меню', nav_chefs:'Повара', nav_gallery:'Галерея', nav_res:'Бронирование', nav_dash:'Панель' },
+      DE: { tagline:'Beste Qualität',    title:'Leckeres Essen\nGute Stimmung',   cta:'Jetzt bestellen', book:'Tisch buchen',  nav_menu:'Menü', nav_chefs:'Köche', nav_gallery:'Galerie', nav_res:'Reservierung', nav_dash:'Dashboard' },
+      JA: { tagline:'最高品質',           title:'おいしい料理\n良い気分',            cta:'今すぐ注文',       book:'テーブル予約',    nav_menu:'メニュー', nav_chefs:'シェフ', nav_gallery:'ギャラリー', nav_res:'予約', nav_dash:'ダッシュボード' },
+      KO: { tagline:'최고의 품질',        title:'맛있는 음식\n좋은 기분',            cta:'지금 주문',        book:'테이블 예약',     nav_menu:'메뉴', nav_chefs:'셰프', nav_gallery:'갤러리', nav_res:'예약', nav_dash:'대시보드' }
+    };
+
+    const t = translations[code] || translations['EN'];
+
+    // RTL languages
+    const rtlLangs = ['UR', 'AR'];
+    document.documentElement.dir = rtlLangs.includes(code) ? 'rtl' : 'ltr';
+
+    // Update hero text
+    const tag   = document.querySelector('.hero-tagline');
+    const title = document.querySelector('.hero-title');
+    const cta   = document.getElementById('heroCtaMenuBtn');
+    const bookBtn = document.getElementById('heroCtaBookBtn');
+    if (tag)   tag.innerText   = t.tagline;
+    if (title) title.innerText = t.title;
+    if (cta)   cta.childNodes[0].textContent = t.cta + ' ';
+    if (bookBtn) bookBtn.innerText = t.book;
+
+    // Update nav links text
+    const navLinks = document.querySelectorAll('.nav-links a');
+    const navMap = [null, t.nav_menu, t.nav_chefs, t.nav_gallery, t.nav_res, t.nav_dash, null];
+    navLinks.forEach((a, i) => { if (navMap[i]) a.innerText = navMap[i]; });
+
+    this.showToast(`Language changed to ${code}`, 'info');
+  }
+
+  // Keep old toggleLanguage for backward compatibility
+  toggleLanguage() { this.toggleLanguageDropdown(); }
 
   /* ── TOAST ───────────────────────────────────── */
   showToast(message, type = 'info') {
