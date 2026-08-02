@@ -133,6 +133,7 @@ img { max-width:100%; height:auto; display:block; }
   padding:0 5%;
   transition:var(--transition-smooth);
   border-bottom:1px solid transparent;
+  overflow:visible;
 }
 .navbar.scrolled {
   background:var(--bg-secondary);
@@ -1094,22 +1095,30 @@ img { max-width:100%; height:auto; display:block; }
 
 /* Mega dropdown panel */
 .nav-mega-dropdown {
-  position: absolute;
-  top: calc(100% + 14px);
+  position: fixed;
+  top: 70px;
   left: 50%;
-  transform: translateX(-50%) translateY(-8px);
-  width: 600px;
-  border-radius: var(--border-radius-lg);
-  padding: 20px;
+  transform: translateX(-50%) translateY(-10px);
+  width: 620px;
+  border-radius: 20px;
+  padding: 24px;
   display: flex;
   gap: 0;
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  transition: all .25s cubic-bezier(.16,1,.3,1);
-  z-index: 999;
-  border: 1px solid var(--glass-border);
-  box-shadow: 0 24px 60px rgba(0,0,0,.35);
+  transition: all .28s cubic-bezier(.16,1,.3,1);
+  z-index: 9999;
+  border: 1px solid rgba(255,255,255,.12);
+  box-shadow: 0 24px 60px rgba(0,0,0,.5);
+  background: #1a1a1a;
+}
+
+/* Light theme override */
+body.light-theme .nav-mega-dropdown {
+  background: #ffffff;
+  border-color: rgba(0,0,0,.1);
+  box-shadow: 0 24px 60px rgba(0,0,0,.15);
 }
 
 .nav-dropdown-wrap:hover .nav-mega-dropdown,
