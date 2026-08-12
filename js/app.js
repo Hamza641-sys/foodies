@@ -1171,6 +1171,202 @@ class FoodiesApp {
     } catch (e) { this.showToast('Failed to update order', 'danger'); }
   }
 
+  /* ── ORDER DETAIL MODAL ──────────────────────── */
+  async showOrderDetail(orderId) {
+    // Firestore se fresh order data lo
+    let order;
+    try { order = await getOrderById(orderId); } catch(e) {}
+    if (!order) {
+      this.showToast('Order not found', 'danger');
+      return;
+    }
+
+    // Store current order for status update & print
+    this._activeDetailOrder = order;
+
+    // Helper: createdAt format
+    const formatDate = (val) => {
+      try {
+        if (val && typeof val.toDate === 'function') return val.toDate().toLocaleString('en-PK');
+        if (val && val.seconds) return new Date(val.seconds * 1000).toLocaleString('en-PK');
+        if (val) { const d = new Date(val); if (!isNaN(d)) return d.toLocaleString('en-PK'); }
+      } catch(e) {}
+      return '—';
+    };
+
+    // Fill header
+    document.getElementById('orderDetailId').innerText        = `#${order.id}`;
+
+    // Fill customer info
+    document.getElementById('orderDetailCustomer').innerText  = order.customerName || '—';
+    document.getElementById('orderDetailPhone').innerText     = order.phone || order.customerPhone || '—';
+    document.getElementById('orderDetailAddress').innerText   = order.address || '—';
+    document.getElementById('orderDetailTime').innerText      = formatDate(order.createdAt);
+    document.getElementById('orderDetailPayment').innerHTML   = `
+      ${order.paymentMethod || 'Cash'}
+      <span class="status-badge" style="margin-left:6px;font-size:.68rem;${order.paymentStatus==='Paid'?'background:var(--success);':'background:var(--warning);color:#000;'}">
+        ${order.paymentStatus || 'Unpaid'}
+      </span>`;
+
+    // Fill items
+    const itemsEl = document.getElementById('orderDetailItems');
+    itemsEl.innerHTML = (order.items || []).map(item => `
+      <div style="display:flex;justify-content:space-between;align-items:center;font-size:.85rem;padding:8px 0;border-bottom:1px solid var(--glass-border);">
+        <div>
+          <span style="font-weight:600;">${item.name}</span>
+          <span style="color:var(--text-muted);font-size:.75rem;margin-left:8px;">× ${item.qty}</span>
+        </div>
+        <span style="font-weight:700;color:var(--primary);">$${(item.price * item.qty).toFixed(2)}</span>
+      </div>`).join('');
+
+    // Fill totals
+    const tax      = order.tax      || 0;
+    const delivery = order.deliveryCharges || 0;
+    const pkg      = order.packaging || 0;
+    const discount = order.subtotal && order.total
+      ? Math.max(0, order.subtotal - (order.total - tax - delivery - pkg))
+      : 0;
+
+    document.getElementById('orderDetailTotals').innerHTML = `
+      <div style="display:flex;justify-content:space-between;margin-bottom:5px;"><span style="color:var(--text-muted);">Subtotal</span><span>$${(order.subtotal||0).toFixed(2)}</span></div>
+      ${discount > 0 ? `<div style="display:flex;justify-content:space-between;margin-bottom:5px;color:var(--success);"><span>Discount ${order.coupon ? `(${order.coupon})` : ''}</span><span>-$${discount.toFixed(2)}</span></div>` : ''}
+      <div style="display:flex;justify-content:space-between;margin-bottom:5px;"><span style="color:var(--text-muted);">Delivery</span><span>$${delivery.toFixed(2)}</span></div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:5px;"><span style="color:var(--text-muted);">Packaging</span><span>$${pkg.toFixed(2)}</span></div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:5px;"><span style="color:var(--text-muted);">Tax (8%)</span><span>$${tax.toFixed(2)}</span></div>
+      <div style="display:flex;justify-content:space-between;font-weight:800;font-size:1rem;color:var(--primary);padding-top:8px;border-top:1px dashed var(--glass-border);margin-top:4px;">
+        <span>Total</span><span>$${(order.total||0).toFixed(2)}</span>
+      </div>`;
+
+    // Notes
+    const notesSection = document.getElementById('orderDetailNotesSection');
+    const notesEl      = document.getElementById('orderDetailNotes');
+    if (order.specialInstructions) {
+      notesSection.style.display = 'block';
+      notesEl.innerText = order.specialInstructions;
+    } else {
+      notesSection.style.display = 'none';
+    }
+
+    // Status dropdown
+    const statusSel = document.getElementById('orderDetailStatusSelect');
+    if (statusSel) statusSel.value = order.status || 'Pending';
+
+    // Open modal
+    document.getElementById('orderDetailModal')?.classList.add('active');
+  }
+
+  closeOrderDetail() {
+    document.getElementById('orderDetailModal')?.classList.remove('active');
+    this._activeDetailOrder = null;
+  }
+
+  async adminUpdateOrderStatusFromModal(newStatus) {
+    const order = this._activeDetailOrder;
+    if (!order) return;
+    try {
+      await updateOrderStatus(order.id, newStatus);
+      this._activeDetailOrder.status = newStatus;
+      this.showToast(`Order ${order.id} → ${newStatus}`, 'success');
+      // Refresh table in background
+      const body = document.getElementById('adminOrdersTableBody');
+      if (body) {
+        const orders = await getAllOrders();
+        body.innerHTML = window.UIEngine.renderAdminOrdersTable(orders);
+      }
+    } catch(e) { this.showToast('Failed to update status', 'danger'); }
+  }
+
+  /* ── PRINT BILL ──────────────────────────────── */
+  printOrderBill() {
+    const order = this._activeDetailOrder;
+    if (!order) return;
+
+    const formatDate = (val) => {
+      try {
+        if (val && typeof val.toDate === 'function') return val.toDate().toLocaleString('en-PK');
+        if (val && val.seconds) return new Date(val.seconds * 1000).toLocaleString('en-PK');
+        if (val) { const d = new Date(val); if (!isNaN(d)) return d.toLocaleString('en-PK'); }
+      } catch(e) {}
+      return '—';
+    };
+
+    const itemsHtml = (order.items || []).map(i => `
+      <tr>
+        <td style="padding:7px 0;border-bottom:1px dashed #ddd;">${i.name}</td>
+        <td style="padding:7px 0;border-bottom:1px dashed #ddd;text-align:center;">×${i.qty}</td>
+        <td style="padding:7px 0;border-bottom:1px dashed #ddd;text-align:right;">$${(i.price * i.qty).toFixed(2)}</td>
+      </tr>`).join('');
+
+    const tax      = order.tax || 0;
+    const delivery = order.deliveryCharges || 0;
+    const pkg      = order.packaging || 0;
+
+    const billHtml = `
+      <!DOCTYPE html><html><head>
+      <meta charset="UTF-8">
+      <title>Bill — ${order.id}</title>
+      <style>
+        * { margin:0;padding:0;box-sizing:border-box; }
+        body { font-family:'Segoe UI',Arial,sans-serif;color:#111;padding:32px;max-width:420px;margin:0 auto; }
+        .logo { font-size:1.8rem;font-weight:900;color:#ff6b35;text-align:center;margin-bottom:4px; }
+        .subtitle { text-align:center;font-size:.78rem;color:#666;margin-bottom:18px; }
+        .divider { border-top:2px dashed #ccc;margin:14px 0; }
+        .info-row { display:flex;justify-content:space-between;font-size:.82rem;margin-bottom:5px; }
+        .info-label { color:#666; }
+        table { width:100%;border-collapse:collapse;font-size:.85rem;margin:8px 0; }
+        th { text-align:left;padding:6px 0;border-bottom:2px solid #ff6b35;color:#ff6b35;font-size:.75rem;text-transform:uppercase; }
+        th:last-child,td:last-child { text-align:right; }
+        th:nth-child(2),td:nth-child(2) { text-align:center; }
+        .total-row { font-size:1.1rem;font-weight:900;color:#ff6b35;padding-top:10px;display:flex;justify-content:space-between; }
+        .status-pill { display:inline-block;padding:3px 12px;border-radius:20px;font-size:.72rem;font-weight:700;
+          background:${order.status==='Delivered'?'#22c55e':order.status==='Cancelled'?'#ef4444':'#f59e0b'};
+          color:${order.status==='Pending'||order.status==='Cooking'?'#000':'#fff'}; }
+        .footer { margin-top:24px;text-align:center;font-size:.75rem;color:#999; }
+        @media print { body { padding:16px; } }
+      </style>
+      </head><body>
+        <div class="logo">🍽 Foodies</div>
+        <div class="subtitle">Best Quality Delicious Food</div>
+        <div class="divider"></div>
+
+        <div class="info-row"><span class="info-label">Order ID</span><strong>${order.id}</strong></div>
+        <div class="info-row"><span class="info-label">Date</span><span>${formatDate(order.createdAt)}</span></div>
+        <div class="info-row"><span class="info-label">Customer</span><span>${order.customerName}</span></div>
+        <div class="info-row"><span class="info-label">Address</span><span style="max-width:200px;text-align:right;">${order.address || '—'}</span></div>
+        <div class="info-row"><span class="info-label">Payment</span><span>${order.paymentMethod || 'Cash'}</span></div>
+        <div class="info-row"><span class="info-label">Status</span><span class="status-pill">${order.status}</span></div>
+
+        <div class="divider"></div>
+        <table>
+          <thead><tr><th>Item</th><th>Qty</th><th>Price</th></tr></thead>
+          <tbody>${itemsHtml}</tbody>
+        </table>
+        <div class="divider"></div>
+
+        <div class="info-row"><span class="info-label">Subtotal</span><span>$${(order.subtotal||0).toFixed(2)}</span></div>
+        ${order.coupon ? `<div class="info-row" style="color:green;"><span class="info-label">Coupon (${order.coupon})</span><span>Applied ✓</span></div>` : ''}
+        <div class="info-row"><span class="info-label">Delivery</span><span>$${delivery.toFixed(2)}</span></div>
+        <div class="info-row"><span class="info-label">Packaging</span><span>$${pkg.toFixed(2)}</span></div>
+        <div class="info-row"><span class="info-label">Tax (8%)</span><span>$${tax.toFixed(2)}</span></div>
+        <div class="divider"></div>
+        <div class="total-row"><span>Total</span><span>$${(order.total||0).toFixed(2)}</span></div>
+
+        ${order.specialInstructions ? `<div class="divider"></div><div style="font-size:.8rem;color:#666;"><strong>Notes:</strong> ${order.specialInstructions}</div>` : ''}
+
+        <div class="footer">
+          <div class="divider"></div>
+          Thank you for dining with Foodies! 🙏<br>
+          foodies-app-94531.web.app
+        </div>
+      </body></html>`;
+
+    const win = window.open('', '_blank', 'width=480,height=700');
+    win.document.write(billHtml);
+    win.document.close();
+    win.focus();
+    setTimeout(() => win.print(), 400);
+  }
+
   async adminUpdateReservation(resId, status) {
     try {
       await updateReservationStatus(resId, status);

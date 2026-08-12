@@ -1015,6 +1015,80 @@
 
 
   <!-- ================================================
+       ORDER DETAIL MODAL (Admin Panel)
+       ================================================ -->
+  <div class="modal-overlay" id="orderDetailModal" onclick="app.closeOrderDetail()">
+    <div class="modal-card glass order-detail-modal-card" onclick="event.stopPropagation()" style="max-width:620px;width:95%;padding:0;border-radius:var(--border-radius-lg);overflow:hidden;">
+
+      <!-- Header -->
+      <div class="order-detail-header" style="background:var(--primary);padding:20px 28px;display:flex;justify-content:space-between;align-items:center;">
+        <div>
+          <h3 style="color:#fff;margin:0;font-weight:800;font-size:1.1rem;"><i class="fas fa-receipt" style="margin-right:8px;"></i>Order Details</h3>
+          <span id="orderDetailId" style="color:rgba(255,255,255,.75);font-size:.82rem;"></span>
+        </div>
+        <i class="fas fa-times" onclick="app.closeOrderDetail()" style="color:#fff;font-size:1.3rem;cursor:pointer;padding:4px;"></i>
+      </div>
+
+      <!-- Body -->
+      <div style="padding:24px 28px;max-height:72vh;overflow-y:auto;">
+
+        <!-- Customer Info -->
+        <div class="order-detail-section glass" style="padding:16px;border-radius:12px;margin-bottom:16px;">
+          <h4 style="color:var(--primary);font-size:.78rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;"><i class="fas fa-user" style="margin-right:6px;"></i>Customer Info</h4>
+          <div class="order-detail-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:.85rem;">
+            <div><span style="color:var(--text-muted);display:block;font-size:.72rem;margin-bottom:2px;">Name</span><strong id="orderDetailCustomer">—</strong></div>
+            <div><span style="color:var(--text-muted);display:block;font-size:.72rem;margin-bottom:2px;">Phone</span><strong id="orderDetailPhone">—</strong></div>
+            <div style="grid-column:1/-1;"><span style="color:var(--text-muted);display:block;font-size:.72rem;margin-bottom:2px;">Address</span><strong id="orderDetailAddress">—</strong></div>
+            <div><span style="color:var(--text-muted);display:block;font-size:.72rem;margin-bottom:2px;">Order Time</span><strong id="orderDetailTime">—</strong></div>
+            <div><span style="color:var(--text-muted);display:block;font-size:.72rem;margin-bottom:2px;">Payment</span><strong id="orderDetailPayment">—</strong></div>
+          </div>
+        </div>
+
+        <!-- Items -->
+        <div class="order-detail-section glass" style="padding:16px;border-radius:12px;margin-bottom:16px;">
+          <h4 style="color:var(--primary);font-size:.78rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;"><i class="fas fa-utensils" style="margin-right:6px;"></i>Order Items</h4>
+          <div id="orderDetailItems" style="display:flex;flex-direction:column;gap:8px;"></div>
+          <!-- Totals -->
+          <div id="orderDetailTotals" style="margin-top:14px;border-top:1px dashed var(--glass-border);padding-top:12px;font-size:.84rem;"></div>
+        </div>
+
+        <!-- Notes -->
+        <div id="orderDetailNotesSection" class="order-detail-section glass" style="padding:16px;border-radius:12px;margin-bottom:16px;display:none;">
+          <h4 style="color:var(--primary);font-size:.78rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;"><i class="fas fa-sticky-note" style="margin-right:6px;"></i>Order Notes</h4>
+          <p id="orderDetailNotes" style="font-size:.85rem;color:var(--text-muted);margin:0;font-style:italic;"></p>
+        </div>
+
+        <!-- Status -->
+        <div class="order-detail-section glass" style="padding:16px;border-radius:12px;margin-bottom:20px;">
+          <h4 style="color:var(--primary);font-size:.78rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;"><i class="fas fa-sync-alt" style="margin-right:6px;"></i>Update Status</h4>
+          <select id="orderDetailStatusSelect" class="form-input" style="padding:10px;font-size:.85rem;width:100%;"
+                  onchange="app.adminUpdateOrderStatusFromModal(this.value)">
+            <option value="Pending">Pending</option>
+            <option value="Preparing">Preparing</option>
+            <option value="Cooking">Cooking</option>
+            <option value="Packed">Packed</option>
+            <option value="Out For Delivery">Out For Delivery</option>
+            <option value="Delivered">Delivered</option>
+            <option value="Cancelled">Cancelled</option>
+          </select>
+        </div>
+
+      </div>
+
+      <!-- Footer Buttons -->
+      <div style="padding:16px 28px;border-top:1px solid var(--glass-border);display:flex;gap:10px;justify-content:flex-end;background:var(--bg-color);">
+        <button class="btn-outline" onclick="app.closeOrderDetail()" style="padding:10px 22px;font-size:.84rem;background:transparent;">
+          <i class="fas fa-times"></i> Close
+        </button>
+        <button class="btn-gold" onclick="app.printOrderBill()" style="padding:10px 22px;font-size:.84rem;">
+          <i class="fas fa-print"></i> Print Bill
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ================================================
        FLOATING BUTTONS
        ================================================ -->
   <!-- WhatsApp Float Button -->

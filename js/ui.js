@@ -263,29 +263,51 @@ class UIEngine {
       </div>`).join('');
   }
 
+  /** Helper — Firestore Timestamp ya ISO string dono se readable date banao */
+  _formatOrderDate(createdAt) {
+    try {
+      // Firestore Timestamp object (.toDate method hota hai)
+      if (createdAt && typeof createdAt.toDate === 'function') {
+        return createdAt.toDate().toLocaleString('en-PK');
+      }
+      // Firestore Timestamp with seconds field (plain object)
+      if (createdAt && createdAt.seconds) {
+        return new Date(createdAt.seconds * 1000).toLocaleString('en-PK');
+      }
+      // ISO string ya number
+      if (createdAt) {
+        const d = new Date(createdAt);
+        if (!isNaN(d.getTime())) return d.toLocaleString('en-PK');
+      }
+    } catch(e) {}
+    return '—';
+  }
+
   /** Admin orders table rows */
   renderAdminOrdersTable(orders) {
     if (!orders.length)
       return '<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text-muted);">No orders yet.</td></tr>';
 
     return orders.map(ord => {
-      const itemsText = ord.items.map(i => `${i.name} (${i.qty})`).join(', ');
+      const itemsText   = ord.items.map(i => `${i.name} (${i.qty})`).join(', ');
       const isCancelled = ord.status === 'Cancelled';
-      const rowStyle = isCancelled ? 'background:rgba(255,60,60,0.12);' : '';
+      const rowStyle    = isCancelled ? 'background:rgba(255,60,60,0.12);' : '';
+      const timeStr     = this._formatOrderDate(ord.createdAt);
+
       return `
-        <tr style="${rowStyle}">
+        <tr style="${rowStyle};cursor:pointer;" onclick="app.showOrderDetail('${ord.id}')">
           <td><strong style="color:var(--primary);">${ord.id}</strong></td>
           <td>${ord.customerName}</td>
           <td style="max-width:190px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${itemsText}</td>
           <td><strong>$${ord.total.toFixed(2)}</strong></td>
-          <td>
+          <td onclick="event.stopPropagation()">
             <select class="form-input" style="padding:6px;font-size:.78rem;width:auto;${isCancelled ? 'color:#ff4444;font-weight:600;' : ''}"
                     onchange="app.adminUpdateOrderStatus('${ord.id}', this.value)">
               ${['Pending','Preparing','Cooking','Packed','Out For Delivery','Delivered','Cancelled']
                 .map(s => `<option value="${s}" ${ord.status===s?'selected':''}>${s}</option>`).join('')}
             </select>
           </td>
-          <td style="font-size:.8rem;color:var(--text-muted);">${new Date(ord.createdAt).toLocaleTimeString()}</td>
+          <td style="font-size:.8rem;color:var(--text-muted);">${timeStr}</td>
         </tr>`;
     }).join('');
   }

@@ -286,7 +286,7 @@ export async function createOrder(orderData, currentUser) {
     specialInstructions: specialInstructions || '',
     status:              'Pending',
     deliveryTime:        '30-40 mins',
-    createdAt:           serverTimestamp()
+    createdAt:           new Date().toISOString()
   };
 
   // Save order with readable ID as document ID
