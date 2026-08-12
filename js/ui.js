@@ -270,16 +270,18 @@ class UIEngine {
 
     return orders.map(ord => {
       const itemsText = ord.items.map(i => `${i.name} (${i.qty})`).join(', ');
+      const isCancelled = ord.status === 'Cancelled';
+      const rowStyle = isCancelled ? 'background:rgba(255,60,60,0.12);' : '';
       return `
-        <tr>
+        <tr style="${rowStyle}">
           <td><strong style="color:var(--primary);">${ord.id}</strong></td>
           <td>${ord.customerName}</td>
           <td style="max-width:190px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${itemsText}</td>
           <td><strong>$${ord.total.toFixed(2)}</strong></td>
           <td>
-            <select class="form-input" style="padding:6px;font-size:.78rem;width:auto;"
+            <select class="form-input" style="padding:6px;font-size:.78rem;width:auto;${isCancelled ? 'color:#ff4444;font-weight:600;' : ''}"
                     onchange="app.adminUpdateOrderStatus('${ord.id}', this.value)">
-              ${['Pending','Preparing','Cooking','Packed','Out For Delivery','Delivered']
+              ${['Pending','Preparing','Cooking','Packed','Out For Delivery','Delivered','Cancelled']
                 .map(s => `<option value="${s}" ${ord.status===s?'selected':''}>${s}</option>`).join('')}
             </select>
           </td>
