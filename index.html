@@ -696,20 +696,61 @@
         </div>
         <div class="admin-content-area">
           <div class="admin-panel-content active" id="adminPanel-dashboard">
-            <div class="dashboard-metrics-grid">
-              <div class="dashboard-metric-card glass">
-                <p style="font-size:.72rem;text-transform:uppercase;">Total Sales</p>
-                <span id="adminStatRevenue">$0.00</span>
-              </div>
-              <div class="dashboard-metric-card glass">
-                <p style="font-size:.72rem;text-transform:uppercase;">Total Orders</p>
-                <span id="adminStatOrders">0</span>
-              </div>
-              <div class="dashboard-metric-card glass">
-                <p style="font-size:.72rem;text-transform:uppercase;">Total Menu Items</p>
-                <span id="adminStatMenuItems">0</span>
-              </div>
+
+            <!-- Date Filter Bar -->
+            <div class="glass" style="padding:14px 20px;border-radius:12px;margin-bottom:20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+              <i class="fas fa-calendar-alt" style="color:var(--primary);font-size:1rem;"></i>
+              <span style="font-size:.82rem;font-weight:600;white-space:nowrap;">Filter by Date:</span>
+              <input type="date" id="dashFromDate" class="form-input"
+                     style="padding:7px 12px;font-size:.82rem;width:auto;min-width:140px;"
+                     onchange="app.applyDashboardDateFilter()" />
+              <span style="font-size:.8rem;color:var(--text-muted);">to</span>
+              <input type="date" id="dashToDate" class="form-input"
+                     style="padding:7px 12px;font-size:.82rem;width:auto;min-width:140px;"
+                     onchange="app.applyDashboardDateFilter()" />
+              <button class="btn-outline" style="padding:7px 14px;font-size:.78rem;background:transparent;white-space:nowrap;"
+                      onclick="app.resetDashboardDateFilter()">
+                <i class="fas fa-times"></i> Clear
+              </button>
+              <span id="dashFilterNote" style="font-size:.76rem;color:var(--primary);margin-left:4px;"></span>
             </div>
+
+            <!-- KPI Cards -->
+            <div class="dashboard-metrics-grid" style="grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:20px;">
+
+              <div class="dashboard-metric-card glass">
+                <p style="font-size:.68rem;text-transform:uppercase;letter-spacing:.8px;color:var(--text-muted);margin-bottom:6px;">
+                  <i class="fas fa-sun" style="color:#f59e0b;margin-right:4px;"></i>Today's Sales
+                </p>
+                <span id="adminStatToday" style="font-size:1.6rem;font-weight:900;color:var(--primary);">$0.00</span>
+                <p id="adminStatTodayOrders" style="font-size:.72rem;color:var(--text-muted);margin-top:4px;"></p>
+              </div>
+
+              <div class="dashboard-metric-card glass">
+                <p style="font-size:.68rem;text-transform:uppercase;letter-spacing:.8px;color:var(--text-muted);margin-bottom:6px;">
+                  <i class="fas fa-calendar-week" style="color:#3b82f6;margin-right:4px;"></i>This Week
+                </p>
+                <span id="adminStatWeek" style="font-size:1.6rem;font-weight:900;color:#3b82f6;">$0.00</span>
+                <p id="adminStatWeekOrders" style="font-size:.72rem;color:var(--text-muted);margin-top:4px;"></p>
+              </div>
+
+              <div class="dashboard-metric-card glass">
+                <p style="font-size:.68rem;text-transform:uppercase;letter-spacing:.8px;color:var(--text-muted);margin-bottom:6px;">
+                  <i class="fas fa-chart-line" style="color:#10b981;margin-right:4px;"></i>Total Sales
+                </p>
+                <span id="adminStatRevenue" style="font-size:1.6rem;font-weight:900;color:#10b981;">$0.00</span>
+                <p id="adminStatOrders" style="font-size:.72rem;color:var(--text-muted);margin-top:4px;"></p>
+              </div>
+
+              <div class="dashboard-metric-card glass">
+                <p style="font-size:.68rem;text-transform:uppercase;letter-spacing:.8px;color:var(--text-muted);margin-bottom:6px;">
+                  <i class="fas fa-utensils" style="color:var(--primary);margin-right:4px;"></i>Menu Items
+                </p>
+                <span id="adminStatMenuItems" style="font-size:1.6rem;font-weight:900;">0</span>
+              </div>
+
+            </div>
+
             <div class="admin-charts-container">
               <div class="chart-card glass">
                 <h3>Revenue Analytics ($)</h3>

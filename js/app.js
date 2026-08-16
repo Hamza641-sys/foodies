@@ -1083,53 +1083,84 @@ class FoodiesApp {
       if (tab === 'dashboard') {
         const [stats, orders] = await Promise.all([getAdminStats(), getAllOrders()]);
         const set = (id, val) => { const el = document.getElementById(id); if (el) el.innerText = val; };
-        set('adminStatRevenue',   `$${stats.totalRevenue.toFixed(2)}`);
-        set('adminStatOrders',    stats.totalOrders);
-        set('adminStatMenuItems', stats.totalMenuItems);
+
+        // ── Date helpers ──────────────────────────────
+        const now      = new Date();
+        const todayStr = now.toDateString();
+
+        // Start of current week (Monday)
+        const weekStart = new Date(now);
+        weekStart.setDate(now.getDate() - ((now.getDay() + 6) % 7)); // Mon = 0
+        weekStart.setHours(0, 0, 0, 0);
+
+        const parseDate = (val) => {
+          try {
+            if (val && typeof val.toDate === 'function') return val.toDate();
+            if (val && val.seconds) return new Date(val.seconds * 1000);
+            if (val) { const d = new Date(val); if (!isNaN(d)) return d; }
+          } catch(e) {}
+          return null;
+        };
+
+        // Delivered orders only for revenue cards
+        const delivered = orders.filter(o => o.status === 'Delivered');
+
+        // Today's sales
+        const todayOrders  = delivered.filter(o => {
+          const d = parseDate(o.createdAt);
+          return d && d.toDateString() === todayStr;
+        });
+        const todaySales   = todayOrders.reduce((s, o) => s + (o.total || 0), 0);
+
+        // This week's sales
+        const weekOrders   = delivered.filter(o => {
+          const d = parseDate(o.createdAt);
+          return d && d >= weekStart;
+        });
+        const weekSales    = weekOrders.reduce((s, o) => s + (o.total || 0), 0);
+
+        // All-time total (all statuses for total orders count)
+        const totalRevenue = delivered.reduce((s, o) => s + (o.total || 0), 0);
+
+        set('adminStatToday',        `$${todaySales.toFixed(2)}`);
+        set('adminStatTodayOrders',  `${todayOrders.length} order${todayOrders.length !== 1 ? 's' : ''} today`);
+        set('adminStatWeek',         `$${weekSales.toFixed(2)}`);
+        set('adminStatWeekOrders',   `${weekOrders.length} order${weekOrders.length !== 1 ? 's' : ''} this week`);
+        set('adminStatRevenue',      `$${totalRevenue.toFixed(2)}`);
+        set('adminStatOrders',       `${orders.length} total order${orders.length !== 1 ? 's' : ''}`);
+        set('adminStatMenuItems',    stats.totalMenuItems);
+
+        // Store orders for date filter
+        this._dashboardOrders = orders;
 
         // ── Real chart data: last 7 days ─────────────
-        const today    = new Date();
         const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
         const labels   = [];
         const revenue  = new Array(7).fill(0);
         const visitors = new Array(7).fill(0);
 
-        // Build labels: last 7 days oldest → newest
         for (let i = 6; i >= 0; i--) {
-          const d = new Date(today);
-          d.setDate(today.getDate() - i);
+          const d = new Date(now);
+          d.setDate(now.getDate() - i);
           labels.push(dayNames[d.getDay()]);
         }
 
-        // Distribute orders into their day buckets
         orders.forEach(ord => {
-          let ordDate;
-          try {
-            if (ord.createdAt && typeof ord.createdAt.toDate === 'function') {
-              ordDate = ord.createdAt.toDate();
-            } else if (ord.createdAt && ord.createdAt.seconds) {
-              ordDate = new Date(ord.createdAt.seconds * 1000);
-            } else if (ord.createdAt) {
-              ordDate = new Date(ord.createdAt);
-            }
-          } catch(e) {}
-
-          if (!ordDate || isNaN(ordDate)) return;
-
-          const diffDays = Math.floor((today - ordDate) / (1000 * 60 * 60 * 24));
+          const ordDate  = parseDate(ord.createdAt);
+          if (!ordDate)  return;
+          const diffDays = Math.floor((now - ordDate) / (1000 * 60 * 60 * 24));
           if (diffDays >= 0 && diffDays < 7) {
-            const idx      = 6 - diffDays; // 6 = today, 0 = 6 days ago
-            revenue[idx]  += ord.total    || 0;
-            visitors[idx] += 1; // each order = 1 visitor
+            const idx      = 6 - diffDays;
+            revenue[idx]  += ord.total || 0;
+            visitors[idx] += 1;
           }
         });
 
-        // Round revenue to 2 decimals for display
-        const revenueRounded  = revenue.map(v => parseFloat(v.toFixed(2)));
+        const revenueRounded = revenue.map(v => parseFloat(v.toFixed(2)));
 
         if (window.AdminController) {
           window.AdminController.analytics = {
-            revenueByDay:    revenueRounded,
+            revenueByDay:     revenueRounded,
             revenueDayLabels: labels,
             visitorsByDay:    visitors,
             visitorDayLabels: labels
@@ -1259,6 +1290,96 @@ class FoodiesApp {
     if (searchEl) searchEl.value = '';
     if (filterEl) filterEl.value = '';
     this.filterAdminOrders();
+  }
+
+  /* ── DASHBOARD DATE FILTER ───────────────────── */
+  applyDashboardDateFilter() {
+    const fromVal = document.getElementById('dashFromDate')?.value;
+    const toVal   = document.getElementById('dashToDate')?.value;
+    const orders  = this._dashboardOrders || [];
+
+    const parseDate = (val) => {
+      try {
+        if (val && typeof val.toDate === 'function') return val.toDate();
+        if (val && val.seconds) return new Date(val.seconds * 1000);
+        if (val) { const d = new Date(val); if (!isNaN(d)) return d; }
+      } catch(e) {}
+      return null;
+    };
+
+    const from = fromVal ? new Date(fromVal + 'T00:00:00') : null;
+    const to   = toVal   ? new Date(toVal   + 'T23:59:59') : null;
+
+    const filtered = orders.filter(o => {
+      const d = parseDate(o.createdAt);
+      if (!d) return false;
+      if (from && d < from) return false;
+      if (to   && d > to)   return false;
+      return true;
+    });
+
+    const delivered      = filtered.filter(o => o.status === 'Delivered');
+    const filteredRev    = delivered.reduce((s, o) => s + (o.total || 0), 0);
+    const set = (id, val) => { const el = document.getElementById(id); if (el) el.innerText = val; };
+
+    const noteEl = document.getElementById('dashFilterNote');
+
+    if (from || to) {
+      // Show filtered totals in cards
+      set('adminStatToday',       `$${filteredRev.toFixed(2)}`);
+      set('adminStatTodayOrders', `${delivered.length} delivered`);
+      set('adminStatWeek',        `${filtered.length} orders`);
+      set('adminStatWeekOrders',  'in selected range');
+      set('adminStatRevenue',     `$${filteredRev.toFixed(2)}`);
+      set('adminStatOrders',      `${filtered.length} total`);
+      if (noteEl) noteEl.innerText = `Showing ${filtered.length} orders in range`;
+
+      // Update chart for filtered range
+      if (window.AdminController && filtered.length) {
+        const labels  = [];
+        const revenue = [];
+        const visitors = [];
+        const dayMap  = {};
+
+        filtered.forEach(o => {
+          const d = parseDate(o.createdAt);
+          if (!d) return;
+          const key = d.toLocaleDateString('en-PK', { month:'short', day:'numeric' });
+          if (!dayMap[key]) dayMap[key] = { rev: 0, count: 0 };
+          dayMap[key].rev   += o.total || 0;
+          dayMap[key].count += 1;
+        });
+
+        Object.entries(dayMap).forEach(([k, v]) => {
+          labels.push(k);
+          revenue.push(parseFloat(v.rev.toFixed(2)));
+          visitors.push(v.count);
+        });
+
+        window.AdminController.analytics = {
+          revenueByDay: revenue, revenueDayLabels: labels,
+          visitorsByDay: visitors, visitorDayLabels: labels
+        };
+        const rcBox = document.getElementById('revenueChartBox');
+        const vcBox = document.getElementById('visitorsChartBox');
+        if (rcBox) rcBox.innerHTML = window.AdminController.renderRevenueChart();
+        if (vcBox) vcBox.innerHTML = window.AdminController.renderVisitorsChart();
+      }
+    } else {
+      if (noteEl) noteEl.innerText = '';
+      // Reset to default view
+      this._renderAdmin();
+    }
+  }
+
+  resetDashboardDateFilter() {
+    const fromEl = document.getElementById('dashFromDate');
+    const toEl   = document.getElementById('dashToDate');
+    const noteEl = document.getElementById('dashFilterNote');
+    if (fromEl) fromEl.value = '';
+    if (toEl)   toEl.value   = '';
+    if (noteEl) noteEl.innerText = '';
+    this._renderAdmin();
   }
 
   /* ── ORDER DETAIL MODAL ──────────────────────── */
