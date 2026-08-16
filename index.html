@@ -723,7 +723,36 @@
           </div>
           <div class="admin-panel-content" id="adminPanel-orders">
             <div class="glass" style="padding:28px;border-radius:var(--border-radius-lg);overflow-x:auto;">
-              <h3 style="font-weight:800;margin-bottom:16px;">Order Logs</h3>
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:12px;">
+                <h3 style="font-weight:800;margin:0;">Order Logs</h3>
+                <span id="ordersCountBadge" style="font-size:.78rem;color:var(--text-muted);"></span>
+              </div>
+              <!-- Search + Filter Bar -->
+              <div style="display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap;">
+                <div style="position:relative;flex:1;min-width:180px;">
+                  <i class="fas fa-search" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:.8rem;pointer-events:none;"></i>
+                  <input type="text" id="ordersSearchInput" class="form-input"
+                         placeholder="Search by Order ID or Customer name..."
+                         style="padding-left:34px;padding-top:9px;padding-bottom:9px;font-size:.82rem;"
+                         oninput="app.filterAdminOrders()" />
+                </div>
+                <select id="ordersStatusFilter" class="form-input"
+                        style="padding:9px 14px;font-size:.82rem;width:auto;min-width:150px;"
+                        onchange="app.filterAdminOrders()">
+                  <option value="">All Statuses</option>
+                  <option value="Pending">Pending</option>
+                  <option value="Preparing">Preparing</option>
+                  <option value="Cooking">Cooking</option>
+                  <option value="Packed">Packed</option>
+                  <option value="Out For Delivery">Out For Delivery</option>
+                  <option value="Delivered">Delivered</option>
+                  <option value="Cancelled">Cancelled</option>
+                </select>
+                <button class="btn-outline" style="padding:9px 14px;font-size:.8rem;background:transparent;white-space:nowrap;"
+                        onclick="app.resetOrdersFilter()">
+                  <i class="fas fa-times"></i> Clear
+                </button>
+              </div>
               <table class="admin-table">
                 <thead><tr><th>Order ID</th><th>Customer</th><th>Dishes</th><th>Total</th><th>Status</th><th>Time</th></tr></thead>
                 <tbody id="adminOrdersTableBody"></tbody>
@@ -776,9 +805,12 @@
           </div>
           <div class="admin-panel-content" id="adminPanel-reservations">
             <div class="glass" style="padding:28px;border-radius:var(--border-radius-lg);overflow-x:auto;">
-              <h3 style="font-weight:800;margin-bottom:16px;">Reservation Queue</h3>
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:12px;">
+                <h3 style="font-weight:800;margin:0;">Reservation Queue</h3>
+                <span id="reservationsCountBadge" style="font-size:.78rem;color:var(--text-muted);"></span>
+              </div>
               <table class="admin-table">
-                <thead><tr><th>Res ID</th><th>Name</th><th>Date</th><th>Time</th><th>Guests</th><th>Zone</th><th>Action</th></tr></thead>
+                <thead><tr><th>Res ID</th><th>Name</th><th>Date</th><th>Time</th><th>Guests</th><th>Table Type</th><th>Booked At</th><th>Status</th><th>Action</th></tr></thead>
                 <tbody id="adminReservationsTableBody"></tbody>
               </table>
             </div>

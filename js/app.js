@@ -1081,12 +1081,59 @@ class FoodiesApp {
 
     try {
       if (tab === 'dashboard') {
-        const stats = await getAdminStats();
-        const set   = (id, val) => { const el = document.getElementById(id); if (el) el.innerText = val; };
+        const [stats, orders] = await Promise.all([getAdminStats(), getAllOrders()]);
+        const set = (id, val) => { const el = document.getElementById(id); if (el) el.innerText = val; };
         set('adminStatRevenue',   `$${stats.totalRevenue.toFixed(2)}`);
         set('adminStatOrders',    stats.totalOrders);
         set('adminStatMenuItems', stats.totalMenuItems);
+
+        // ── Real chart data: last 7 days ─────────────
+        const today    = new Date();
+        const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+        const labels   = [];
+        const revenue  = new Array(7).fill(0);
+        const visitors = new Array(7).fill(0);
+
+        // Build labels: last 7 days oldest → newest
+        for (let i = 6; i >= 0; i--) {
+          const d = new Date(today);
+          d.setDate(today.getDate() - i);
+          labels.push(dayNames[d.getDay()]);
+        }
+
+        // Distribute orders into their day buckets
+        orders.forEach(ord => {
+          let ordDate;
+          try {
+            if (ord.createdAt && typeof ord.createdAt.toDate === 'function') {
+              ordDate = ord.createdAt.toDate();
+            } else if (ord.createdAt && ord.createdAt.seconds) {
+              ordDate = new Date(ord.createdAt.seconds * 1000);
+            } else if (ord.createdAt) {
+              ordDate = new Date(ord.createdAt);
+            }
+          } catch(e) {}
+
+          if (!ordDate || isNaN(ordDate)) return;
+
+          const diffDays = Math.floor((today - ordDate) / (1000 * 60 * 60 * 24));
+          if (diffDays >= 0 && diffDays < 7) {
+            const idx      = 6 - diffDays; // 6 = today, 0 = 6 days ago
+            revenue[idx]  += ord.total    || 0;
+            visitors[idx] += 1; // each order = 1 visitor
+          }
+        });
+
+        // Round revenue to 2 decimals for display
+        const revenueRounded  = revenue.map(v => parseFloat(v.toFixed(2)));
+
         if (window.AdminController) {
+          window.AdminController.analytics = {
+            revenueByDay:    revenueRounded,
+            revenueDayLabels: labels,
+            visitorsByDay:    visitors,
+            visitorDayLabels: labels
+          };
           const rcBox = document.getElementById('revenueChartBox');
           const vcBox = document.getElementById('visitorsChartBox');
           if (rcBox) rcBox.innerHTML = window.AdminController.renderRevenueChart();
@@ -1098,6 +1145,9 @@ class FoodiesApp {
         const orders = await getAllOrders();
         const body   = document.getElementById('adminOrdersTableBody');
         if (body) body.innerHTML = window.UIEngine.renderAdminOrdersTable(orders);
+        // Set count badge
+        const badge = document.getElementById('ordersCountBadge');
+        if (badge) badge.innerText = `${orders.length} order${orders.length !== 1 ? 's' : ''}`;
       }
 
       if (tab === 'menu') {
@@ -1169,6 +1219,34 @@ class FoodiesApp {
       this.showToast(`Order ${orderId} → ${newStatus}`, 'success');
       await this._renderAdmin();
     } catch (e) { this.showToast('Failed to update order', 'danger'); }
+  }
+
+  /* ── ORDERS SEARCH & FILTER ──────────────────── */
+  filterAdminOrders() {
+    const search  = (document.getElementById('ordersSearchInput')?.value || '').toLowerCase();
+    const status  = document.getElementById('ordersStatusFilter')?.value || '';
+    const allRows = document.querySelectorAll('#adminOrdersTableBody tr');
+    let visible   = 0;
+
+    allRows.forEach(row => {
+      const text      = row.innerText.toLowerCase();
+      const matchText = !search || text.includes(search);
+      const matchStat = !status || text.includes(status.toLowerCase());
+      const show      = matchText && matchStat;
+      row.style.display = show ? '' : 'none';
+      if (show) visible++;
+    });
+
+    const badge = document.getElementById('ordersCountBadge');
+    if (badge) badge.innerText = `${visible} order${visible !== 1 ? 's' : ''} shown`;
+  }
+
+  resetOrdersFilter() {
+    const searchEl = document.getElementById('ordersSearchInput');
+    const filterEl = document.getElementById('ordersStatusFilter');
+    if (searchEl) searchEl.value = '';
+    if (filterEl) filterEl.value = '';
+    this.filterAdminOrders();
   }
 
   /* ── ORDER DETAIL MODAL ──────────────────────── */

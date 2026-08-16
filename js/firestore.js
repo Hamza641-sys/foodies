@@ -360,7 +360,7 @@ export async function createReservation(data, currentUser) {
     type:           type || 'Indoor',
     specialRequest: specialRequest || '',
     status:         'Pending',
-    createdAt:      serverTimestamp()
+    createdAt:      new Date().toISOString()
   };
 
   await setDoc(doc(db, 'reservations', resId), reservation);

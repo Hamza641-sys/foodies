@@ -315,23 +315,48 @@ class UIEngine {
   /** Admin reservations table rows */
   renderAdminReservationsTable(reservations) {
     if (!reservations.length)
-      return '<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--text-muted);">No reservations yet.</td></tr>';
+      return '<tr><td colspan="9" style="text-align:center;padding:24px;color:var(--text-muted);">No reservations yet.</td></tr>';
 
-    return reservations.map(res => `
-      <tr>
-        <td><strong style="color:var(--primary);">${res.id}</strong></td>
-        <td>${res.name}</td>
-        <td>${res.date}</td>
-        <td>${res.time}</td>
-        <td>${res.guests} Guests</td>
-        <td><span class="status-badge status-ready">${res.type}</span></td>
-        <td style="display:flex;gap:6px;flex-wrap:wrap;">
-          <button class="btn-outline" style="padding:4px 10px;font-size:.72rem;"
-                  onclick="app.adminUpdateReservation('${res.id}','Confirmed')">Approve</button>
-          <button class="btn-outline" style="padding:4px 10px;font-size:.72rem;border-color:var(--danger);color:var(--danger);"
-                  onclick="app.adminUpdateReservation('${res.id}','Cancelled')">Cancel</button>
-        </td>
-      </tr>`).join('');
+    // Update count badge
+    const badge = document.getElementById('reservationsCountBadge');
+    if (badge) badge.innerText = `${reservations.length} reservation${reservations.length !== 1 ? 's' : ''}`;
+
+    return reservations.map(res => {
+      const bookedAt    = this._formatOrderDate(res.createdAt);
+      const isCancelled = res.status === 'Cancelled';
+      const isConfirmed = res.status === 'Confirmed';
+      const statusColor = isConfirmed ? 'var(--success)' : isCancelled ? 'var(--danger)' : 'var(--warning)';
+      const rowStyle    = isCancelled ? 'background:rgba(255,60,60,0.08);' : '';
+
+      return `
+        <tr style="${rowStyle}">
+          <td><strong style="color:var(--primary);">${res.id}</strong></td>
+          <td><strong>${res.name}</strong><br><small style="color:var(--text-muted);font-size:.72rem;">${res.phone || ''}</small></td>
+          <td>${res.date}</td>
+          <td>${res.time}</td>
+          <td>${res.guests} Guests</td>
+          <td><span class="status-badge status-ready">${res.type}</span></td>
+          <td style="font-size:.78rem;color:var(--text-muted);">${bookedAt}</td>
+          <td>
+            <span style="display:inline-block;padding:4px 10px;border-radius:20px;font-size:.68rem;font-weight:700;
+                         background:${statusColor}20;color:${statusColor};border:1px solid ${statusColor}40;">
+              ${res.status || 'Pending'}
+            </span>
+          </td>
+          <td style="white-space:nowrap;">
+            ${!isConfirmed && !isCancelled ? `
+              <button class="btn-outline" style="padding:4px 10px;font-size:.72rem;margin-right:4px;"
+                      onclick="app.adminUpdateReservation('${res.id}','Confirmed')">
+                <i class="fas fa-check"></i> Approve
+              </button>` : ''}
+            ${!isCancelled ? `
+              <button class="btn-outline" style="padding:4px 10px;font-size:.72rem;border-color:var(--danger);color:var(--danger);"
+                      onclick="app.adminUpdateReservation('${res.id}','Cancelled')">
+                <i class="fas fa-times"></i> Cancel
+              </button>` : '<span style="color:var(--text-muted);font-size:.75rem;">—</span>'}
+          </td>
+        </tr>`;
+    }).join('');
   }
 }
 
