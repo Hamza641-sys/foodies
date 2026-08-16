@@ -343,13 +343,14 @@ class UIEngine {
               ${res.status || 'Pending'}
             </span>
           </td>
-          <td style="max-width:120px;">
+          <td style="text-align:center;">
             ${res.specialRequest
-              ? `<span title="${res.specialRequest.replace(/"/g,"'")}"
-                       style="display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:110px;font-size:.78rem;color:var(--text-muted);font-style:italic;cursor:help;">
-                   <i class="fas fa-comment-alt" style="color:var(--primary);margin-right:4px;"></i>${res.specialRequest}
-                 </span>`
-              : '<span style="color:var(--text-muted);">—</span>'}
+              ? `<button onclick="app.showResNote('${res.specialRequest.replace(/'/g,"\\'").replace(/\n/g,' ')}')"
+                         title="View Note"
+                         style="background:var(--primary);border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;color:#fff;font-size:.85rem;display:inline-flex;align-items:center;justify-content:center;">
+                   <i class="fas fa-comment-alt"></i>
+                 </button>`
+              : '<span style="color:var(--text-muted);font-size:.8rem;">—</span>'}
           </td>
           <td style="white-space:nowrap;">
             ${!isConfirmed && !isCancelled ? `

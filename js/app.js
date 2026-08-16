@@ -1586,6 +1586,29 @@ class FoodiesApp {
     } catch (e) { this.showToast('Failed to update reservation', 'danger'); }
   }
 
+  showResNote(note) {
+    // Simple popup to show full note
+    const existing = document.getElementById('resNotePopup');
+    if (existing) existing.remove();
+
+    const popup = document.createElement('div');
+    popup.id = 'resNotePopup';
+    popup.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.75);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;';
+    popup.innerHTML = `
+      <div class="glass" style="max-width:440px;width:100%;padding:28px;border-radius:16px;position:relative;">
+        <h4 style="color:var(--primary);margin-bottom:14px;font-weight:800;">
+          <i class="fas fa-comment-alt" style="margin-right:8px;"></i>Customer Note
+        </h4>
+        <p style="font-size:.92rem;line-height:1.7;font-style:italic;">"${note}"</p>
+        <button onclick="document.getElementById('resNotePopup').remove()"
+                style="margin-top:20px;width:100%;padding:10px;background:var(--primary);border:none;border-radius:8px;color:#fff;font-size:.85rem;font-weight:700;cursor:pointer;">
+          Close
+        </button>
+      </div>`;
+    popup.onclick = (e) => { if (e.target === popup) popup.remove(); };
+    document.body.appendChild(popup);
+  }
+
   async advanceKitchenStatus(orderId) {
     try {
       const nextStatus = await advanceOrderStatus(orderId);
