@@ -245,7 +245,8 @@ class AdminController {
       });
     }
     // Open modal via CSS class (same as other modals)
-    document.getElementById('dishAdminModal')?.classList.add('active');
+    const modal = document.getElementById('dishAdminModal');
+    if (modal) { modal.style.display = 'flex'; modal.classList.add('active'); }
   }
 
   showEditDishModal(dishId) {
@@ -269,11 +270,13 @@ class AdminController {
     const prevDiv = document.getElementById('dishImagePreview');
     const prevImg = document.getElementById('dishImagePreviewImg');
     if (prevDiv && prevImg && dish.image) { prevImg.src = dish.image; prevDiv.style.display = 'block'; }
-    document.getElementById('dishAdminModal')?.classList.add('active');
+    const modal2 = document.getElementById('dishAdminModal');
+    if (modal2) { modal2.style.display = 'flex'; modal2.classList.add('active'); }
   }
 
   closeDishModal() {
-    document.getElementById('dishAdminModal')?.classList.remove('active');
+    const modal = document.getElementById('dishAdminModal');
+    if (modal) { modal.style.display = 'none'; modal.classList.remove('active'); }
   }
 
   async handleDishSubmit(e) {

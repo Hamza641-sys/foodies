@@ -1800,3 +1800,7 @@ body.light-theme .nav-mega-dropdown {
   text-transform: uppercase;
   letter-spacing: .4px;
 }
+
+/* ── DISH ADMIN MODAL — force override ─────────── */
+#dishAdminModal { display:none !important; }
+#dishAdminModal.active { display:flex !important; }
