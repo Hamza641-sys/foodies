@@ -315,7 +315,7 @@ class UIEngine {
   /** Admin reservations table rows */
   renderAdminReservationsTable(reservations) {
     if (!reservations.length)
-      return '<tr><td colspan="9" style="text-align:center;padding:24px;color:var(--text-muted);">No reservations yet.</td></tr>';
+      return '<tr><td colspan="10" style="text-align:center;padding:24px;color:var(--text-muted);">No reservations yet.</td></tr>';
 
     // Update count badge
     const badge = document.getElementById('reservationsCountBadge');
@@ -342,6 +342,9 @@ class UIEngine {
                          background:${statusColor}20;color:${statusColor};border:1px solid ${statusColor}40;">
               ${res.status || 'Pending'}
             </span>
+          </td>
+          <td style="max-width:160px;font-size:.78rem;color:var(--text-muted);font-style:italic;">
+            ${res.specialRequest ? `<i class="fas fa-comment-alt" style="color:var(--primary);margin-right:4px;"></i>${res.specialRequest}` : '—'}
           </td>
           <td style="white-space:nowrap;">
             ${!isConfirmed && !isCancelled ? `
