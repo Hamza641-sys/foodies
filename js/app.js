@@ -1217,22 +1217,34 @@ class FoodiesApp {
     try {
       await updateOrderStatus(orderId, newStatus);
       this.showToast(`Order ${orderId} → ${newStatus}`, 'success');
-      await this._renderAdmin();
+      // Update data-status on the row so filter stays accurate without full reload
+      const row = document.querySelector(`#adminOrdersTableBody tr[data-orderid="${orderId.toLowerCase()}"]`);
+      if (row) {
+        row.dataset.status = newStatus;
+        const isCancelled  = newStatus === 'Cancelled';
+        row.style.background = isCancelled ? 'rgba(255,60,60,0.12)' : '';
+      }
+      // Re-apply filter
+      this.filterAdminOrders();
     } catch (e) { this.showToast('Failed to update order', 'danger'); }
   }
 
   /* ── ORDERS SEARCH & FILTER ──────────────────── */
   filterAdminOrders() {
-    const search  = (document.getElementById('ordersSearchInput')?.value || '').toLowerCase();
-    const status  = document.getElementById('ordersStatusFilter')?.value || '';
+    const search  = (document.getElementById('ordersSearchInput')?.value || '').toLowerCase().trim();
+    const status  = (document.getElementById('ordersStatusFilter')?.value || '').trim();
     const allRows = document.querySelectorAll('#adminOrdersTableBody tr');
     let visible   = 0;
 
     allRows.forEach(row => {
-      const text      = row.innerText.toLowerCase();
-      const matchText = !search || text.includes(search);
-      const matchStat = !status || text.includes(status.toLowerCase());
+      const rowStatus   = (row.dataset.status   || '').trim();
+      const rowCustomer = (row.dataset.customer || '').toLowerCase();
+      const rowOrderId  = (row.dataset.orderid  || '').toLowerCase();
+
+      const matchText = !search || rowCustomer.includes(search) || rowOrderId.includes(search);
+      const matchStat = !status || rowStatus === status;
       const show      = matchText && matchStat;
+
       row.style.display = show ? '' : 'none';
       if (show) visible++;
     });

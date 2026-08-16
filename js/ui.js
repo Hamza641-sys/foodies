@@ -295,7 +295,7 @@ class UIEngine {
       const timeStr     = this._formatOrderDate(ord.createdAt);
 
       return `
-        <tr style="${rowStyle};cursor:pointer;" onclick="app.showOrderDetail('${ord.id}')">
+        <tr style="${rowStyle};cursor:pointer;" data-status="${ord.status}" data-customer="${ord.customerName.toLowerCase()}" data-orderid="${ord.id.toLowerCase()}" onclick="app.showOrderDetail('${ord.id}')">
           <td><strong style="color:var(--primary);">${ord.id}</strong></td>
           <td>${ord.customerName}</td>
           <td style="max-width:190px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${itemsText}</td>
