@@ -246,7 +246,11 @@ class AdminController {
     }
     // Open modal via CSS class (same as other modals)
     const modal = document.getElementById('dishAdminModal');
-    if (modal) { modal.style.display = 'flex'; modal.classList.add('active'); }
+    if (modal) {
+      modal.style.cssText = 'display:flex !important; position:fixed !important; top:0 !important; left:0 !important; width:100% !important; height:100% !important; z-index:9999 !important; align-items:center !important; justify-content:center !important; background:rgba(0,0,0,.88) !important; overflow-y:auto !important; padding:20px !important;';
+      modal.classList.add('active');
+      modal.scrollTop = 0;
+    }
   }
 
   showEditDishModal(dishId) {
@@ -271,12 +275,16 @@ class AdminController {
     const prevImg = document.getElementById('dishImagePreviewImg');
     if (prevDiv && prevImg && dish.image) { prevImg.src = dish.image; prevDiv.style.display = 'block'; }
     const modal2 = document.getElementById('dishAdminModal');
-    if (modal2) { modal2.style.display = 'flex'; modal2.classList.add('active'); }
+    if (modal2) {
+      modal2.style.cssText = 'display:flex !important; position:fixed !important; top:0 !important; left:0 !important; width:100% !important; height:100% !important; z-index:9999 !important; align-items:center !important; justify-content:center !important; background:rgba(0,0,0,.88) !important; overflow-y:auto !important; padding:20px !important;';
+      modal2.classList.add('active');
+      modal2.scrollTop = 0;
+    }
   }
 
   closeDishModal() {
     const modal = document.getElementById('dishAdminModal');
-    if (modal) { modal.style.display = 'none'; modal.classList.remove('active'); }
+    if (modal) { modal.style.cssText = ''; modal.classList.remove('active'); }
   }
 
   async handleDishSubmit(e) {
