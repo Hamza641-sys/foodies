@@ -872,153 +872,6 @@
       </div>
 
       <!-- Add/Edit Dish Modal -->
-      <div class="modal-overlay" id="dishAdminModal" onclick="window.AdminController.closeDishModal()">
-        <div class="modal-card glass" onclick="event.stopPropagation()" style="max-width:680px;width:95%;overflow-y:auto;max-height:90vh;padding:32px;">
-          <i class="fas fa-times close-modal-btn" onclick="window.AdminController.closeDishModal()"></i>
-          <h2 id="dishAdminModalTitle" style="color:var(--primary);margin-bottom:24px;font-weight:800;font-size:1.2rem;">
-            <i class="fas fa-plus-circle" style="margin-right:8px;"></i>Add Menu Item
-          </h2>
-          <form id="dishAdminForm">
-            <input type="hidden" id="dishAdminMode" value="add" />
-
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
-
-              <!-- Row 1 -->
-              <div>
-                <label class="admin-field-label">Item ID * <small style="color:var(--text-muted);font-weight:400;">(unique, no spaces)</small></label>
-                <input type="text" id="dishAdminId" class="form-input" placeholder="e.g. chicken-burger-special" required />
-              </div>
-              <div>
-                <label class="admin-field-label">Item Name *</label>
-                <input type="text" id="dishAdminName" class="form-input" placeholder="e.g. Gourmet Chicken Burger" required />
-              </div>
-
-              <!-- Row 2 -->
-              <div>
-                <label class="admin-field-label">Category *</label>
-                <select id="dishAdminCategory" class="form-input" required>
-                  <option value="">— Select Category —</option>
-                  <option value="bbq">🍗 BBQ</option>
-                  <option value="breakfast">🥐 Breakfast</option>
-                  <option value="burger">🍔 Burger</option>
-                  <option value="chinese">🍜 Chinese</option>
-                  <option value="coffee">☕ Coffee</option>
-                  <option value="desi">🍛 Desi Food</option>
-                  <option value="desserts">🍰 Desserts</option>
-                  <option value="drinks">🥤 Drinks</option>
-                  <option value="fastfood">🍟 Fast Food</option>
-                  <option value="healthy">🥑 Healthy</option>
-                  <option value="icecream">🍦 Ice Cream</option>
-                  <option value="indian">🫕 Indian</option>
-                  <option value="japanese">🍣 Japanese</option>
-                  <option value="korean">🍱 Korean</option>
-                  <option value="mexican">🌮 Mexican</option>
-                  <option value="pasta">🍝 Pasta</option>
-                  <option value="pizza">🍕 Pizza</option>
-                  <option value="salad">🥗 Salad</option>
-                  <option value="sandwich">🥪 Sandwich</option>
-                  <option value="seafood">🦞 Seafood</option>
-                  <option value="soup">🍵 Soup</option>
-                  <option value="steak">🥩 Steak</option>
-                  <option value="arabic">🧆 Arabic</option>
-                  <option value="turkish">🫔 Turkish</option>
-                  <option value="thai">🍲 Thai</option>
-                </select>
-              </div>
-              <div>
-                <label class="admin-field-label">Price ($) *</label>
-                <input type="number" step="0.01" min="0" id="dishAdminPrice" class="form-input" placeholder="e.g. 12.99" required />
-              </div>
-
-              <!-- Row 3 -->
-              <div>
-                <label class="admin-field-label">Discount (%)</label>
-                <input type="number" min="0" max="99" id="dishAdminDiscount" class="form-input" placeholder="0" value="0" />
-              </div>
-              <div>
-                <label class="admin-field-label">Spicy Level</label>
-                <select id="dishAdminSpicy" class="form-input">
-                  <option value="0">🟢 Not Spicy</option>
-                  <option value="1">🟡 Mild 🌶</option>
-                  <option value="2">🟠 Medium 🌶🌶</option>
-                  <option value="3">🔴 Hot 🌶🌶🌶</option>
-                </select>
-              </div>
-
-              <!-- Row 4 -->
-              <div>
-                <label class="admin-field-label">Serving Size</label>
-                <input type="text" id="dishAdminServing" class="form-input" placeholder="e.g. 1 Person" value="1 Person" />
-              </div>
-              <div>
-                <label class="admin-field-label">Cooking Time</label>
-                <input type="text" id="dishAdminTime" class="form-input" placeholder="e.g. 15 mins" value="15 mins" />
-              </div>
-
-              <!-- Row 5 -->
-              <div>
-                <label class="admin-field-label">Calories (kcal)</label>
-                <input type="number" min="0" id="dishAdminCalories" class="form-input" placeholder="e.g. 450" value="0" />
-              </div>
-              <div>
-                <label class="admin-field-label">Image URL *</label>
-                <input type="url" id="dishAdminImage" class="form-input" placeholder="https://images.unsplash.com/..." required />
-              </div>
-
-              <!-- Full width rows -->
-              <div style="grid-column:span 2;">
-                <label class="admin-field-label">Ingredients <small style="color:var(--text-muted);font-weight:400;">(comma separated)</small></label>
-                <input type="text" id="dishAdminIngredients" class="form-input" placeholder="e.g. beef patty, cheddar cheese, lettuce, tomato, special sauce" />
-              </div>
-
-              <div style="grid-column:span 2;">
-                <label class="admin-field-label">Description *</label>
-                <textarea id="dishAdminDesc" class="form-input" rows="3"
-                          placeholder="Write a mouth-watering description of this dish..." required
-                          style="resize:vertical;"></textarea>
-              </div>
-
-              <!-- Badges row -->
-              <div style="grid-column:span 2;">
-                <label class="admin-field-label" style="margin-bottom:10px;">Badges &amp; Tags</label>
-                <div style="display:flex;gap:24px;flex-wrap:wrap;">
-                  <label style="display:flex;align-items:center;gap:8px;font-size:.85rem;cursor:pointer;user-select:none;">
-                    <input type="checkbox" id="dishAdminBestSeller" style="width:16px;height:16px;" />
-                    🔥 Best Seller
-                  </label>
-                  <label style="display:flex;align-items:center;gap:8px;font-size:.85rem;cursor:pointer;user-select:none;">
-                    <input type="checkbox" id="dishAdminFeatured" style="width:16px;height:16px;" />
-                    ⭐ Featured Pick
-                  </label>
-                  <label style="display:flex;align-items:center;gap:8px;font-size:.85rem;cursor:pointer;user-select:none;">
-                    <input type="checkbox" id="dishAdminRecommended" style="width:16px;height:16px;" />
-                    👨‍🍳 Chef Recommended
-                  </label>
-                </div>
-              </div>
-
-            </div>
-
-            <!-- Image preview -->
-            <div id="dishImagePreview" style="margin-top:16px;display:none;">
-              <label class="admin-field-label">Image Preview</label>
-              <img id="dishImagePreviewImg" src="" alt="preview"
-                   style="width:100%;max-height:180px;object-fit:cover;border-radius:10px;margin-top:6px;" />
-            </div>
-
-            <div style="margin-top:28px;display:flex;gap:14px;justify-content:flex-end;border-top:1px solid var(--glass-border);padding-top:20px;">
-              <button type="button" class="btn-outline"
-                      onclick="window.AdminController.closeDishModal()"
-                      style="padding:10px 22px;background:transparent;">
-                Cancel
-              </button>
-              <button type="submit" class="btn-gold" style="padding:10px 28px;">
-                <i class="fas fa-save" style="margin-right:6px;"></i>Save Item
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
     </section>
 
   </main><!-- end #app -->
@@ -1348,6 +1201,130 @@
     these will connect to your Firebase project automatically.
   -->
   <script type="module" src="js/admin.js"></script>
-  <script type="module" src="js/app.js"></script>
+  <script type="module" src="js/app.js"></script>  <!-- ================================================
+       DISH ADMIN MODAL (body-level — fixed overlay)
+       ================================================ -->
+  <div class="modal-overlay" id="dishAdminModal" onclick="window.AdminController.closeDishModal()">
+    <div class="modal-card glass" onclick="event.stopPropagation()" style="max-width:680px;width:95%;overflow-y:auto;max-height:88vh;padding:32px;">
+      <i class="fas fa-times close-modal-btn" onclick="window.AdminController.closeDishModal()"></i>
+      <h2 id="dishAdminModalTitle" style="color:var(--primary);margin-bottom:24px;font-weight:800;font-size:1.2rem;">
+        <i class="fas fa-plus-circle" style="margin-right:8px;"></i>Add Menu Item
+      </h2>
+      <form id="dishAdminForm">
+        <input type="hidden" id="dishAdminMode" value="add" />
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+          <div>
+            <label class="admin-field-label">Item ID * <small style="color:var(--text-muted);font-weight:400;">(unique, no spaces)</small></label>
+            <input type="text" id="dishAdminId" class="form-input" placeholder="e.g. chicken-burger-special" required />
+          </div>
+          <div>
+            <label class="admin-field-label">Item Name *</label>
+            <input type="text" id="dishAdminName" class="form-input" placeholder="e.g. Gourmet Chicken Burger" required />
+          </div>
+          <div>
+            <label class="admin-field-label">Category *</label>
+            <select id="dishAdminCategory" class="form-input" required>
+              <option value="">— Select Category —</option>
+              <option value="bbq">🍗 BBQ</option>
+              <option value="breakfast">🥐 Breakfast</option>
+              <option value="burger">🍔 Burger</option>
+              <option value="chinese">🍜 Chinese</option>
+              <option value="coffee">☕ Coffee</option>
+              <option value="desi">🍛 Desi Food</option>
+              <option value="desserts">🍰 Desserts</option>
+              <option value="drinks">🥤 Drinks</option>
+              <option value="fastfood">🍟 Fast Food</option>
+              <option value="healthy">🥑 Healthy</option>
+              <option value="icecream">🍦 Ice Cream</option>
+              <option value="indian">🫕 Indian</option>
+              <option value="japanese">🍣 Japanese</option>
+              <option value="korean">🍱 Korean</option>
+              <option value="mexican">🌮 Mexican</option>
+              <option value="pasta">🍝 Pasta</option>
+              <option value="pizza">🍕 Pizza</option>
+              <option value="salad">🥗 Salad</option>
+              <option value="sandwich">🥪 Sandwich</option>
+              <option value="seafood">🦞 Seafood</option>
+              <option value="soup">🍵 Soup</option>
+              <option value="steak">🥩 Steak</option>
+              <option value="arabic">🧆 Arabic</option>
+              <option value="turkish">🫔 Turkish</option>
+              <option value="thai">🍲 Thai</option>
+            </select>
+          </div>
+          <div>
+            <label class="admin-field-label">Price ($) *</label>
+            <input type="number" step="0.01" min="0" id="dishAdminPrice" class="form-input" placeholder="e.g. 12.99" required />
+          </div>
+          <div>
+            <label class="admin-field-label">Discount (%)</label>
+            <input type="number" min="0" max="99" id="dishAdminDiscount" class="form-input" placeholder="0" value="0" />
+          </div>
+          <div>
+            <label class="admin-field-label">Spicy Level</label>
+            <select id="dishAdminSpicy" class="form-input">
+              <option value="0">🟢 Not Spicy</option>
+              <option value="1">🟡 Mild 🌶</option>
+              <option value="2">🟠 Medium 🌶🌶</option>
+              <option value="3">🔴 Hot 🌶🌶🌶</option>
+            </select>
+          </div>
+          <div>
+            <label class="admin-field-label">Serving Size</label>
+            <input type="text" id="dishAdminServing" class="form-input" placeholder="e.g. 1 Person" value="1 Person" />
+          </div>
+          <div>
+            <label class="admin-field-label">Cooking Time</label>
+            <input type="text" id="dishAdminTime" class="form-input" placeholder="e.g. 15 mins" value="15 mins" />
+          </div>
+          <div>
+            <label class="admin-field-label">Calories (kcal)</label>
+            <input type="number" min="0" id="dishAdminCalories" class="form-input" placeholder="e.g. 450" value="0" />
+          </div>
+          <div>
+            <label class="admin-field-label">Image URL *</label>
+            <input type="url" id="dishAdminImage" class="form-input" placeholder="https://images.unsplash.com/..." required />
+          </div>
+          <div style="grid-column:span 2;">
+            <label class="admin-field-label">Ingredients <small style="color:var(--text-muted);font-weight:400;">(comma separated)</small></label>
+            <input type="text" id="dishAdminIngredients" class="form-input" placeholder="e.g. beef patty, cheddar cheese, lettuce, tomato, special sauce" />
+          </div>
+          <div style="grid-column:span 2;">
+            <label class="admin-field-label">Description *</label>
+            <textarea id="dishAdminDesc" class="form-input" rows="3"
+                      placeholder="Write a mouth-watering description of this dish..." required
+                      style="resize:vertical;"></textarea>
+          </div>
+          <div style="grid-column:span 2;">
+            <label class="admin-field-label" style="margin-bottom:10px;">Badges &amp; Tags</label>
+            <div style="display:flex;gap:24px;flex-wrap:wrap;">
+              <label style="display:flex;align-items:center;gap:8px;font-size:.85rem;cursor:pointer;">
+                <input type="checkbox" id="dishAdminBestSeller" style="width:16px;height:16px;" /> 🔥 Best Seller
+              </label>
+              <label style="display:flex;align-items:center;gap:8px;font-size:.85rem;cursor:pointer;">
+                <input type="checkbox" id="dishAdminFeatured" style="width:16px;height:16px;" /> ⭐ Featured Pick
+              </label>
+              <label style="display:flex;align-items:center;gap:8px;font-size:.85rem;cursor:pointer;">
+                <input type="checkbox" id="dishAdminRecommended" style="width:16px;height:16px;" /> 👨‍🍳 Chef Recommended
+              </label>
+            </div>
+          </div>
+        </div>
+        <div id="dishImagePreview" style="margin-top:16px;display:none;">
+          <label class="admin-field-label">Image Preview</label>
+          <img id="dishImagePreviewImg" src="" alt="preview"
+               style="width:100%;max-height:160px;object-fit:cover;border-radius:10px;margin-top:6px;" />
+        </div>
+        <div style="margin-top:24px;display:flex;gap:14px;justify-content:flex-end;border-top:1px solid var(--glass-border);padding-top:18px;">
+          <button type="button" class="btn-outline" onclick="window.AdminController.closeDishModal()"
+                  style="padding:10px 22px;background:transparent;">Cancel</button>
+          <button type="submit" class="btn-gold" style="padding:10px 28px;">
+            <i class="fas fa-save" style="margin-right:6px;"></i>Save Item
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
 </body>
 </html>
