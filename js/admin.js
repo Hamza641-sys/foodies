@@ -221,20 +221,38 @@ class AdminController {
 
   showAddDishModal() {
     const titleEl = document.getElementById('dishAdminModalTitle');
-    if (titleEl) titleEl.innerText = 'Add Menu Item';
+    if (titleEl) titleEl.innerHTML = '<i class="fas fa-plus-circle" style="margin-right:8px;"></i>Add New Menu Item';
     const modeEl = this._fld('Mode');
     if (modeEl) modeEl.value = 'add';
     const idEl = this._fld('Id');
-    if (idEl) idEl.disabled = false;
+    if (idEl) { idEl.value = ''; idEl.disabled = false; }
     document.getElementById('dishAdminForm')?.reset();
-    document.getElementById('dishAdminModal').style.display = 'flex';
+    // Reset image preview
+    const prev = document.getElementById('dishImagePreview');
+    if (prev) prev.style.display = 'none';
+    // Bind image preview on URL input
+    const imgInput = document.getElementById('dishAdminImage');
+    if (imgInput && !imgInput._prevBound) {
+      imgInput._prevBound = true;
+      imgInput.addEventListener('input', () => {
+        const url = imgInput.value.trim();
+        const prevDiv = document.getElementById('dishImagePreview');
+        const prevImg = document.getElementById('dishImagePreviewImg');
+        if (url && prevDiv && prevImg) {
+          prevImg.src = url;
+          prevDiv.style.display = 'block';
+        }
+      });
+    }
+    // Open modal via CSS class (same as other modals)
+    document.getElementById('dishAdminModal')?.classList.add('active');
   }
 
   showEditDishModal(dishId) {
     const dish = this.dishes.find(d => d.id === dishId);
     if (!dish) return;
     const titleEl = document.getElementById('dishAdminModalTitle');
-    if (titleEl) titleEl.innerText = 'Edit Menu Item';
+    if (titleEl) titleEl.innerHTML = `<i class="fas fa-edit" style="margin-right:8px;"></i>Edit: ${dish.name}`;
     const modeEl = this._fld('Mode');
     if (modeEl) modeEl.value = 'edit';
     const idEl = this._fld('Id');
@@ -247,10 +265,16 @@ class AdminController {
     setVal('Calories', dish.calories || 0); setVal('Spicy', dish.spicyLevel || 0);
     setVal('Ingredients', (dish.ingredients || []).join(', ')); setVal('Desc', dish.description);
     setChk('BestSeller', dish.bestSeller); setChk('Featured', dish.featured); setChk('Recommended', dish.recommended);
-    document.getElementById('dishAdminModal').style.display = 'flex';
+    // Show image preview
+    const prevDiv = document.getElementById('dishImagePreview');
+    const prevImg = document.getElementById('dishImagePreviewImg');
+    if (prevDiv && prevImg && dish.image) { prevImg.src = dish.image; prevDiv.style.display = 'block'; }
+    document.getElementById('dishAdminModal')?.classList.add('active');
   }
 
-  closeDishModal() { document.getElementById('dishAdminModal').style.display = 'none'; }
+  closeDishModal() {
+    document.getElementById('dishAdminModal')?.classList.remove('active');
+  }
 
   async handleDishSubmit(e) {
     e.preventDefault();

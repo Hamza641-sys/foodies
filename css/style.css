@@ -1789,3 +1789,14 @@ body.light-theme .nav-mega-dropdown {
 .lang-dropdown::-webkit-scrollbar { width: 4px; }
 .lang-dropdown::-webkit-scrollbar-track { background: transparent; }
 .lang-dropdown::-webkit-scrollbar-thumb { background: var(--glass-border); border-radius: 2px; }
+
+/* ── ADMIN MODAL FIELD LABELS ──────────────────── */
+.admin-field-label {
+  font-size: .78rem;
+  color: var(--primary);
+  font-weight: 700;
+  display: block;
+  margin-bottom: 5px;
+  text-transform: uppercase;
+  letter-spacing: .4px;
+}
