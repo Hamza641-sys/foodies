@@ -331,7 +331,7 @@ class UIEngine {
       return `
         <tr style="${rowStyle}">
           <td><strong style="color:var(--primary);">${res.id}</strong></td>
-          <td><strong>${res.name}</strong><br><small style="color:var(--text-muted);font-size:.72rem;">${res.phone || ''}</small></td>
+          <td><strong>${res.name}</strong><br><small style="color:var(--primary);font-size:.75rem;"><i class="fas fa-phone"></i> ${res.phone || '—'}</small></td>
           <td>${res.date}</td>
           <td>${res.time}</td>
           <td>${res.guests} Guests</td>
