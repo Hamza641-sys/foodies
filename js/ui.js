@@ -343,8 +343,13 @@ class UIEngine {
               ${res.status || 'Pending'}
             </span>
           </td>
-          <td style="max-width:160px;font-size:.78rem;color:var(--text-muted);font-style:italic;">
-            ${res.specialRequest ? `<i class="fas fa-comment-alt" style="color:var(--primary);margin-right:4px;"></i>${res.specialRequest}` : '—'}
+          <td style="max-width:120px;">
+            ${res.specialRequest
+              ? `<span title="${res.specialRequest.replace(/"/g,"'")}"
+                       style="display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:110px;font-size:.78rem;color:var(--text-muted);font-style:italic;cursor:help;">
+                   <i class="fas fa-comment-alt" style="color:var(--primary);margin-right:4px;"></i>${res.specialRequest}
+                 </span>`
+              : '<span style="color:var(--text-muted);">—</span>'}
           </td>
           <td style="white-space:nowrap;">
             ${!isConfirmed && !isCancelled ? `
