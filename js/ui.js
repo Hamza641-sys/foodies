@@ -297,7 +297,11 @@ class UIEngine {
       return `
         <tr style="${rowStyle};cursor:pointer;" data-status="${ord.status}" data-customer="${ord.customerName.toLowerCase()}" data-orderid="${ord.id.toLowerCase()}" onclick="app.showOrderDetail('${ord.id}')">
           <td><strong style="color:var(--primary);">${ord.id}</strong></td>
-          <td>${ord.customerName}</td>
+          <td>
+            <strong>${ord.customerName}</strong>
+            ${ord.phone ? `<br><small style="color:var(--primary);font-size:.7rem;"><i class="fas fa-phone"></i> ${ord.phone}</small>` : ''}
+            ${ord.address ? `<br><small style="color:var(--text-muted);font-size:.68rem;"><i class="fas fa-map-marker-alt"></i> ${ord.address.length > 28 ? ord.address.substring(0,28)+'...' : ord.address}</small>` : ''}
+          </td>
           <td style="max-width:190px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${itemsText}</td>
           <td><strong>$${ord.total.toFixed(2)}</strong></td>
           <td onclick="event.stopPropagation()">
