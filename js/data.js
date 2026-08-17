@@ -844,6 +844,8 @@ const COMBOS = [
     servings: '3-4 Persons',
     cookingTime: '40 mins',
     popular: true
+  },
+  {
     name: 'Party Platter',
     tag: 'Party',
     tagIcon: '🎉',
