@@ -1014,7 +1014,7 @@
        ORDER DETAIL MODAL (Admin Panel)
        ================================================ -->
   <div class="modal-overlay" id="orderDetailModal" onclick="app.closeOrderDetail()">
-    <div class="modal-card glass order-detail-modal-card" onclick="event.stopPropagation()" style="max-width:620px;width:95%;padding:0;border-radius:var(--border-radius-lg);overflow:hidden;">
+    <div class="modal-card glass order-detail-modal-card" onclick="event.stopPropagation()" style="max-width:620px;width:95%;padding:0;border-radius:var(--border-radius-lg);overflow:hidden;display:flex;flex-direction:column;max-height:90vh;">
 
       <!-- Header -->
       <div class="order-detail-header" style="background:var(--primary);padding:20px 28px;display:flex;justify-content:space-between;align-items:center;">
@@ -1026,7 +1026,7 @@
       </div>
 
       <!-- Body -->
-      <div style="padding:24px 28px;max-height:72vh;overflow-y:auto;">
+      <div style="padding:24px 28px;overflow-y:auto;flex:1;">
 
         <!-- Customer Info -->
         <div class="order-detail-section glass" style="padding:16px;border-radius:12px;margin-bottom:16px;">
