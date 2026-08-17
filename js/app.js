@@ -1496,6 +1496,108 @@ class FoodiesApp {
     const order = this._activeDetailOrder;
     if (!order) return;
 
+    // Show 3-option modal
+    const ex = document.getElementById('printCopyModal');
+    if (ex) ex.remove();
+    const m = document.createElement('div');
+    m.id = 'printCopyModal';
+    m.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.8);z-index:99999;display:flex;align-items:center;justify-content:center;padding:20px;';
+    m.innerHTML = `
+      <div class="glass" style="max-width:300px;width:100%;padding:24px;border-radius:16px;text-align:center;">
+        <h3 style="color:var(--primary);margin-bottom:6px;"><i class="fas fa-print"></i> Print Bill</h3>
+        <p style="font-size:.78rem;color:var(--text-muted);margin-bottom:18px;">#${order.id}</p>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <button onclick="app._printSlip('customer');document.getElementById('printCopyModal').remove();"
+            style="padding:11px;background:var(--primary);border:none;border-radius:10px;color:#fff;font-size:.84rem;font-weight:700;cursor:pointer;">
+            <i class="fas fa-user" style="margin-right:6px;"></i>Customer Copy
+          </button>
+          <button onclick="app._printSlip('kitchen');document.getElementById('printCopyModal').remove();"
+            style="padding:11px;background:#f59e0b;border:none;border-radius:10px;color:#000;font-size:.84rem;font-weight:700;cursor:pointer;">
+            <i class="fas fa-fire" style="margin-right:6px;"></i>Kitchen Copy
+          </button>
+          <button onclick="app._printSlip('both');document.getElementById('printCopyModal').remove();"
+            style="padding:11px;background:#10b981;border:none;border-radius:10px;color:#fff;font-size:.84rem;font-weight:700;cursor:pointer;">
+            <i class="fas fa-copy" style="margin-right:6px;"></i>Both Copies
+          </button>
+          <button onclick="document.getElementById('printCopyModal').remove();"
+            style="padding:9px;background:transparent;border:1px solid var(--glass-border);border-radius:10px;color:var(--text-muted);font-size:.8rem;cursor:pointer;">
+            Cancel
+          </button>
+        </div>
+      </div>`;
+    m.onclick = (e) => { if (e.target === m) m.remove(); };
+    document.body.appendChild(m);
+  }
+
+  _printSlip(type) {
+    const order = this._activeDetailOrder;
+    if (!order) return;
+
+    const formatDate = (val) => {
+      try {
+        if (val && typeof val.toDate === 'function') return val.toDate().toLocaleString('en-PK');
+        if (val && val.seconds) return new Date(val.seconds * 1000).toLocaleString('en-PK');
+        if (val) { const d = new Date(val); if (!isNaN(d)) return d.toLocaleString('en-PK'); }
+      } catch(e) {}
+      return new Date().toLocaleString('en-PK');
+    };
+
+    const makeSlip = (label, showAddr) => {
+      const rows = (order.items || []).map(i =>
+        `<tr><td style="padding:3px 0;border-bottom:1px dashed #bbb;font-size:11px;">${i.name}</td>` +
+        `<td style="text-align:center;padding:3px 0;border-bottom:1px dashed #bbb;font-size:11px;">x${i.qty}</td>` +
+        `<td style="text-align:right;padding:3px 0;border-bottom:1px dashed #bbb;font-size:11px;">$${(i.price * i.qty).toFixed(2)}</td></tr>`
+      ).join('');
+      return `<div style="width:72mm;font-family:'Courier New',monospace;color:#000;background:#fff;padding:3mm;page-break-after:always;">` +
+        `<div style="text-align:center;margin-bottom:5px;">` +
+        `<div style="font-size:16px;font-weight:900;">FOODIES</div>` +
+        `<div style="font-size:9px;">Best Quality Delicious Food</div>` +
+        `<hr style="border:none;border-top:2px dashed #000;margin:4px 0;">` +
+        `<span style="font-size:10px;font-weight:700;background:#000;color:#fff;padding:1px 8px;">${label}</span></div>` +
+        `<div style="font-size:11px;line-height:1.65;margin-bottom:4px;">` +
+        `<b>Order:</b> ${order.id}<br>` +
+        `<b>Time:</b> ${formatDate(order.createdAt)}<br>` +
+        `<b>Name:</b> ${order.customerName || '—'}<br>` +
+        `<b>Phone:</b> ${order.phone || '—'}<br>` +
+        (showAddr && order.address ? `<b>Addr:</b> ${order.address}<br>` : '') +
+        `<b>Pay:</b> ${order.paymentMethod || 'Cash'}</div>` +
+        `<hr style="border:none;border-top:1px dashed #000;margin:3px 0;">` +
+        `<table style="width:100%;border-collapse:collapse;">` +
+        `<tr><th style="text-align:left;font-size:10px;padding-bottom:3px;">ITEM</th>` +
+        `<th style="text-align:center;font-size:10px;">QTY</th>` +
+        `<th style="text-align:right;font-size:10px;">AMT</th></tr>${rows}</table>` +
+        `<hr style="border:none;border-top:1px dashed #000;margin:3px 0;">` +
+        `<table style="width:100%;font-size:11px;">` +
+        `<tr><td>Subtotal</td><td style="text-align:right">$${(order.subtotal||0).toFixed(2)}</td></tr>` +
+        `<tr><td>Delivery</td><td style="text-align:right">$${(order.deliveryCharges||0).toFixed(2)}</td></tr>` +
+        `<tr><td>Tax(8%)</td><td style="text-align:right">$${(order.tax||0).toFixed(2)}</td></tr>` +
+        `<tr style="font-weight:900;border-top:2px solid #000;font-size:13px;">` +
+        `<td style="padding-top:3px;">TOTAL</td>` +
+        `<td style="text-align:right;padding-top:3px;">$${(order.total||0).toFixed(2)}</td></tr></table>` +
+        `<hr style="border:none;border-top:2px dashed #000;margin:4px 0;">` +
+        `<div style="text-align:center;font-size:10px;">Thank you! Visit again</div></div>`;
+    };
+
+    let body = '';
+    if (type === 'customer') body = makeSlip('CUSTOMER COPY', true);
+    else if (type === 'kitchen') body = makeSlip('KITCHEN COPY', false);
+    else body = makeSlip('CUSTOMER COPY', true) + makeSlip('KITCHEN COPY', false);
+
+    const win = window.open('', '_blank', 'width=320,height=600');
+    win.document.write(
+      '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Bill-' + order.id + '</title>' +
+      '<style>*{margin:0;padding:0;box-sizing:border-box;}body{background:#fff;}' +
+      '@media print{@page{size:80mm auto;margin:0;}body{margin:0;}}</style>' +
+      '</head><body>' + body +
+      '<script>window.onload=function(){window.print();}<\/script></body></html>'
+    );
+    win.document.close();
+  }
+
+  _printBillOld() {
+    const order = this._activeDetailOrder;
+    if (!order) return;
+
     const formatDate = (val) => {
       try {
         if (val && typeof val.toDate === 'function') return val.toDate().toLocaleString('en-PK');
