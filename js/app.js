@@ -1492,6 +1492,14 @@ class FoodiesApp {
   }
 
   /* ── PRINT BILL ──────────────────────────────── */
+  async quickPrint(orderId) {
+    let order;
+    try { order = await getOrderById(orderId); } catch(e) {}
+    if (!order) { this.showToast('Order not found', 'danger'); return; }
+    this._activeDetailOrder = order;
+    this.printOrderBill();
+  }
+
   printOrderBill() {
     const order = this._activeDetailOrder;
     if (!order) return;

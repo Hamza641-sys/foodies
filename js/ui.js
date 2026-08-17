@@ -312,6 +312,12 @@ class UIEngine {
             </select>
           </td>
           <td style="font-size:.8rem;color:var(--text-muted);">${timeStr}</td>
+          <td onclick="event.stopPropagation()">
+            <button onclick="app.quickPrint('${ord.id}')"
+                    style="background:var(--primary);border:none;border-radius:7px;padding:6px 10px;color:#fff;font-size:.75rem;cursor:pointer;white-space:nowrap;">
+              <i class="fas fa-print"></i> Print
+            </button>
+          </td>
         </tr>`;
     }).join('');
   }
