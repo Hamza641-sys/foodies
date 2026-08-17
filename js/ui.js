@@ -317,7 +317,6 @@ class UIEngine {
     if (!reservations.length)
       return '<tr><td colspan="10" style="text-align:center;padding:24px;color:var(--text-muted);">No reservations yet.</td></tr>';
 
-    // Update count badge
     const badge = document.getElementById('reservationsCountBadge');
     if (badge) badge.innerText = `${reservations.length} reservation${reservations.length !== 1 ? 's' : ''}`;
 
@@ -329,16 +328,19 @@ class UIEngine {
       const rowStyle    = isCancelled ? 'background:rgba(255,60,60,0.08);' : '';
 
       return `
-        <tr style="${rowStyle}">
-          <td><strong style="color:var(--primary);">${res.id}</strong></td>
-          <td><strong>${res.name}</strong><br><small style="color:var(--primary);font-size:.75rem;"><i class="fas fa-phone"></i> ${res.phone || '—'}</small></td>
-          <td>${res.date}</td>
-          <td>${res.time}</td>
-          <td>${res.guests} Guests</td>
-          <td><span class="status-badge status-ready">${res.type}</span></td>
-          <td style="font-size:.78rem;color:var(--text-muted);">${bookedAt}</td>
-          <td>
-            <span style="display:inline-block;padding:4px 10px;border-radius:20px;font-size:.68rem;font-weight:700;
+        <tr style="${rowStyle};font-size:.74rem;">
+          <td style="white-space:nowrap;"><strong style="color:var(--primary);font-size:.7rem;">${res.id}</strong></td>
+          <td style="min-width:80px;max-width:110px;">
+            <strong style="font-size:.76rem;">${res.name}</strong><br>
+            <small style="color:var(--primary);font-size:.66rem;"><i class="fas fa-phone"></i> ${res.phone || '—'}</small>
+          </td>
+          <td style="white-space:nowrap;font-size:.72rem;">${res.date}</td>
+          <td style="font-size:.72rem;">${res.time}</td>
+          <td style="text-align:center;font-size:.72rem;">${res.guests}</td>
+          <td><span class="status-badge status-ready" style="font-size:.6rem;padding:2px 6px;">${res.type}</span></td>
+          <td style="font-size:.68rem;color:var(--text-muted);white-space:nowrap;">${bookedAt}</td>
+          <td style="text-align:center;">
+            <span style="display:inline-block;padding:2px 7px;border-radius:20px;font-size:.6rem;font-weight:700;white-space:nowrap;
                          background:${statusColor}20;color:${statusColor};border:1px solid ${statusColor}40;">
               ${res.status || 'Pending'}
             </span>
@@ -346,23 +348,22 @@ class UIEngine {
           <td style="text-align:center;">
             ${res.specialRequest
               ? `<button onclick="app.showResNote('${res.specialRequest.replace(/'/g,"\\'").replace(/\n/g,' ')}')"
-                         title="View Note"
-                         style="background:var(--primary);border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;color:#fff;font-size:.85rem;display:inline-flex;align-items:center;justify-content:center;">
+                         style="background:var(--primary);border:none;border-radius:50%;width:26px;height:26px;cursor:pointer;color:#fff;font-size:.72rem;display:inline-flex;align-items:center;justify-content:center;">
                    <i class="fas fa-comment-alt"></i>
                  </button>`
-              : '<span style="color:var(--text-muted);font-size:.8rem;">—</span>'}
+              : '<span style="color:var(--text-muted);">—</span>'}
           </td>
           <td style="white-space:nowrap;">
             ${!isConfirmed && !isCancelled ? `
-              <button class="btn-outline" style="padding:4px 10px;font-size:.72rem;margin-right:4px;"
+              <button class="btn-outline" style="padding:3px 7px;font-size:.62rem;margin-right:2px;"
                       onclick="app.adminUpdateReservation('${res.id}','Confirmed')">
-                <i class="fas fa-check"></i> Approve
+                <i class="fas fa-check"></i>
               </button>` : ''}
             ${!isCancelled ? `
-              <button class="btn-outline" style="padding:4px 10px;font-size:.72rem;border-color:var(--danger);color:var(--danger);"
+              <button class="btn-outline" style="padding:3px 7px;font-size:.62rem;border-color:var(--danger);color:var(--danger);"
                       onclick="app.adminUpdateReservation('${res.id}','Cancelled')">
-                <i class="fas fa-times"></i> Cancel
-              </button>` : '<span style="color:var(--text-muted);font-size:.75rem;">—</span>'}
+                <i class="fas fa-times"></i>
+              </button>` : '<span style="color:var(--text-muted);font-size:.7rem;">—</span>'}
           </td>
         </tr>`;
     }).join('');
