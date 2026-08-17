@@ -538,15 +538,24 @@
         <form class="checkout-card glass" id="checkoutForm">
           <h2>Secure Checkout</h2>
           <div style="margin-bottom:24px;">
-            <h4 style="color:var(--primary);margin-bottom:14px;border-bottom:1px solid var(--glass-border);padding-bottom:6px;">Delivery Address</h4>
-            <div class="res-form" style="grid-template-columns:1fr 1fr;">
-              <div class="form-group-full">
-                <input type="text" id="chkName" class="form-input" placeholder="Customer Name" required />
-              </div>
-              <div style="grid-column:span 2;">
-                <input type="text" id="chkAddress" class="form-input" placeholder="Street Address" required />
+            <h4 style="color:var(--primary);margin-bottom:14px;border-bottom:1px solid var(--glass-border);padding-bottom:6px;">
+              <i class="fas fa-user" style="margin-right:8px;"></i>Customer Details
+            </h4>
+            <div class="res-form" style="grid-template-columns:1fr 1fr;gap:14px;">
+              <div>
+                <label style="font-size:.75rem;color:var(--primary);font-weight:700;display:block;margin-bottom:5px;">Full Name *</label>
+                <input type="text" id="chkName" class="form-input" placeholder="e.g. Ali Hassan" required />
               </div>
               <div>
+                <label style="font-size:.75rem;color:var(--primary);font-weight:700;display:block;margin-bottom:5px;">Phone Number *</label>
+                <input type="tel" id="chkPhone" class="form-input" placeholder="e.g. 0300-1234567" required />
+              </div>
+              <div style="grid-column:span 2;">
+                <label style="font-size:.75rem;color:var(--primary);font-weight:700;display:block;margin-bottom:5px;">Delivery Address *</label>
+                <input type="text" id="chkAddress" class="form-input" placeholder="Street, Area, City" required />
+              </div>
+              <div style="grid-column:span 2;">
+                <label style="font-size:.75rem;color:var(--primary);font-weight:700;display:block;margin-bottom:5px;">Delivery Zone</label>
                 <select id="chkZip" class="form-input" required>
                   <option value="10001">Downtown Core ($5.00)</option>
                   <option value="10002">Westminster Heights ($8.00)</option>
@@ -554,7 +563,6 @@
                   <option value="10004">Royal Estates VIP ($12.00)</option>
                 </select>
               </div>
-              <div><input type="text" id="chkPhone" class="form-input" placeholder="Phone Number" required /></div>
             </div>
           </div>
           <div>

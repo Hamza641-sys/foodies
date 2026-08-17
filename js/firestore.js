@@ -228,7 +228,7 @@ export async function getDeliveryZones() {
 // ORDERS
 // ─────────────────────────────────────────────────
 export async function createOrder(orderData, currentUser) {
-  const { items, couponCode, address, paymentMethod, specialInstructions } = orderData;
+  const { items, couponCode, address, phone, customerName: payloadName, paymentMethod, specialInstructions } = orderData;
 
   // Verify prices using Firestore dishes
   let subtotal = 0;
@@ -271,7 +271,8 @@ export async function createOrder(orderData, currentUser) {
   const order = {
     id:                  orderId,
     userId:              currentUser ? currentUser.uid : null,
-    customerName:        currentUser ? (currentUser.displayName || currentUser.name || 'Diner') : 'Guest Diner',
+    customerName:        payloadName || (currentUser ? (currentUser.displayName || currentUser.name || 'Diner') : 'Guest Diner'),
+    phone:               phone || '',
     email:               currentUser ? currentUser.email : 'hello@foodies.com',
     items:               orderItems,
     coupon:              couponApplied,

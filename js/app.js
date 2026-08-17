@@ -746,10 +746,12 @@ class FoodiesApp {
       this.showToast('Add items to cart before checking out', 'warning');
       return;
     }
-    const nameInput = document.getElementById('chkName');
-    const addrInput = document.getElementById('chkAddress');
-    if (nameInput && !nameInput.value && this.state.currentUser?.name) nameInput.value = this.state.currentUser.name;
-    if (addrInput && !addrInput.value && this.state.currentUser?.savedAddresses?.[0]) addrInput.value = this.state.currentUser.savedAddresses[0];
+    const nameInput  = document.getElementById('chkName');
+    const phoneInput = document.getElementById('chkPhone');
+    const addrInput  = document.getElementById('chkAddress');
+    if (nameInput  && !nameInput.value  && this.state.currentUser?.name)             nameInput.value  = this.state.currentUser.name;
+    if (phoneInput && !phoneInput.value && this.state.currentUser?.phone)            phoneInput.value = this.state.currentUser.phone;
+    if (addrInput  && !addrInput.value  && this.state.currentUser?.savedAddresses?.[0]) addrInput.value  = this.state.currentUser.savedAddresses[0];
 
     const sumBox = document.getElementById('checkoutSummaryContainer');
     if (sumBox) {
@@ -790,7 +792,9 @@ class FoodiesApp {
         const payload = {
           items:               this.state.cart.map(item => ({ dishId: item.id, qty: item.qty })),
           couponCode:          this.state.currentCoupon?.code || null,
-          address:             document.getElementById('chkAddress').value,
+          customerName:        document.getElementById('chkName').value.trim(),
+          phone:               document.getElementById('chkPhone').value.trim(),
+          address:             document.getElementById('chkAddress').value.trim(),
           paymentMethod,
           specialInstructions: ''
         };
