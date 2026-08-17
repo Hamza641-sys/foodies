@@ -1017,12 +1017,17 @@
     <div class="modal-card glass order-detail-modal-card" onclick="event.stopPropagation()" style="max-width:620px;width:95%;padding:0;border-radius:var(--border-radius-lg);overflow:hidden;display:flex;flex-direction:column;max-height:90vh;">
 
       <!-- Header -->
-      <div class="order-detail-header" style="background:var(--primary);padding:20px 28px;display:flex;justify-content:space-between;align-items:center;">
+      <div class="order-detail-header" style="background:var(--primary);padding:16px 28px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;">
         <div>
           <h3 style="color:#fff;margin:0;font-weight:800;font-size:1.1rem;"><i class="fas fa-receipt" style="margin-right:8px;"></i>Order Details</h3>
           <span id="orderDetailId" style="color:rgba(255,255,255,.75);font-size:.82rem;"></span>
         </div>
-        <i class="fas fa-times" onclick="app.closeOrderDetail()" style="color:#fff;font-size:1.3rem;cursor:pointer;padding:4px;"></i>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <button onclick="app.printOrderBill()" style="background:#fff;border:none;border-radius:8px;padding:7px 14px;font-size:.8rem;font-weight:700;color:var(--primary);cursor:pointer;">
+            <i class="fas fa-print" style="margin-right:5px;"></i>Print Bill
+          </button>
+          <i class="fas fa-times" onclick="app.closeOrderDetail()" style="color:#fff;font-size:1.3rem;cursor:pointer;padding:4px;"></i>
+        </div>
       </div>
 
       <!-- Body -->
