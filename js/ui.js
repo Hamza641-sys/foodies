@@ -311,10 +311,10 @@ class UIEngine {
                 .map(s => `<option value="${s}" ${ord.status===s?'selected':''}>${s}</option>`).join('')}
             </select>
           </td>
-          <td style="font-size:.8rem;color:var(--text-muted);">${timeStr}</td>
-          <td onclick="event.stopPropagation()">
+          <td onclick="event.stopPropagation()" style="font-size:.8rem;color:var(--text-muted);">
+            ${timeStr}<br>
             <button onclick="app.quickPrint('${ord.id}')"
-                    style="background:var(--primary);border:none;border-radius:7px;padding:6px 10px;color:#fff;font-size:.75rem;cursor:pointer;white-space:nowrap;">
+                    style="margin-top:5px;background:var(--primary);border:none;border-radius:6px;padding:4px 10px;color:#fff;font-size:.72rem;cursor:pointer;">
               <i class="fas fa-print"></i> Print
             </button>
           </td>
