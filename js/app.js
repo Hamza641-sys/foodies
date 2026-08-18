@@ -80,6 +80,7 @@ class FoodiesApp {
         this.state.reservations  = [];
       }
       this._updateBadges();
+      this._toggleAdminNav();
     });
 
     // Pehle data.js ka data globally available hai — usse use karo
@@ -608,8 +609,17 @@ class FoodiesApp {
     document.querySelectorAll('.cart-badge').forEach(b => { b.innerText = cartCount; b.style.display = cartCount > 0 ? 'flex' : 'none'; });
     const wlCount = this.state.wishlist.length;
     document.querySelectorAll('.wishlist-badge').forEach(b => { b.innerText = wlCount; b.style.display = wlCount > 0 ? 'flex' : 'none'; });
-    const adminLink = document.getElementById('adminNavLink');
-    if (adminLink) adminLink.style.display = 'block';
+  }
+
+  _toggleAdminNav() {
+    const isAdmin = this.state.currentUser?.role === 'admin' ||
+                    this.state.currentUser?.email === 'admin@foodies.com' ||
+                    this.state.currentUser?.email === 'admin@client.com';
+    const show = isAdmin ? 'list-item' : 'none';
+    const el1 = document.getElementById('adminNavLink');
+    const el2 = document.getElementById('adminMobileNavLink');
+    if (el1) el1.style.display = show;
+    if (el2) el2.style.display = show;
   }
 
   toggleCartDrawer(open) { document.getElementById('cartDrawer')?.classList.toggle('active', open); }
