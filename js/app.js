@@ -34,7 +34,7 @@ class FoodiesApp {
       reservations:          [],
       currentUser:           null,
       firebaseUser:          null,
-      activeTheme:           this._load('foodies_theme', 'dark'),
+      activeTheme:           this._load('foodies_theme', 'light'),
       activeLanguage:        this._load('foodies_lang', 'EN'),
       currentCoupon:         null,
       activeCategory:        'all',
