@@ -1806,24 +1806,46 @@ body.light-theme .nav-mega-dropdown {
 #dishAdminModal.active { display:flex; }
 
 /* ── GOOGLE TRANSLATE WIDGET ───────────────────── */
-#google_translate_element { display:inline-block; vertical-align:middle; }
-#google_translate_element .goog-te-gadget-simple {
-  background: var(--bg-secondary) !important;
-  border: 1px solid var(--primary) !important;
-  border-radius: 8px !important;
-  padding: 5px 10px !important;
-  font-size: .78rem !important;
-  cursor: pointer !important;
-}
-#google_translate_element .goog-te-gadget-simple .goog-te-menu-value {
-  color: var(--text-color) !important;
-}
-#google_translate_element .goog-te-gadget-simple .goog-te-menu-value span {
-  color: var(--text-color) !important;
-  border: none !important;
-}
-#google_translate_element .goog-te-gadget-simple img { display:none !important; }
+#google_translate_element { display:none !important; }
 .goog-te-banner-frame.skiptranslate { display:none !important; }
-.goog-te-menu-frame { box-shadow: 0 8px 32px rgba(0,0,0,.3) !important; border-radius:10px !important; }
-body { top: 0 !important; }
 iframe.skiptranslate { display:none !important; }
+body { top: 0 !important; }
+
+/* Custom Language Selector */
+.lang-selector-wrap { position:relative; display:inline-block; }
+.lang-trigger-btn {
+  display:flex; align-items:center; gap:5px;
+  padding:6px 12px; border-radius:8px;
+  font-size:.78rem; font-weight:600;
+  background:var(--glass-bg);
+  border:1px solid var(--glass-border);
+  color:var(--text-color); cursor:pointer;
+  white-space:nowrap;
+}
+.lang-trigger-btn:hover { border-color:var(--primary); color:var(--primary); }
+
+.lang-custom-dropdown {
+  position:absolute; top:calc(100% + 8px); right:0;
+  width:220px; border-radius:12px;
+  padding:10px; z-index:9999;
+  display:none; flex-direction:column; gap:2px;
+  box-shadow:0 8px 32px rgba(0,0,0,.25);
+  max-height:320px;
+}
+.lang-selector-wrap.open .lang-custom-dropdown { display:flex; }
+
+.lang-search-wrap { padding:4px 0 8px; }
+.lang-search-wrap input {
+  width:100%; padding:7px 10px;
+  border-radius:8px; border:1px solid var(--glass-border);
+  background:var(--bg-secondary); color:var(--text-color);
+  font-size:.78rem; outline:none;
+}
+.lang-list { overflow-y:auto; max-height:240px; display:flex; flex-direction:column; gap:2px; }
+.lang-option {
+  display:flex; align-items:center; gap:8px;
+  padding:8px 10px; border-radius:8px;
+  font-size:.82rem; cursor:pointer;
+  transition:background .15s;
+}
+.lang-option:hover { background:var(--primary); color:#fff; }

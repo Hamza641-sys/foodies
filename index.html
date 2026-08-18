@@ -62,8 +62,41 @@
         <span id="langCurrentCode">EN</span>
         <i class="fas fa-chevron-down" style="font-size:.6rem;"></i>
       </button>
-      <!-- Google Translate Widget -->
-      <div id="google_translate_element" style="display:inline-block;"></div>
+      <!-- Language Selector -->
+      <div class="lang-selector-wrap" id="langSelectorWrap">
+        <button class="nav-btn lang-trigger-btn" onclick="document.getElementById('langSelectorWrap').classList.toggle('open')" id="langTriggerBtn">
+          🌐 <span id="langCurrentLabel">EN</span> <i class="fas fa-chevron-down" style="font-size:.6rem;margin-left:3px;"></i>
+        </button>
+        <div class="lang-custom-dropdown glass" id="langCustomDropdown">
+          <div class="lang-search-wrap">
+            <input type="text" id="langSearchInput" placeholder="Search language..." oninput="filterLangs()" />
+          </div>
+          <div class="lang-list" id="langList">
+            <div class="lang-option" onclick="translateTo('en','EN')">🇬🇧 English</div>
+            <div class="lang-option" onclick="translateTo('ur','UR')">🇵🇰 اردو</div>
+            <div class="lang-option" onclick="translateTo('ar','AR')">🇸🇦 العربية</div>
+            <div class="lang-option" onclick="translateTo('fr','FR')">🇫🇷 Français</div>
+            <div class="lang-option" onclick="translateTo('es','ES')">🇪🇸 Español</div>
+            <div class="lang-option" onclick="translateTo('tr','TR')">🇹🇷 Türkçe</div>
+            <div class="lang-option" onclick="translateTo('zh-CN','ZH')">🇨🇳 中文</div>
+            <div class="lang-option" onclick="translateTo('hi','HI')">🇮🇳 हिंदी</div>
+            <div class="lang-option" onclick="translateTo('ru','RU')">🇷🇺 Русский</div>
+            <div class="lang-option" onclick="translateTo('de','DE')">🇩🇪 Deutsch</div>
+            <div class="lang-option" onclick="translateTo('ja','JA')">🇯🇵 日本語</div>
+            <div class="lang-option" onclick="translateTo('ko','KO')">🇰🇷 한국어</div>
+            <div class="lang-option" onclick="translateTo('it','IT')">🇮🇹 Italiano</div>
+            <div class="lang-option" onclick="translateTo('pt','PT')">🇧🇷 Português</div>
+            <div class="lang-option" onclick="translateTo('nl','NL')">🇳🇱 Nederlands</div>
+            <div class="lang-option" onclick="translateTo('fa','FA')">🇮🇷 فارسی</div>
+            <div class="lang-option" onclick="translateTo('bn','BN')">🇧🇩 বাংলা</div>
+            <div class="lang-option" onclick="translateTo('ms','MS')">🇲🇾 Melayu</div>
+            <div class="lang-option" onclick="translateTo('id','ID')">🇮🇩 Indonesia</div>
+            <div class="lang-option" onclick="translateTo('th','TH')">🇹🇭 ภาษาไทย</div>
+          </div>
+        </div>
+      </div>
+      <!-- Hidden Google Translate element -->
+      <div id="google_translate_element" style="display:none;"></div>
       <a href="#dashboard" onclick="app.setDashboardTab('wishlist')" class="nav-btn" title="Wishlist">
         <i class="far fa-heart"></i>
         <span class="badge-count wishlist-badge" style="display:none;">0</span>
@@ -1329,10 +1362,50 @@
 function googleTranslateElementInit() {
   new google.translate.TranslateElement({
     pageLanguage: 'en',
-    layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
     autoDisplay: false
   }, 'google_translate_element');
 }
+
+function translateTo(langCode, label) {
+  // Update label
+  document.getElementById('langCurrentLabel').innerText = label;
+  document.getElementById('langSelectorWrap').classList.remove('open');
+
+  // Use Google Translate cookie method
+  var selectEl = document.querySelector('.goog-te-combo');
+  if (selectEl) {
+    selectEl.value = langCode;
+    selectEl.dispatchEvent(new Event('change'));
+    return;
+  }
+  // Fallback — set cookie and reload
+  if (langCode === 'en') {
+    var c = document.cookie.split(';');
+    for (var i = 0; i < c.length; i++) {
+      var e = c[i].indexOf('=');
+      var n = e > -1 ? c[i].substr(0, e) : c[i];
+      document.cookie = n + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/';
+    }
+    window.location.reload();
+    return;
+  }
+  document.cookie = 'googtrans=/en/' + langCode + ';path=/';
+  document.cookie = 'googtrans=/en/' + langCode + ';domain=.' + location.hostname + ';path=/';
+  window.location.reload();
+}
+
+function filterLangs() {
+  var q = document.getElementById('langSearchInput').value.toLowerCase();
+  document.querySelectorAll('.lang-option').forEach(function(el) {
+    el.style.display = el.innerText.toLowerCase().includes(q) ? 'flex' : 'none';
+  });
+}
+
+// Close dropdown when clicking outside
+document.addEventListener('click', function(e) {
+  var wrap = document.getElementById('langSelectorWrap');
+  if (wrap && !wrap.contains(e.target)) wrap.classList.remove('open');
+});
 </script>
 <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
