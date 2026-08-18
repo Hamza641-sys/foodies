@@ -1814,15 +1814,15 @@ body { top: 0 !important; }
 /* Custom Language Selector */
 .lang-selector-wrap { position:relative; display:inline-block; }
 .lang-trigger-btn {
-  display:flex; align-items:center; justify-content:center;
-  width:38px; height:38px; border-radius:50%;
-  background:transparent;
-  border:none;
+  display:flex; align-items:center; gap:5px;
+  padding:6px 12px; border-radius:20px;
+  font-size:.78rem; font-weight:600;
+  background:var(--glass-bg);
+  border:1px solid var(--glass-border);
   color:var(--text-color); cursor:pointer;
-  font-size:1.1rem;
-  transition:var(--transition-fast);
+  white-space:nowrap;
 }
-.lang-trigger-btn:hover { color:var(--primary); }
+.lang-trigger-btn:hover { border-color:var(--primary); color:var(--primary); }
 
 .lang-custom-dropdown {
   position:absolute; top:calc(100% + 8px); right:0;
