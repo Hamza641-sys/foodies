@@ -1849,3 +1849,18 @@ body { top: 0 !important; }
   transition:background .15s;
 }
 .lang-option:hover { background:var(--primary); color:#fff; }
+
+/* ── NAVBAR OVERFLOW FIX FOR TRANSLATED TEXT ───── */
+.navbar .nav-links li a {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 120px;
+  display: inline-block;
+}
+.btn-book-table {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 160px;
+}
