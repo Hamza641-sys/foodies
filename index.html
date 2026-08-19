@@ -57,39 +57,6 @@
       <button class="nav-btn" onclick="app.toggleTheme()" title="Toggle Theme">
         <i class="fas fa-moon"></i>
       </button>
-      <!-- Language Selector -->
-      <div class="lang-selector-wrap" id="langSelectorWrap">
-        <button class="nav-btn lang-trigger-btn" onclick="event.stopPropagation(); document.getElementById('langSelectorWrap').classList.toggle('open')" id="langTriggerBtn">
-          🌐 <span id="langCurrentLabel">EN</span> <i class="fas fa-chevron-down" style="font-size:.6rem;margin-left:3px;"></i>
-        </button>
-        <div class="lang-custom-dropdown glass" id="langCustomDropdown">
-          <div class="lang-search-wrap">
-            <input type="text" id="langSearchInput" placeholder="Search language..." oninput="filterLangs()" />
-          </div>
-          <div class="lang-list" id="langList">
-            <div class="lang-option" onclick="translateTo('en','EN')">🇬🇧 English</div>
-            <div class="lang-option" onclick="translateTo('ur','UR')">🇵🇰 اردو</div>
-            <div class="lang-option" onclick="translateTo('ar','AR')">🇸🇦 العربية</div>
-            <div class="lang-option" onclick="translateTo('fr','FR')">🇫🇷 Français</div>
-            <div class="lang-option" onclick="translateTo('es','ES')">🇪🇸 Español</div>
-            <div class="lang-option" onclick="translateTo('tr','TR')">🇹🇷 Türkçe</div>
-            <div class="lang-option" onclick="translateTo('zh-CN','ZH')">🇨🇳 中文</div>
-            <div class="lang-option" onclick="translateTo('hi','HI')">🇮🇳 हिंदी</div>
-            <div class="lang-option" onclick="translateTo('ru','RU')">🇷🇺 Русский</div>
-            <div class="lang-option" onclick="translateTo('de','DE')">🇩🇪 Deutsch</div>
-            <div class="lang-option" onclick="translateTo('ja','JA')">🇯🇵 日本語</div>
-            <div class="lang-option" onclick="translateTo('ko','KO')">🇰🇷 한국어</div>
-            <div class="lang-option" onclick="translateTo('it','IT')">🇮🇹 Italiano</div>
-            <div class="lang-option" onclick="translateTo('pt','PT')">🇧🇷 Português</div>
-            <div class="lang-option" onclick="translateTo('nl','NL')">🇳🇱 Nederlands</div>
-            <div class="lang-option" onclick="translateTo('fa','FA')">🇮🇷 فارسی</div>
-            <div class="lang-option" onclick="translateTo('bn','BN')">🇧🇩 বাংলা</div>
-            <div class="lang-option" onclick="translateTo('ms','MS')">🇲🇾 Melayu</div>
-            <div class="lang-option" onclick="translateTo('id','ID')">🇮🇩 Indonesia</div>
-            <div class="lang-option" onclick="translateTo('th','TH')">🇹🇭 ภาษาไทย</div>
-          </div>
-        </div>
-      </div>
       <!-- Hidden Google Translate element -->
       <div id="google_translate_element" style="display:none;"></div>
       <a href="#dashboard" onclick="app.setDashboardTab('wishlist')" class="nav-btn" title="Wishlist">
@@ -1352,79 +1319,6 @@
       </form>
     </div>
   </div>
-<!-- Google Translate -->
-<script type="text/javascript">
-function googleTranslateElementInit() {
-  new google.translate.TranslateElement({
-    pageLanguage: 'en',
-    autoDisplay: false
-  }, 'google_translate_element');
-}
-
-function translateTo(langCode, label) {
-  // Update label
-  document.getElementById('langCurrentLabel').innerText = label;
-  document.getElementById('langSelectorWrap').classList.remove('open');
-  // Remove focus so dropdown doesn't reopen
-  document.getElementById('langTriggerBtn').blur();
-  document.activeElement && document.activeElement.blur();
-
-  // Direct in-place translation — no page reload
-  var doTranslate = function() {
-    var combo = document.querySelector('.goog-te-combo');
-    if (combo) {
-      combo.value = langCode;
-      combo.dispatchEvent(new Event('change'));
-      // Blur after translate too
-      setTimeout(function() {
-        document.getElementById('langTriggerBtn') && document.getElementById('langTriggerBtn').blur();
-        document.getElementById('langSelectorWrap') && document.getElementById('langSelectorWrap').classList.remove('open');
-      }, 500);
-    }
-  };
-
-  var combo = document.querySelector('.goog-te-combo');
-  if (combo) {
-    doTranslate();
-  } else {
-    var attempts = 0;
-    var interval = setInterval(function() {
-      attempts++;
-      var c = document.querySelector('.goog-te-combo');
-      if (c) {
-        clearInterval(interval);
-        c.value = langCode;
-        c.dispatchEvent(new Event('change'));
-        setTimeout(function() {
-          document.getElementById('langTriggerBtn') && document.getElementById('langTriggerBtn').blur();
-          document.getElementById('langSelectorWrap') && document.getElementById('langSelectorWrap').classList.remove('open');
-        }, 500);
-      }
-      if (attempts > 20) clearInterval(interval);
-    }, 300);
-  }
-}
-
-function filterLangs() {
-  var q = document.getElementById('langSearchInput').value.toLowerCase();
-  document.querySelectorAll('.lang-option').forEach(function(el) {
-    el.style.display = el.innerText.toLowerCase().includes(q) ? 'flex' : 'none';
-  });
-}
-
-// Close dropdown when clicking outside
-document.addEventListener('click', function(e) {
-  var wrap = document.getElementById('langSelectorWrap');
-  if (wrap && !wrap.contains(e.target)) wrap.classList.remove('open');
-});
-
-// Force close on page load
-window.addEventListener('load', function() {
-  var wrap = document.getElementById('langSelectorWrap');
-  if (wrap) wrap.classList.remove('open');
-});
-</script>
-<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
 </body>
 </html>
