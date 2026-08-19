@@ -1830,7 +1830,8 @@ body { top: 0 !important; }
   position:absolute; top:calc(100% + 8px); right:0;
   width:220px; border-radius:12px;
   padding:10px; z-index:9999;
-  display:none; flex-direction:column; gap:2px;
+  display:none;
+  flex-direction:column; gap:2px;
   box-shadow:0 8px 32px rgba(0,0,0,.25);
   max-height:320px;
 }

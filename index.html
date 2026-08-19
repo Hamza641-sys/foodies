@@ -59,7 +59,7 @@
       </button>
       <!-- Language Selector -->
       <div class="lang-selector-wrap" id="langSelectorWrap">
-        <button class="nav-btn lang-trigger-btn" onclick="document.getElementById('langSelectorWrap').classList.toggle('open')" id="langTriggerBtn">
+        <button class="nav-btn lang-trigger-btn" onclick="event.stopPropagation(); document.getElementById('langSelectorWrap').classList.toggle('open')" id="langTriggerBtn">
           🌐 <span id="langCurrentLabel">EN</span> <i class="fas fa-chevron-down" style="font-size:.6rem;margin-left:3px;"></i>
         </button>
         <div class="lang-custom-dropdown glass" id="langCustomDropdown">
