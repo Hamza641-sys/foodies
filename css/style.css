@@ -406,13 +406,12 @@ img { max-width:100%; height:auto; display:block; }
 }
 .dish-wishlist-btn {
   position:absolute; top:12px; right:12px;
-  font-size:.85rem; color:rgba(255,255,255,.7);
+  font-size:1.1rem; color:rgba(255,255,255,.7);
   cursor:pointer; z-index:5;
   transition:var(--transition-fast);
   width:34px; height:34px;
   background:rgba(0,0,0,.4);
   border-radius:50%; display:flex; align-items:center; justify-content:center;
-  line-height:1;
 }
 .dish-wishlist-btn:hover, .dish-wishlist-btn.active { color:var(--danger); background:rgba(0,0,0,.6); transform:scale(1.1); }
 
