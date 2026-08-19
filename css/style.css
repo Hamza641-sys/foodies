@@ -1601,6 +1601,14 @@ body.light-theme .nav-mega-dropdown {
   .nav-icons .nav-btn { width:34px; height:34px; font-size:.9rem; }
 }
 
+/* Touch devices (iPhone Safari, iPad, Android) */
+@media (pointer: coarse) {
+  .nav-book-btn { display: none !important; }
+  .nav-links { display: none; }
+  .hamburger-btn { display: flex; }
+  .dish-card-icon { display: none !important; }
+}
+
 /* ==========================================
    WHATSAPP FLOAT BUTTON
    ========================================== */
