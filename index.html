@@ -1365,6 +1365,9 @@ function translateTo(langCode, label) {
   // Update label
   document.getElementById('langCurrentLabel').innerText = label;
   document.getElementById('langSelectorWrap').classList.remove('open');
+  // Remove focus so dropdown doesn't reopen
+  document.getElementById('langTriggerBtn').blur();
+  document.activeElement && document.activeElement.blur();
 
   // Direct in-place translation — no page reload
   var doTranslate = function() {
@@ -1372,10 +1375,14 @@ function translateTo(langCode, label) {
     if (combo) {
       combo.value = langCode;
       combo.dispatchEvent(new Event('change'));
+      // Blur after translate too
+      setTimeout(function() {
+        document.getElementById('langTriggerBtn') && document.getElementById('langTriggerBtn').blur();
+        document.getElementById('langSelectorWrap') && document.getElementById('langSelectorWrap').classList.remove('open');
+      }, 500);
     }
   };
 
-  // Try immediately, if not ready wait for Google Translate to load
   var combo = document.querySelector('.goog-te-combo');
   if (combo) {
     doTranslate();
@@ -1388,6 +1395,10 @@ function translateTo(langCode, label) {
         clearInterval(interval);
         c.value = langCode;
         c.dispatchEvent(new Event('change'));
+        setTimeout(function() {
+          document.getElementById('langTriggerBtn') && document.getElementById('langTriggerBtn').blur();
+          document.getElementById('langSelectorWrap') && document.getElementById('langSelectorWrap').classList.remove('open');
+        }, 500);
       }
       if (attempts > 20) clearInterval(interval);
     }, 300);
