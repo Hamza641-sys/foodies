@@ -1366,27 +1366,32 @@ function translateTo(langCode, label) {
   document.getElementById('langCurrentLabel').innerText = label;
   document.getElementById('langSelectorWrap').classList.remove('open');
 
-  // Use Google Translate cookie method
-  var selectEl = document.querySelector('.goog-te-combo');
-  if (selectEl) {
-    selectEl.value = langCode;
-    selectEl.dispatchEvent(new Event('change'));
-    return;
-  }
-  // Fallback — set cookie and reload
-  if (langCode === 'en') {
-    var c = document.cookie.split(';');
-    for (var i = 0; i < c.length; i++) {
-      var e = c[i].indexOf('=');
-      var n = e > -1 ? c[i].substr(0, e) : c[i];
-      document.cookie = n + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/';
+  // Direct in-place translation — no page reload
+  var doTranslate = function() {
+    var combo = document.querySelector('.goog-te-combo');
+    if (combo) {
+      combo.value = langCode;
+      combo.dispatchEvent(new Event('change'));
     }
-    window.location.reload();
-    return;
+  };
+
+  // Try immediately, if not ready wait for Google Translate to load
+  var combo = document.querySelector('.goog-te-combo');
+  if (combo) {
+    doTranslate();
+  } else {
+    var attempts = 0;
+    var interval = setInterval(function() {
+      attempts++;
+      var c = document.querySelector('.goog-te-combo');
+      if (c) {
+        clearInterval(interval);
+        c.value = langCode;
+        c.dispatchEvent(new Event('change'));
+      }
+      if (attempts > 20) clearInterval(interval);
+    }, 300);
   }
-  document.cookie = 'googtrans=/en/' + langCode + ';path=/';
-  document.cookie = 'googtrans=/en/' + langCode + ';domain=.' + location.hostname + ';path=/';
-  window.location.reload();
 }
 
 function filterLangs() {
