@@ -622,7 +622,22 @@ class FoodiesApp {
     if (el2) el2.style.display = show;
   }
 
-  toggleCartDrawer(open) { document.getElementById('cartDrawer')?.classList.toggle('active', open); }
+  toggleCartDrawer(open) {
+    document.getElementById('cartDrawer')?.classList.toggle('active', open);
+    // WhatsApp aur chatbot buttons hide karo jab cart open ho
+    const whatsapp = document.querySelector('.whatsapp-float');
+    const chatbot  = document.querySelector('.chatbot-bubble');
+    const scrollBtn = document.getElementById('scrollTopBtn');
+    if (open) {
+      if (whatsapp)  whatsapp.style.display  = 'none';
+      if (chatbot)   chatbot.style.display   = 'none';
+      if (scrollBtn) scrollBtn.style.display = 'none';
+    } else {
+      if (whatsapp)  whatsapp.style.display  = '';
+      if (chatbot)   chatbot.style.display   = '';
+      if (scrollBtn) scrollBtn.style.display = '';
+    }
+  }
 
   _renderCartDrawer() {
     const box = document.getElementById('cartItemsContainer');
