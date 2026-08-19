@@ -63,7 +63,6 @@ class UIEngine {
         <div class="dish-image-container" onclick="app.showDishDetail('${dish.id}')">
           <img src="${dish.image}" alt="${dish.name}" loading="lazy" onerror="this.src='assets/hero-bg.png'" />
           ${badge}
-          <div class="dish-card-icon"><i class="fas fa-utensils"></i></div>
           <i class="fas fa-heart dish-wishlist-btn ${isWishlisted}"
              onclick="event.stopPropagation(); app.toggleWishlist('${dish.id}')"></i>
         </div>
