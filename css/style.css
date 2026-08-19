@@ -1593,7 +1593,7 @@ body.light-theme .nav-mega-dropdown {
   .nav-links { gap: 14px; }
   .nav-links a { font-size: .82rem; }
 }
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
   .nav-links { display: none; }
   .hamburger-btn { display: flex; }
   .nav-book-btn { display: none !important; }
@@ -1855,3 +1855,6 @@ body { top: 0 !important; }
 }
 .lang-option:hover { background:var(--primary); color:#fff; }
 
+
+/* ── Hide dish card icon permanently ───────────── */
+.dish-card-icon { display:none !important; }
