@@ -1596,7 +1596,9 @@ body.light-theme .nav-mega-dropdown {
 @media (max-width: 900px) {
   .nav-links { display: none; }
   .hamburger-btn { display: flex; }
-  .nav-book-btn { display: none; }
+  .nav-book-btn { display: none !important; }
+  .nav-icons { gap: 6px; }
+  .nav-icons .nav-btn { width:34px; height:34px; font-size:.9rem; }
 }
 
 /* ==========================================
