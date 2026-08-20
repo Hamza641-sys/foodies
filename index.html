@@ -1319,6 +1319,21 @@
       </form>
     </div>
   </div>
-
+<!-- Mobile Safari Fix -->
+<script>
+(function(){
+  var style = document.createElement('style');
+  style.innerHTML = '.nav-book-btn{display:none!important}.dish-card-icon{display:none!important}';
+  // Apply on all touch/mobile devices
+  if ('ontouchstart' in window || navigator.maxTouchPoints > 0 || window.innerWidth <= 1024) {
+    document.head.appendChild(style);
+    // Also hide hamburger nav links
+    var navLinks = document.querySelector('.nav-links');
+    var hamburger = document.querySelector('.hamburger-btn');
+    if (navLinks) navLinks.style.display = 'none';
+    if (hamburger) hamburger.style.display = 'flex';
+  }
+})();
+</script>
 </body>
 </html>
