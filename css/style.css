@@ -133,7 +133,7 @@ img { max-width:100%; height:auto; display:block; }
   padding:0 5%;
   transition:var(--transition-smooth);
   border-bottom:1px solid transparent;
-  overflow:hidden;
+  overflow:visible;
 }
 .navbar.scrolled {
   background:var(--bg-secondary);
