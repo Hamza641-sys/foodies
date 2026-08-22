@@ -373,6 +373,10 @@ class UIEngine {
                       onclick="app.adminUpdateReservation('${res.id}','Cancelled')">
                 <i class="fas fa-times"></i>
               </button>` : '<span style="color:var(--text-muted);font-size:.7rem;">—</span>'}
+            <button style="padding:3px 7px;font-size:.62rem;background:#ef4444;border:none;border-radius:5px;color:#fff;cursor:pointer;margin-left:2px;"
+                    onclick="app.deleteReservation('${res.id}')">
+              <i class="fas fa-trash"></i>
+            </button>
           </td>
         </tr>`;
     }).join('');

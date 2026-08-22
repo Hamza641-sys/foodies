@@ -578,3 +578,10 @@ export async function seedCombosIfEmpty() {
 export async function deleteOrderById(orderId) {
   await deleteDoc(doc(db, 'orders', orderId));
 }
+
+// ─────────────────────────────────────────────────
+// DELETE RESERVATION
+// ─────────────────────────────────────────────────
+export async function deleteReservationById(resId) {
+  await deleteDoc(doc(db, 'reservations', resId));
+}

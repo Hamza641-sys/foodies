@@ -15,7 +15,7 @@ import {
   getUserProfile, updateUserProfile, toggleWishlist,
   getAllUsers, getAdminStats, advanceOrderStatus,
   getKitchenOrders, likeReview as fsLikeReview,
-  seedFirestoreIfEmpty, submitContact, deleteOrderById
+  seedFirestoreIfEmpty, submitContact, deleteOrderById, deleteReservationById
 } from './firestore.js';
 
 import {
@@ -1737,6 +1737,17 @@ class FoodiesApp {
       this.showToast(`Reservation ${resId}: ${status}`, 'success');
       await this._renderAdmin();
     } catch (e) { this.showToast('Failed to update reservation', 'danger'); }
+  }
+
+  async deleteReservation(resId) {
+    if (!confirm(`Delete reservation ${resId}? This cannot be undone.`)) return;
+    try {
+      await deleteReservationById(resId);
+      this.showToast(`Reservation ${resId} deleted`, 'success');
+      const reservations = await getAllReservations();
+      const body = document.getElementById('adminReservationsTableBody');
+      if (body) body.innerHTML = window.UIEngine.renderAdminReservationsTable(reservations);
+    } catch(e) { this.showToast('Failed to delete reservation', 'danger'); }
   }
 
   showResNote(note) {
