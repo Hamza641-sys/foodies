@@ -1866,3 +1866,45 @@ body { top: 0 !important; }
 
 /* ── Hide dish card icon permanently ───────────── */
 .dish-card-icon { display:none !important; }
+
+/* ── ADMIN PANEL MOBILE RESPONSIVE ─────────────── */
+@media (max-width: 1024px) {
+  .admin-layout {
+    grid-template-columns: 1fr !important;
+    gap: 16px;
+  }
+  .admin-sidebar {
+    border-radius: var(--border-radius-md) !important;
+    padding: 16px !important;
+  }
+  .admin-menu {
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+  }
+  .admin-menu-item {
+    padding: 8px 12px !important;
+    font-size: .75rem !important;
+    white-space: nowrap;
+  }
+  #adminPanel-dashboard .dashboard-metrics-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  .admin-charts-container {
+    grid-template-columns: 1fr !important;
+  }
+  .admin-table th, .admin-table td {
+    padding: 8px 6px !important;
+    font-size: .72rem !important;
+  }
+}
+
+@media (max-width: 600px) {
+  #adminPanel-dashboard .dashboard-metrics-grid {
+    grid-template-columns: 1fr 1fr !important;
+  }
+  .admin-menu-item {
+    padding: 6px 10px !important;
+    font-size: .68rem !important;
+  }
+}
