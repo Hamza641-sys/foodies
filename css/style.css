@@ -2035,3 +2035,34 @@ body { top: 0 !important; }
   .combo-price-block { flex-direction: column; gap: 4px; }
   .admin-menu-item { padding: 5px 8px !important; font-size: .62rem !important; }
 }
+
+/* ── ADMIN PANEL TOUCH/MOBILE FORCE FIX ────────── */
+@media (pointer: coarse), (max-width: 1024px) {
+  .admin-layout {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 16px !important;
+  }
+  .admin-sidebar {
+    width: 100% !important;
+    min-width: unset !important;
+  }
+  .admin-menu {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+    padding: 0 !important;
+  }
+  .admin-menu-item {
+    padding: 7px 12px !important;
+    font-size: .72rem !important;
+    white-space: nowrap !important;
+    flex-shrink: 0;
+  }
+  .admin-panel-main {
+    width: 100% !important;
+    min-width: unset !important;
+    overflow-x: auto;
+  }
+}
