@@ -585,3 +585,38 @@ export async function deleteOrderById(orderId) {
 export async function deleteReservationById(resId) {
   await deleteDoc(doc(db, 'reservations', resId));
 }
+
+// ─────────────────────────────────────────────────
+// CUSTOMER REVIEWS
+// ─────────────────────────────────────────────────
+export async function submitCustomerReview(data) {
+  const ref = await addDoc(collection(db, 'customerReviews'), {
+    ...data,
+    approved: false,
+    createdAt: new Date().toISOString()
+  });
+  return ref.id;
+}
+
+export async function getApprovedReviews() {
+  const snap = await getDocs(collection(db, 'customerReviews'));
+  return snap.docs
+    .map(d => ({ id: d.id, ...d.data() }))
+    .filter(r => r.approved === true)
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+}
+
+export async function getAllCustomerReviews() {
+  const snap = await getDocs(collection(db, 'customerReviews'));
+  return snap.docs
+    .map(d => ({ id: d.id, ...d.data() }))
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+}
+
+export async function updateReviewStatus(reviewId, approved) {
+  await updateDoc(doc(db, 'customerReviews', reviewId), { approved });
+}
+
+export async function deleteReviewById(reviewId) {
+  await deleteDoc(doc(db, 'customerReviews', reviewId));
+}

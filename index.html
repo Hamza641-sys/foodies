@@ -325,6 +325,38 @@
         <div style="max-width:820px;margin:0 auto;" id="homeReviewsGrid">
           <!-- Rendered dynamically -->
         </div>
+
+        <!-- Leave a Review Form -->
+        <div class="glass" style="max-width:600px;margin:40px auto 0;padding:28px;border-radius:var(--border-radius-lg);">
+          <h3 style="font-weight:800;margin-bottom:6px;font-size:1.1rem;">⭐ Leave a Review</h3>
+          <p style="font-size:.8rem;color:var(--text-muted);margin-bottom:20px;">Share your experience — your review will appear after approval.</p>
+          <form id="customerReviewForm" onsubmit="app.submitCustomerReview(event)">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+              <div>
+                <label style="font-size:.75rem;color:var(--primary);font-weight:700;display:block;margin-bottom:5px;">Your Name *</label>
+                <input type="text" id="revName" class="form-input" placeholder="e.g. Ali Hassan" required />
+              </div>
+              <div>
+                <label style="font-size:.75rem;color:var(--primary);font-weight:700;display:block;margin-bottom:5px;">Rating *</label>
+                <select id="revRating" class="form-input" required>
+                  <option value="5">⭐⭐⭐⭐⭐ Excellent</option>
+                  <option value="4">⭐⭐⭐⭐ Very Good</option>
+                  <option value="3">⭐⭐⭐ Good</option>
+                  <option value="2">⭐⭐ Fair</option>
+                  <option value="1">⭐ Poor</option>
+                </select>
+              </div>
+            </div>
+            <div style="margin-bottom:14px;">
+              <label style="font-size:.75rem;color:var(--primary);font-weight:700;display:block;margin-bottom:5px;">Your Review *</label>
+              <textarea id="revMessage" class="form-input" rows="3" placeholder="Tell us about your experience..." required style="resize:vertical;"></textarea>
+            </div>
+            <button type="submit" class="btn-gold" style="width:100%;justify-content:center;padding:12px;">
+              <i class="fas fa-paper-plane" style="margin-right:6px;"></i>Submit Review
+            </button>
+          </form>
+        </div>
+
       </div>
 
       <!-- CONTACT US SECTION -->
@@ -670,6 +702,7 @@
             <li class="admin-menu-item" onclick="app.setAdminTab('users')">Users List</li>
             <li class="admin-menu-item" onclick="app.setAdminTab('reservations')">Reservations</li>
             <li class="admin-menu-item" onclick="app.setAdminTab('kitchen')">Kitchen Screen</li>
+            <li class="admin-menu-item" onclick="app.setAdminTab('reviews')">Reviews</li>
             <li class="admin-menu-item" onclick="app.setAdminTab('staff')">Staff Rights</li>
           </ul>
         </div>
@@ -845,6 +878,19 @@
             <div class="glass" style="padding:28px;border-radius:var(--border-radius-lg);">
               <h3 style="font-weight:800;margin-bottom:16px;">Staff Roles &amp; Permissions</h3>
               <div class="kitchen-queue-grid" id="adminStaffPermissionsGrid" style="margin-top:18px;"></div>
+            </div>
+          </div>
+
+          <div class="admin-panel-content" id="adminPanel-reviews">
+            <div class="glass" style="padding:28px;border-radius:var(--border-radius-lg);overflow-x:auto;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:10px;">
+                <h3 style="font-weight:800;margin:0;">Customer Reviews</h3>
+                <span id="reviewsCountBadge" style="font-size:.78rem;color:var(--text-muted);"></span>
+              </div>
+              <table class="admin-table">
+                <thead><tr><th>Name</th><th>Rating</th><th>Review</th><th>Date</th><th>Status</th><th>Action</th></tr></thead>
+                <tbody id="adminReviewsTableBody"></tbody>
+              </table>
             </div>
           </div>
         </div>

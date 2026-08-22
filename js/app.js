@@ -15,7 +15,9 @@ import {
   getUserProfile, updateUserProfile, toggleWishlist,
   getAllUsers, getAdminStats, advanceOrderStatus,
   getKitchenOrders, likeReview as fsLikeReview,
-  seedFirestoreIfEmpty, submitContact, deleteOrderById, deleteReservationById
+  seedFirestoreIfEmpty, submitContact, deleteOrderById, deleteReservationById,
+  submitCustomerReview as fsSubmitReview, getApprovedReviews,
+  getAllCustomerReviews, updateReviewStatus, deleteReviewById
 } from './firestore.js';
 
 import {
@@ -1224,6 +1226,11 @@ class FoodiesApp {
         if (body) body.innerHTML = window.UIEngine.renderAdminReservationsTable(reservations);
       }
 
+      if (tab === 'reviews') {
+        const reviews = await getAllCustomerReviews();
+        this._renderAdminReviewsTable(reviews);
+      }
+
       if (tab === 'kitchen') {
         const orders = await getKitchenOrders();
         const grid   = document.getElementById('kitchenQueueGrid');
@@ -1748,6 +1755,72 @@ class FoodiesApp {
       const body = document.getElementById('adminReservationsTableBody');
       if (body) body.innerHTML = window.UIEngine.renderAdminReservationsTable(reservations);
     } catch(e) { this.showToast('Failed to delete reservation', 'danger'); }
+  }
+
+  /* ── CUSTOMER REVIEWS ───────────────────────── */
+  async submitCustomerReview(e) {
+    e.preventDefault();
+    const name    = document.getElementById('revName').value.trim();
+    const rating  = parseInt(document.getElementById('revRating').value);
+    const message = document.getElementById('revMessage').value.trim();
+    if (!name || !message) return;
+    try {
+      await fsSubmitReview({ name, rating, message });
+      this.showToast('Review submitted! It will appear after approval. Thank you! 🙏', 'success');
+      document.getElementById('customerReviewForm').reset();
+    } catch(e) { this.showToast('Failed to submit review', 'danger'); }
+  }
+
+  async adminApproveReview(reviewId, approve) {
+    try {
+      await updateReviewStatus(reviewId, approve);
+      this.showToast(approve ? 'Review approved ✓' : 'Review rejected', approve ? 'success' : 'info');
+      const reviews = await getAllCustomerReviews();
+      this._renderAdminReviewsTable(reviews);
+    } catch(e) { this.showToast('Failed to update review', 'danger'); }
+  }
+
+  async adminDeleteReview(reviewId) {
+    if (!confirm('Delete this review?')) return;
+    try {
+      await deleteReviewById(reviewId);
+      this.showToast('Review deleted', 'success');
+      const reviews = await getAllCustomerReviews();
+      this._renderAdminReviewsTable(reviews);
+    } catch(e) { this.showToast('Failed to delete review', 'danger'); }
+  }
+
+  _renderAdminReviewsTable(reviews) {
+    const body  = document.getElementById('adminReviewsTableBody');
+    const badge = document.getElementById('reviewsCountBadge');
+    if (badge) badge.innerText = `${reviews.length} review${reviews.length !== 1 ? 's' : ''}`;
+    if (!body) return;
+    if (!reviews.length) {
+      body.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text-muted);">No reviews yet.</td></tr>';
+      return;
+    }
+    body.innerHTML = reviews.map(r => {
+      const stars = '⭐'.repeat(r.rating || 5);
+      const date  = r.createdAt ? new Date(r.createdAt).toLocaleDateString('en-PK') : '—';
+      const status = r.approved
+        ? '<span style="color:var(--success);font-weight:700;">✓ Approved</span>'
+        : '<span style="color:var(--warning);font-weight:700;">Pending</span>';
+      return `<tr>
+        <td><strong>${r.name || '—'}</strong></td>
+        <td>${stars}</td>
+        <td style="max-width:220px;font-size:.82rem;">${r.message || '—'}</td>
+        <td style="font-size:.78rem;color:var(--text-muted);">${date}</td>
+        <td>${status}</td>
+        <td style="white-space:nowrap;">
+          ${!r.approved ? `<button class="btn-outline" style="padding:4px 10px;font-size:.72rem;margin-right:4px;color:var(--success);border-color:var(--success);"
+            onclick="app.adminApproveReview('${r.id}', true)"><i class="fas fa-check"></i> Approve</button>` : ''}
+          ${r.approved ? `<button class="btn-outline" style="padding:4px 10px;font-size:.72rem;margin-right:4px;"
+            onclick="app.adminApproveReview('${r.id}', false)"><i class="fas fa-times"></i> Reject</button>` : ''}
+          <button style="padding:4px 10px;font-size:.72rem;background:#ef4444;border:none;border-radius:6px;color:#fff;cursor:pointer;"
+            onclick="app.adminDeleteReview('${r.id}')"><i class="fas fa-trash"></i></button>
+        </td>
+      </tr>`;
+    }).join('');
   }
 
   showResNote(note) {
