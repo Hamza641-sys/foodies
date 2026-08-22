@@ -316,10 +316,6 @@ class UIEngine {
                     style="margin-top:5px;background:var(--primary);border:none;border-radius:6px;padding:4px 10px;color:#fff;font-size:.72rem;cursor:pointer;">
               <i class="fas fa-print"></i> Print
             </button>
-            <button onclick="app.deleteOrder('${ord.id}')"
-                    style="margin-top:5px;background:#ef4444;border:none;border-radius:6px;padding:4px 10px;color:#fff;font-size:.72rem;cursor:pointer;">
-              <i class="fas fa-trash"></i> Delete
-            </button>
           </td>
         </tr>`;
     }).join('');
