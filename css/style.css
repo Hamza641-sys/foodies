@@ -1949,7 +1949,7 @@ body { top: 0 !important; }
   .checkout-layout { grid-template-columns: 1fr; }
   .reservation-container { grid-template-columns: 1fr; }
   .footer-grid { grid-template-columns: 1fr 1fr; }
-  .cart-drawer { width: 100% !important; }
+  .cart-drawer { width: min(430px, 100vw) !important; }
 }
 
 /* ── max-width: 600px — Small Tablets ──────── */
@@ -1988,7 +1988,7 @@ body { top: 0 !important; }
   .gallery-grid { grid-template-columns: 1fr; }
   .home-section-container { padding: 32px 4%; }
   .btn-gold, .btn-outline { padding: 10px 18px; font-size: .82rem; }
-  .cart-drawer { width: 100% !important; }
+  .cart-drawer { width: min(430px, 100vw) !important; }
   .modal-card { padding: 16px !important; border-radius: 12px !important; }
   .whatsapp-float { width: 48px; height: 48px; font-size: 1.3rem; bottom: 80px; right: 16px; }
   .chatbot-bubble { width: 48px; height: 48px; bottom: 24px; right: 16px; }

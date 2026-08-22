@@ -62,6 +62,13 @@ class FoodiesApp {
     window.addEventListener('scroll', () => {
       document.querySelector('.navbar')?.classList.toggle('scrolled', window.scrollY > 50);
     });
+    // Close cart on window resize to prevent auto-open at breakpoints
+    window.addEventListener('resize', () => {
+      const cartDrawer = document.getElementById('cartDrawer');
+      if (cartDrawer && cartDrawer.classList.contains('active')) {
+        this.toggleCartDrawer(false);
+      }
+    });
   }
 
   async onDOMReady() {
