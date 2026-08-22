@@ -15,7 +15,7 @@ import {
   getUserProfile, updateUserProfile, toggleWishlist,
   getAllUsers, getAdminStats, advanceOrderStatus,
   getKitchenOrders, likeReview as fsLikeReview,
-  seedFirestoreIfEmpty, submitContact
+  seedFirestoreIfEmpty, submitContact, deleteOrderById
 } from './firestore.js';
 
 import {
@@ -1523,6 +1523,20 @@ class FoodiesApp {
     if (!order) { this.showToast('Order not found', 'danger'); return; }
     this._activeDetailOrder = order;
     this.printOrderBill();
+  }
+
+  async deleteOrder(orderId) {
+    if (!confirm(`Delete order ${orderId}? This cannot be undone.`)) return;
+    try {
+      await deleteOrderById(orderId);
+      this.showToast(`Order ${orderId} deleted`, 'success');
+      // Refresh orders table
+      const orders = await getAllOrders();
+      const body = document.getElementById('adminOrdersTableBody');
+      if (body) body.innerHTML = window.UIEngine.renderAdminOrdersTable(orders);
+      const badge = document.getElementById('ordersCountBadge');
+      if (badge) badge.innerText = `${orders.length} order${orders.length !== 1 ? 's' : ''}`;
+    } catch(e) { this.showToast('Failed to delete order', 'danger'); }
   }
 
   printOrderBill() {

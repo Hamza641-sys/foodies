@@ -571,3 +571,10 @@ export async function seedCombosIfEmpty() {
     console.warn('Combo seeding skipped:', e.message);
   }
 }
+
+// ─────────────────────────────────────────────────
+// DELETE ORDER
+// ─────────────────────────────────────────────────
+export async function deleteOrderById(orderId) {
+  await deleteDoc(doc(db, 'orders', orderId));
+}
