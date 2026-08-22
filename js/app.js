@@ -352,9 +352,51 @@ class FoodiesApp {
         </div>`).join('');
     }
 
-    // Reviews
+    // Reviews — pehle 3 dikhao + approved customer reviews + View More
     const reviewsGrid = document.getElementById('homeReviewsGrid');
-    if (reviewsGrid) reviewsGrid.innerHTML = window.UIEngine.renderReviews(window.REVIEWS || []);
+    if (reviewsGrid) {
+      const staticRevs   = window.REVIEWS || [];
+      let approvedRevs   = [];
+      try { approvedRevs = await getApprovedReviews(); } catch(e) {}
+
+      // Merge: static + approved customer reviews
+      const allRevs = [...staticRevs, ...approvedRevs.map(r => ({
+        id:         r.id,
+        userName:   r.name,
+        userTitle:  'Verified Customer',
+        avatar:     r.name ? r.name[0].toUpperCase() : '👤',
+        rating:     r.rating || 5,
+        date:       r.createdAt ? new Date(r.createdAt).toLocaleDateString('en-PK', {year:'numeric',month:'long',day:'numeric'}) : '',
+        text:       r.message,
+        likes:      0,
+        badge:      true,
+        reply:      null
+      }))];
+
+      const limit = 3;
+      this._allReviews = allRevs;
+      this._reviewsShown = limit;
+
+      const showRevs = (count) => {
+        const visible = allRevs.slice(0, count);
+        reviewsGrid.innerHTML = window.UIEngine.renderReviews(visible);
+
+        // View More button
+        const existing = document.getElementById('reviewsViewMoreBtn');
+        if (existing) existing.remove();
+        if (allRevs.length > count) {
+          const btn = document.createElement('div');
+          btn.id = 'reviewsViewMoreBtn';
+          btn.style.cssText = 'text-align:center;margin-top:20px;';
+          btn.innerHTML = `<button class="btn-outline" style="padding:10px 30px;" onclick="app._loadMoreReviews()">
+            View More Reviews (${allRevs.length - count} more) <i class="fas fa-chevron-down" style="margin-left:6px;"></i>
+          </button>`;
+          reviewsGrid.after(btn);
+        }
+      };
+
+      showRevs(limit);
+    }
   }
 
   /* ── MENU PAGE ───────────────────────────────── */
@@ -1758,6 +1800,29 @@ class FoodiesApp {
   }
 
   /* ── CUSTOMER REVIEWS ───────────────────────── */
+  _loadMoreReviews() {
+    const allRevs  = this._allReviews || [];
+    const newCount = (this._reviewsShown || 3) + 3;
+    this._reviewsShown = newCount;
+    const reviewsGrid  = document.getElementById('homeReviewsGrid');
+    if (!reviewsGrid) return;
+
+    reviewsGrid.innerHTML = window.UIEngine.renderReviews(allRevs.slice(0, newCount));
+
+    const existing = document.getElementById('reviewsViewMoreBtn');
+    if (existing) existing.remove();
+
+    if (allRevs.length > newCount) {
+      const btn = document.createElement('div');
+      btn.id = 'reviewsViewMoreBtn';
+      btn.style.cssText = 'text-align:center;margin-top:20px;';
+      btn.innerHTML = `<button class="btn-outline" style="padding:10px 30px;" onclick="app._loadMoreReviews()">
+        View More Reviews (${allRevs.length - newCount} more) <i class="fas fa-chevron-down" style="margin-left:6px;"></i>
+      </button>`;
+      reviewsGrid.after(btn);
+    }
+  }
+
   async submitCustomerReview(e) {
     e.preventDefault();
     const name    = document.getElementById('revName').value.trim();
