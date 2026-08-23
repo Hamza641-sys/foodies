@@ -621,6 +621,18 @@ img { max-width:100%; height:auto; display:block; }
 .chatbot-bubble:hover { transform:scale(1.1) !important; }
 .chatbot-panel { position:fixed; bottom:100px; right:28px; width:370px; height:490px; background:var(--bg-secondary); border-radius:var(--border-radius-lg); border:1px solid var(--glass-border); box-shadow:0 10px 40px rgba(0,0,0,.5); z-index:1000; display:none; flex-direction:column; overflow:hidden; transition:var(--transition-smooth); }
 .chatbot-panel.active { display:flex; }
+
+/* Chatbot mobile fix */
+@media (max-width: 480px) {
+  .chatbot-panel {
+    width: calc(100vw - 20px) !important;
+    right: 10px !important;
+    left: 10px !important;
+    bottom: 80px !important;
+    height: 75vh !important;
+    max-height: 500px !important;
+  }
+}
 .chatbot-header { padding:18px; border-bottom:1px solid var(--glass-border); display:flex; justify-content:space-between; align-items:center; }
 .chatbot-header h3 { font-family:var(--font-body); font-size:1rem; font-weight:700; display:flex; align-items:center; gap:8px; }
 .chatbot-body { flex-grow:1; padding:18px; overflow-y:auto; display:flex; flex-direction:column; gap:14px; }
