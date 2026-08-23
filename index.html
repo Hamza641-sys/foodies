@@ -1105,11 +1105,21 @@
   <div class="page-loader" id="pageLoader">
     <div class="loader-content">
       <div class="loader-logo">
-        <div class="logo-icon" style="font-size:2.5rem;color:var(--primary);"><i class="fas fa-utensils"></i></div>
-        <span style="font-size:2rem;font-weight:900;font-family:var(--font-body);">Foodies</span>
+        <div style="
+          width:70px; height:70px;
+          background:var(--primary);
+          border-radius:50%;
+          display:flex; align-items:center; justify-content:center;
+          box-shadow: 0 8px 24px rgba(255,107,53,.4);
+          margin-bottom:16px;
+        ">
+          <i class="fas fa-utensils" style="font-size:1.8rem;color:#fff;"></i>
+        </div>
+        <span style="font-size:1.8rem;font-weight:900;font-family:var(--font-body);letter-spacing:.5px;">Foodies</span>
+        <span style="font-size:.75rem;color:var(--text-muted);margin-top:4px;letter-spacing:1px;text-transform:uppercase;">Best Quality Delicious Food</span>
       </div>
-      <div class="loader-spinner"></div>
-      <p style="color:var(--text-muted);font-size:.85rem;margin-top:12px;">Loading world cuisines...</p>
+      <div class="loader-spinner" style="margin-top:24px;"></div>
+      <p style="color:var(--text-muted);font-size:.8rem;margin-top:14px;letter-spacing:.5px;">Loading...</p>
     </div>
   </div>
 

@@ -1474,8 +1474,9 @@ body.light-theme .nav-mega-dropdown {
 }
 .loader-logo {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 12px;
+  gap: 6px;
 }
 .loader-spinner {
   width: 44px;
