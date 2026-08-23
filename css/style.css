@@ -2094,3 +2094,14 @@ body { top: 0 !important; }
   }
   .bestsellers-grid { gap: 10px !important; }
 }
+
+/* ── BS RANK BADGE MOBILE FIX ──────────────────── */
+@media (max-width: 480px) {
+  .bs-rank {
+    top: 4px !important;
+    left: 4px !important;
+    width: 22px !important;
+    height: 22px !important;
+    font-size: .6rem !important;
+  }
+}
