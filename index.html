@@ -703,6 +703,7 @@
             <li class="admin-menu-item" onclick="app.setAdminTab('reservations')">Reservations</li>
             <li class="admin-menu-item" onclick="app.setAdminTab('kitchen')">Kitchen Screen</li>
             <li class="admin-menu-item" onclick="app.setAdminTab('reviews')">Reviews</li>
+            <li class="admin-menu-item" onclick="app.setAdminTab('messages')">Messages</li>
             <li class="admin-menu-item" onclick="app.setAdminTab('staff')">Staff Rights</li>
           </ul>
         </div>
@@ -874,6 +875,16 @@
               <div class="kitchen-queue-grid" id="kitchenQueueGrid"></div>
             </div>
           </div>
+          <div class="admin-panel-content" id="adminPanel-messages">
+            <div class="glass" style="padding:28px;border-radius:var(--border-radius-lg);overflow-x:auto;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:10px;">
+                <h3 style="font-weight:800;margin:0;"><i class="fas fa-envelope" style="color:var(--primary);margin-right:8px;"></i>Customer Messages</h3>
+                <span id="messagesCountBadge" style="font-size:.78rem;color:var(--text-muted);"></span>
+              </div>
+              <div id="adminMessagesContainer"></div>
+            </div>
+          </div>
+
           <div class="admin-panel-content" id="adminPanel-staff">
             <div class="glass" style="padding:28px;border-radius:var(--border-radius-lg);">
               <h3 style="font-weight:800;margin-bottom:16px;">Staff Roles &amp; Permissions</h3>

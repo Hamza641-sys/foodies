@@ -17,7 +17,8 @@ import {
   getKitchenOrders, likeReview as fsLikeReview,
   seedFirestoreIfEmpty, submitContact, deleteOrderById, deleteReservationById,
   submitCustomerReview as fsSubmitReview, getApprovedReviews,
-  getAllCustomerReviews, updateReviewStatus, deleteReviewById
+  getAllCustomerReviews, updateReviewStatus, deleteReviewById,
+  getContacts, markContactRead, deleteContact
 } from './firestore.js';
 
 import {
@@ -1275,6 +1276,11 @@ class FoodiesApp {
         if (body) body.innerHTML = window.UIEngine.renderAdminReservationsTable(reservations);
       }
 
+      if (tab === 'messages') {
+        const contacts = await getContacts();
+        this._renderAdminMessages(contacts);
+      }
+
       if (tab === 'reviews') {
         const reviews = await getAllCustomerReviews();
         this._renderAdminReviewsTable(reviews);
@@ -1860,6 +1866,66 @@ class FoodiesApp {
       const reviews = await getAllCustomerReviews();
       this._renderAdminReviewsTable(reviews);
     } catch(e) { this.showToast('Failed to delete review', 'danger'); }
+  }
+
+  _renderAdminMessages(contacts) {
+    const container = document.getElementById('adminMessagesContainer');
+    const badge     = document.getElementById('messagesCountBadge');
+    if (badge) badge.innerText = `${contacts.length} message${contacts.length !== 1 ? 's' : ''}`;
+    if (!container) return;
+
+    if (!contacts.length) {
+      container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-muted);"><i class="fas fa-inbox" style="font-size:2rem;margin-bottom:10px;display:block;opacity:.4;"></i>No messages yet.</div>';
+      return;
+    }
+
+    container.innerHTML = contacts.map(c => {
+      const date    = c.createdAt ? new Date(c.createdAt).toLocaleString('en-PK') : '—';
+      const isRead  = c.read === true;
+      const rowBg   = isRead ? '' : 'background:rgba(255,107,53,.06);border-left:3px solid var(--primary);';
+      return `
+        <div style="padding:18px;border-radius:12px;margin-bottom:14px;${rowBg}border:1px solid var(--glass-border);">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;margin-bottom:10px;">
+            <div>
+              <strong style="font-size:.92rem;">${c.name || '—'}</strong>
+              ${!isRead ? '<span style="background:var(--primary);color:#fff;font-size:.6rem;padding:2px 7px;border-radius:20px;margin-left:8px;font-weight:700;">NEW</span>' : ''}
+              <div style="font-size:.76rem;color:var(--text-muted);margin-top:2px;">
+                <i class="fas fa-envelope" style="margin-right:4px;"></i>${c.email || '—'}
+                ${c.phone ? `&nbsp;&nbsp;<i class="fas fa-phone" style="margin-right:4px;"></i>${c.phone}` : ''}
+              </div>
+            </div>
+            <span style="font-size:.72rem;color:var(--text-muted);">${date}</span>
+          </div>
+          ${c.subject ? `<div style="font-size:.78rem;font-weight:700;color:var(--primary);margin-bottom:6px;"><i class="fas fa-tag" style="margin-right:4px;"></i>${c.subject}</div>` : ''}
+          <p style="font-size:.85rem;line-height:1.6;margin-bottom:12px;">${c.message || '—'}</p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            ${!isRead ? `<button onclick="app.markMessageRead('${c.id}')" class="btn-outline" style="padding:5px 12px;font-size:.74rem;">
+              <i class="fas fa-check"></i> Mark Read
+            </button>` : '<span style="font-size:.72rem;color:var(--success);"><i class="fas fa-check-double"></i> Read</span>'}
+            <button onclick="app.deleteMessage('${c.id}')" style="padding:5px 12px;font-size:.74rem;background:#ef4444;border:none;border-radius:6px;color:#fff;cursor:pointer;">
+              <i class="fas fa-trash"></i> Delete
+            </button>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  async markMessageRead(contactId) {
+    try {
+      await markContactRead(contactId);
+      const contacts = await getContacts();
+      this._renderAdminMessages(contacts);
+    } catch(e) { this.showToast('Failed', 'danger'); }
+  }
+
+  async deleteMessage(contactId) {
+    if (!confirm('Delete this message?')) return;
+    try {
+      await deleteContact(contactId);
+      this.showToast('Message deleted', 'success');
+      const contacts = await getContacts();
+      this._renderAdminMessages(contacts);
+    } catch(e) { this.showToast('Failed', 'danger'); }
   }
 
   _renderAdminReviewsTable(reviews) {

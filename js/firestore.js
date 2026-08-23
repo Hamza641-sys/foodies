@@ -620,3 +620,21 @@ export async function updateReviewStatus(reviewId, approved) {
 export async function deleteReviewById(reviewId) {
   await deleteDoc(doc(db, 'customerReviews', reviewId));
 }
+
+// ─────────────────────────────────────────────────
+// GET CONTACTS / MESSAGES
+// ─────────────────────────────────────────────────
+export async function getContacts() {
+  const snap = await getDocs(collection(db, 'contacts'));
+  return snap.docs
+    .map(d => ({ id: d.id, ...d.data() }))
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+}
+
+export async function markContactRead(contactId) {
+  await updateDoc(doc(db, 'contacts', contactId), { read: true });
+}
+
+export async function deleteContact(contactId) {
+  await deleteDoc(doc(db, 'contacts', contactId));
+}
