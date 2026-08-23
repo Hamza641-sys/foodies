@@ -2038,10 +2038,15 @@ body { top: 0 !important; }
 
 /* ── ADMIN PANEL TOUCH/MOBILE FORCE FIX ────────── */
 @media (pointer: coarse), (max-width: 1024px) {
-  .admin-layout {
+  #adminPanelLayout.admin-layout,
+  #adminPanelLayout {
     display: flex !important;
     flex-direction: column !important;
     gap: 16px !important;
+  }
+  #adminPanelLayout[style*="display: none"],
+  #adminPanelLayout[style*="display:none"] {
+    display: none !important;
   }
   .admin-sidebar {
     width: 100% !important;
@@ -2104,4 +2109,10 @@ body { top: 0 !important; }
     height: 22px !important;
     font-size: .6rem !important;
   }
+}
+
+/* ── ADMIN PANEL LAYOUT DEFAULT HIDDEN ─────────── */
+#adminPanelLayout[style*="display: none"],
+#adminPanelLayout[style*="display:none"] {
+  display: none !important;
 }
