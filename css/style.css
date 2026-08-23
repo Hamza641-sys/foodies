@@ -2066,3 +2066,31 @@ body { top: 0 !important; }
     overflow-x: auto;
   }
 }
+
+/* ── BESTSELLER CARD MOBILE FIX ────────────────── */
+@media (max-width: 480px) {
+  .bestseller-card {
+    padding: 10px !important;
+    gap: 10px !important;
+    overflow: hidden !important;
+  }
+  .bestseller-card img {
+    width: 60px !important;
+    height: 60px !important;
+    flex-shrink: 0 !important;
+  }
+  .bs-info { flex: 1; min-width: 0; overflow: hidden; }
+  .bs-info h4 {
+    font-size: .82rem !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .bs-price-row { flex-wrap: wrap; gap: 4px; }
+  .bestseller-card .btn-add-cart {
+    flex-shrink: 0 !important;
+    width: 36px !important;
+    height: 36px !important;
+  }
+  .bestsellers-grid { gap: 10px !important; }
+}
